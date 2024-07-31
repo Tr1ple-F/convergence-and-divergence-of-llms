@@ -1,1 +1,1 @@
-Time is money.
+Hello world!

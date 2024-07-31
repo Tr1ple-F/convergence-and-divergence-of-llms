@@ -1,3 +1,4 @@
+import numpy as np
 from transformers import GPTNeoXForCausalLM, AutoTokenizer
 import torch
 import torch.nn.functional as F
@@ -42,42 +43,29 @@ def generate_top_probabilities(model_name, revision, input_text_file):
     with torch.no_grad():
         logits = model(**inputs).logits
 
-    for i in range(logits.shape[1]):
-        # Get the logits for the current time step
-        current_logit = logits[:, i, :]
+        all_probabilities = []
 
-        # Get the logits for the last token in the input
-        # last_token_logits = logits[:, -1, :]  # Reduces size from 1x2x50304 to 1x50304
-        # print(current_logit.shape)
-        # print(logits.shape)
+        for i in range(logits.shape[1]):
+            # Get the logits for the current time step
+            current_logit = logits[:, i, :]
 
-        # Apply softmax to get probabilities
-        probabilities = F.softmax(current_logit, dim=-1)
+            # Apply softmax to get probabilities
+            probabilities = F.softmax(current_logit, dim=-1)
 
-        # Convert to CPU and NumPy array for easier handling
-        probabilities = probabilities.cpu().numpy()
+            # Convert to CPU and NumPy array for easier handling
+            probabilities = probabilities.cpu().numpy()
 
-        # Create a dictionary for all tokens and their probabilities
-        all_probs = {tokenizer.decode([idx]): float(probabilities[0][idx]) for idx in range(probabilities.shape[1])}
+            # Append the probabilities for the current timestep to the list
+            all_probabilities.append(probabilities)
 
-        '''
-        # Get the top k token probabilities
-        top_k = 10
-        top_k_indices = np.argsort(probabilities[0])[::-1][:top_k]
-
-        # Create a dictionary for the top k tokens and their probabilities
-        top_k_probs = {tokenizer.decode([idx]): float(probabilities[0][idx]) for idx in top_k_indices}
-
-        for tok, score in top_k_probs.items():
-            print(f"| {tok:8s} | {score:.2%}")
-        '''
+        # Convert the list of probabilities to a NumPy array
+        all_probabilities_matrix = np.array(all_probabilities)
 
         # Define the output file path
-        output_file_path = os.path.join(output_dir, f"{i + 1}.json")
+        output_file_path = os.path.join(output_dir, "probabilities.npy")
 
-        # Save the dictionary to a JSON file
-        with open(output_file_path, 'w') as json_file:
-            json.dump(all_probs, json_file, indent=4)
+        # Save the NumPy array to a file
+        np.save(output_file_path, all_probabilities_matrix)
 
 
 def main():
