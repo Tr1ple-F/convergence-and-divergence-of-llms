@@ -1,6 +1,5 @@
 from transformers import GPTNeoXForCausalLM, AutoTokenizer
 import torch
-import numpy as np
 import torch.nn.functional as F
 import os
 import json
@@ -49,8 +48,8 @@ def generate_top_probabilities(model_name, revision, input_text_file):
 
         # Get the logits for the last token in the input
         # last_token_logits = logits[:, -1, :]  # Reduces size from 1x2x50304 to 1x50304
-        print(current_logit.shape)
-        print(logits.shape)
+        # print(current_logit.shape)
+        # print(logits.shape)
 
         # Apply softmax to get probabilities
         probabilities = F.softmax(current_logit, dim=-1)
