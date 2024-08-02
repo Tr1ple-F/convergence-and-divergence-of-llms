@@ -43,23 +43,8 @@ def generate_top_probabilities(model_name, revision, input_text_file):
     with torch.no_grad():
         logits = model(**inputs).logits
 
-        all_probabilities = []
-
-        for i in range(logits.shape[1]):
-            # Get the logits for the current time step
-            current_logit = logits[:, i, :]
-
-            # Apply softmax to get probabilities
-            probabilities = F.softmax(current_logit, dim=-1)
-
-            # Convert to CPU and NumPy array for easier handling
-            probabilities = probabilities.cpu().numpy()
-
-            # Append the probabilities for the current timestep to the list
-            all_probabilities.append(probabilities)
-
-        # Convert the list of probabilities to a NumPy array
-        all_probabilities_matrix = np.array(all_probabilities)
+        probabilities = F.softmax(logits, dim=-1)
+        all_probabilities_matrix = probabilities.reshape(-1, probabilities.shape[-1]).cpu().numpy()
 
         # Define the output file path
         output_file_path = os.path.join(output_dir, "probabilities.npy")
