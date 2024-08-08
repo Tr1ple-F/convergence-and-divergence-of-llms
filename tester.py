@@ -3,8 +3,8 @@ from transformers import GPTNeoXForCausalLM, AutoTokenizer
 import torch
 import torch.nn.functional as F
 import os
+from shutil import rmtree
 import json
-
 
 def generate_top_probabilities(model_name, revision, input_text_file):
     # Load the model and tokenizer
@@ -26,7 +26,7 @@ def generate_top_probabilities(model_name, revision, input_text_file):
         model = model.cuda()
 
     # Read the input text file
-    with open(input_text_file, 'r') as file:
+    with open(input_text_file, 'r', encoding="utf8") as file:
         input_text = file.read()
 
     # Ensure the output directory exists
@@ -43,7 +43,9 @@ def generate_top_probabilities(model_name, revision, input_text_file):
     with torch.no_grad():
         logits = model(**inputs).logits
 
-        probabilities = F.softmax(logits, dim=-1)
+        # Calculate the probabilities
+
+        probabilities = F.log_softmax(logits, dim=-1)
         all_probabilities_matrix = probabilities.reshape(-1, probabilities.shape[-1]).cpu().numpy()
 
         # Define the output file path
@@ -52,6 +54,11 @@ def generate_top_probabilities(model_name, revision, input_text_file):
         # Save the NumPy array to a file
         np.save(output_file_path, all_probabilities_matrix)
 
+def delete_cache_directory(model_name, revision):
+    cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
+    if os.path.exists(cache_dir):
+        rmtree(cache_dir)
+        print(f"Deleted cache directory: {cache_dir}")
 
 def main():
     # Read the configuration from run_config.json
@@ -68,6 +75,7 @@ def main():
         for revision in revisions:
             print(f"Processing model: {model_name}, revision: {revision}")
             generate_top_probabilities(model_name, revision, input_text_file)
+            delete_cache_directory(model_name, revision)
 
 
 if __name__ == "__main__":

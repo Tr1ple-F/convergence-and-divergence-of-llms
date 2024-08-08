@@ -6,7 +6,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": 1.1102540352341959
+        "kl_divergence": 1.1102544333793665
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -15,7 +15,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": 1.4191832079315465
+        "kl_divergence": 1.419186290636403
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -24,7 +24,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": 0.8563114111840296
+        "kl_divergence": 0.8563156231411693
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -33,7 +33,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": 0.4096739341347035
+        "kl_divergence": 0.4096957977310978
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -42,7 +42,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": Infinity
+        "kl_divergence": 1.2503109425251977
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -51,7 +51,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": Infinity
+        "kl_divergence": 0.7158707879191019
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -60,7 +60,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": Infinity
+        "kl_divergence": 0.4654607963923626
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -69,7 +69,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": Infinity
+        "kl_divergence": 0.45911882939287607
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -78,7 +78,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": 1.034988870354782
+        "kl_divergence": 1.0349891050947855
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -87,7 +87,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": 1.319271794756021
+        "kl_divergence": 1.3192741471866687
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -96,7 +96,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": 1.0871887711498138
+        "kl_divergence": 1.0871917171572603
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -105,7 +105,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": 0.6449393588519866
+        "kl_divergence": 0.6449621900772078
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -114,7 +114,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": Infinity
+        "kl_divergence": 1.4861017569270951
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -123,7 +123,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": Infinity
+        "kl_divergence": 3.6176556568519835
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -132,7 +132,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": Infinity
+        "kl_divergence": 1.373124068495081
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -141,7 +141,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": Infinity
+        "kl_divergence": 0.9544025168674855
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -150,7 +150,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": Infinity
+        "kl_divergence": 3.0830042275487597
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -159,7 +159,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": Infinity
+        "kl_divergence": 4.899994797805648
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -168,7 +168,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": Infinity
+        "kl_divergence": 4.022702032380853
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -177,7 +177,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": Infinity
+        "kl_divergence": 3.0221255789818877
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -186,7 +186,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": 0.6563161492175178
+        "kl_divergence": 0.656315952856113
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -195,7 +195,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": 0.8951015056788171
+        "kl_divergence": 0.8951007765687552
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -204,7 +204,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": 0.5339736493033751
+        "kl_divergence": 0.533972315692583
     },
     {
         "model1": "EleutherAI/pythia-70m-deduped",
@@ -213,7 +213,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": 0.2759660123238334
+        "kl_divergence": 0.2759670070125361
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -222,7 +222,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": 0.6600028334126555
+        "kl_divergence": 0.6600055498608359
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -231,7 +231,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": 0.5473862995676209
+        "kl_divergence": 0.5473914815730513
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -240,7 +240,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": 0.28378570254028906
+        "kl_divergence": 0.283787910463063
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -249,7 +249,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": 0.17960477501743788
+        "kl_divergence": 0.17960031898864987
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -258,7 +258,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": 1.3759316737995948
+        "kl_divergence": 1.375934743183724
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -267,7 +267,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": 1.9161969977669213
+        "kl_divergence": 1.9162051879700064
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -276,7 +276,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": 0.8607545320662381
+        "kl_divergence": 0.8607610723183107
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -285,7 +285,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": 0.43983014609039506
+        "kl_divergence": 0.4398476037413376
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -294,7 +294,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": 1.4335970723672993
+        "kl_divergence": 1.4335999744277037
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -303,7 +303,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": 1.7044950752623858
+        "kl_divergence": 1.7045025846857582
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -312,7 +312,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": 1.0470617366453383
+        "kl_divergence": 1.0470669916556272
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -321,7 +321,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": 0.5809142626725758
+        "kl_divergence": 0.5809326956049097
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -330,7 +330,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": Infinity
+        "kl_divergence": 1.9073692407208738
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -339,7 +339,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": Infinity
+        "kl_divergence": 2.124638966805327
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -348,7 +348,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": Infinity
+        "kl_divergence": 1.842337415878477
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -357,7 +357,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": Infinity
+        "kl_divergence": 1.1181147174650115
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -366,7 +366,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": 0.6487393328338256
+        "kl_divergence": 0.6487395995806842
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -375,7 +375,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": 0.9016939071889913
+        "kl_divergence": 0.9016944922017616
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -384,7 +384,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": 0.49894204687999
+        "kl_divergence": 0.4989433608162688
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -393,7 +393,7 @@
         "revision2": "step512",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": 0.28780081283348125
+        "kl_divergence": 0.28779981480878264
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -402,7 +402,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 0,
-        "kl_divergence": Infinity
+        "kl_divergence": 3.23680400458529
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -411,7 +411,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 1,
-        "kl_divergence": Infinity
+        "kl_divergence": 3.42185593283947
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -420,7 +420,7 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 2,
-        "kl_divergence": Infinity
+        "kl_divergence": 3.7275986067510773
     },
     {
         "model1": "EleutherAI/pythia-160m-deduped",
@@ -429,6 +429,6 @@
         "revision2": "step143000",
         "file": "probabilities.npy",
         "timestep": 3,
-        "kl_divergence": Infinity
+        "kl_divergence": 1.91497209893706
     }
 ]

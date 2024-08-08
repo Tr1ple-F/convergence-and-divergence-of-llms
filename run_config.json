@@ -1,5 +1,5 @@
 {
-  "model_names": ["EleutherAI/pythia-70m-deduped", "EleutherAI/pythia-160m-deduped"],
-  "revisions": ["step143000", "step512"],
+  "model_names": ["EleutherAI/pythia-70m-deduped"],
+  "revisions": ["step128","step512","step128000", "step143000"],
   "input_text_file": "input_text.txt"
 }

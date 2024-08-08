@@ -2,14 +2,14 @@ import json
 import os
 
 import numpy as np
-from scipy.special import kl_div
 
 
 # Define the function to calculate KL divergence
 def calculate_kl_divergence(p, q):
-    p = np.array(p, dtype=np.float64)
-    q = np.array(q, dtype=np.float64)
-    return np.sum(kl_div(p, q))
+    log_p = np.array(p, dtype=np.float64)
+    log_q = np.array(q, dtype=np.float64)
+    # KL_div = \sum_i P(i) log P(i)/Q(i) = \sum_i P(i) (log P(i) - log Q(i))
+    return np.sum( np.exp(log_p) * (log_p - log_q) )
 
 # Load the npy files
 def load_npy(file_path):
