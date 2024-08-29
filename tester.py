@@ -40,19 +40,29 @@ def generate_top_probabilities(model_name, revision, input_text_file):
         inputs = {k: v.cuda() for k, v in inputs.items()}
 
     # Get the logits from the model
+    window_size = 2048
+    overlap = 1024
+    stride = window_size - overlap
+
+    all_probabilities = []
+
     with torch.no_grad():
-        logits = model(**inputs).logits
+        for start_idx in range(0, inputs.input_ids.size(1) - window_size + 1, stride):
+            end_idx = start_idx + window_size
+            window_inputs = {key: value[:, start_idx:end_idx] for key, value in inputs.items()}
 
-        # Calculate the probabilities
+            logits = model(**window_inputs).logits
+            probabilities = F.log_softmax(logits, dim=-1)
+            all_probabilities.append(probabilities.reshape(-1, probabilities.shape[-1]).cpu().numpy())
 
-        probabilities = F.log_softmax(logits, dim=-1)
-        all_probabilities_matrix = probabilities.reshape(-1, probabilities.shape[-1]).cpu().numpy()
+    # Concatenate all probability matrices
+    all_probabilities_matrix = np.concatenate(all_probabilities, axis=0)
 
-        # Define the output file path
-        output_file_path = os.path.join(output_dir, "probabilities.npy")
+    # Define the output file path
+    output_file_path = os.path.join(output_dir, "probabilities.npy")
 
-        # Save the NumPy array to a file
-        np.save(output_file_path, all_probabilities_matrix)
+    # Save the NumPy array to a file
+    np.save(output_file_path, all_probabilities_matrix)
 
 def delete_cache_directory(model_name, revision):
     cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
