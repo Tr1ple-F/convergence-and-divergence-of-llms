@@ -1,3 +1,6 @@
 .env/
 .idea/
 EleutherAI*/
+*.tar.gz
+results/
+.ipynb_checkpoints/
