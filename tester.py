@@ -47,15 +47,21 @@ def generate_top_probabilities(model_name, revision, input_text_file):
     all_probabilities = []
 
     with torch.no_grad():
-        for start_idx in range(0, inputs.input_ids.size(1) - window_size + 1, stride):
+        for start_idx in range(0, inputs.input_ids.size(1) - overlap, stride):
             end_idx = start_idx + window_size
             window_inputs = {key: value[:, start_idx:end_idx] for key, value in inputs.items()}
 
             logits = model(**window_inputs).logits
-            probabilities = F.log_softmax(logits, dim=-1)
-            all_probabilities.append(probabilities.reshape(-1, probabilities.shape[-1]).cpu().numpy())
+            probabilities = F.log_softmax(logits, dim=-1).cpu().numpy().reshape(-1, logits.shape[-1])
 
-    # Concatenate all probability matrices
+            if start_idx == 0:
+                # Append the whole window for the first case
+                all_probabilities.append(probabilities)
+            else:
+                # Append only the new part past the overlap
+                all_probabilities.append(probabilities[overlap:])
+
+    # Flatten the list of arrays into a single array
     all_probabilities_matrix = np.concatenate(all_probabilities, axis=0)
 
     # Define the output file path
