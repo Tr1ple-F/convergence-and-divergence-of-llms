@@ -8,10 +8,6 @@ def calculate_kl_divergence(p, q):
     log_q = np.array(q, dtype=np.float64)
     return np.sum(np.exp(log_p) * (log_p - log_q))
 
-# Load the npy files
-def load_npy(file_path):
-    return np.load(file_path)
-
 # Load run_config.json
 with open('kl_config.json', 'r') as f:
     config = json.load(f)
@@ -21,8 +17,8 @@ revisions = config['revisions']
 
 # Function to calculate KL divergence for a pair of files
 def process_file_pair(file1_path, file2_path):
-    probs1 = load_npy(file1_path)
-    probs2 = load_npy(file2_path)
+    probs1 = np.load(file1_path)
+    probs2 = np.load(file2_path)
 
     # Ensure both arrays have the same shape
     assert probs1.shape == probs2.shape, (
