@@ -2,10 +2,8 @@ import json
 import os
 import numpy as np
 
-def calculate_kl_divergence(p, q):
-    log_p = np.array(p)
-    log_q = np.array(q)
-    return np.sum(np.exp(log_p) * (log_p - log_q))
+def calculate_kl_divergence(log_p, log_q):
+    return np.sum(np.exp(log_p) * (log_p - log_q), axis=-1)
 
 def process_file_pair(file1_path, file2_path):
     probs1 = np.load(file1_path)
