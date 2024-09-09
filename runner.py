@@ -18,6 +18,10 @@ def get_probabilities(model_name, revision, input_text):
         model_name,
         revision=revision,
         cache_dir=f"./{model_name.replace('/', '-')}/{revision}",
+        bos_token = '<|endoftext|>',
+        eos_token = '<|endoftext|>',
+        add_bos_token = True,
+        add_eos_token = True
     )
 
     model.eval()
@@ -49,13 +53,14 @@ def get_probabilities(model_name, revision, input_text):
             probabilities = F.log_softmax(logits, dim=-1).cpu().numpy().reshape(-1, logits.shape[-1])
             if start_idx == 0:
                 # Append the whole window for the first case
-                all_probabilities.append(probabilities[1:])
+                all_probabilities.append(probabilities)
             else:
                 # Append only the new part past the overlap
                 all_probabilities.append(probabilities[overlap:])
 
     # Flatten the list of arrays into a single array
     all_probabilities_matrix = np.concatenate(all_probabilities, axis=0)
+    all_probabilities_matrix = all_probabilities_matrix[:-1]
 
     output_file_path = os.path.join(output_dir, "probabilities.npy")
     np.save(output_file_path, all_probabilities_matrix)

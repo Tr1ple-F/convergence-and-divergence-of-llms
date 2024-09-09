@@ -10,6 +10,10 @@ tokenizer = AutoTokenizer.from_pretrained(
     model_name,
     revision=revision,
     cache_dir=f"./{model_name.replace('/', '-')}/{revision}",
+    bos_token='<|endoftext|>',
+    eos_token='<|endoftext|>',
+    add_bos_token=True,
+    add_eos_token=True
 )
 
 with open("input_text.txt", 'r', encoding="utf8") as file:
