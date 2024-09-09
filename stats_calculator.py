@@ -9,7 +9,7 @@ def calculate_stats(model_name, revision, correct_indices, top_n=10):
     probabilities = np.load(f'probabilities/{model_name.replace("/", "-")}/{revision}/probabilities.npy')
 
     # Calculate surprisal
-    surprisal = calculate_surprisal(probabilities, correct_indices)
+    surprisal = calculate_surprisal(probabilities, correct_indices[1:])
 
     # Get the top N tokens with the highest probabilities for each token
     top_tokens = np.argsort(probabilities, axis=-1)[:, -top_n:]

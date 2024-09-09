@@ -49,7 +49,7 @@ def get_probabilities(model_name, revision, input_text):
             probabilities = F.log_softmax(logits, dim=-1).cpu().numpy().reshape(-1, logits.shape[-1])
             if start_idx == 0:
                 # Append the whole window for the first case
-                all_probabilities.append(probabilities)
+                all_probabilities.append(probabilities[1:])
             else:
                 # Append only the new part past the overlap
                 all_probabilities.append(probabilities[overlap:])
