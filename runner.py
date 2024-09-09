@@ -1,13 +1,13 @@
+from shutil import rmtree
+
 import numpy as np
 from transformers import GPTNeoXForCausalLM, AutoTokenizer
 import torch
 import torch.nn.functional as F
 import os
-from shutil import rmtree
 import json
 
-def generate_top_probabilities(model_name, revision, input_text_file):
-    # Load the model and tokenizer
+def get_probabilities(model_name, revision, input_text):
     model = GPTNeoXForCausalLM.from_pretrained(
         model_name,
         revision=revision,
@@ -25,21 +25,15 @@ def generate_top_probabilities(model_name, revision, input_text_file):
     if torch.cuda.is_available():
         model = model.cuda()
 
-    # Read the input text file
-    with open(input_text_file, 'r', encoding="utf8") as file:
-        input_text = file.read()
-
-    # Ensure the output directory exists
     output_dir = os.path.join("probabilities/" + model_name.replace('/', '-'), revision)
     os.makedirs(output_dir, exist_ok=True)
 
-    # Tokenize the current text
     inputs = tokenizer(input_text, return_tensors="pt")
 
     if torch.cuda.is_available():
         inputs = {k: v.cuda() for k, v in inputs.items()}
 
-    # Get the logits from the model
+    # Context window settings
     window_size = 2048
     overlap = 1024
     stride = window_size - overlap
@@ -53,7 +47,6 @@ def generate_top_probabilities(model_name, revision, input_text_file):
 
             logits = model(**window_inputs).logits
             probabilities = F.log_softmax(logits, dim=-1).cpu().numpy().reshape(-1, logits.shape[-1])
-
             if start_idx == 0:
                 # Append the whole window for the first case
                 all_probabilities.append(probabilities)
@@ -64,34 +57,31 @@ def generate_top_probabilities(model_name, revision, input_text_file):
     # Flatten the list of arrays into a single array
     all_probabilities_matrix = np.concatenate(all_probabilities, axis=0)
 
-    # Define the output file path
     output_file_path = os.path.join(output_dir, "probabilities.npy")
-
-    # Save the NumPy array to a file
     np.save(output_file_path, all_probabilities_matrix)
 
 def delete_cache_directory(model_name, revision):
     cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
     if os.path.exists(cache_dir):
-        rmtree(cache_dir)
+        rmtree(cache_dir) # Comment this line if you want to keep the cache
         print(f"Deleted cache directory: {cache_dir}")
 
 def main():
-    # Read the configuration from run_config.json
     with open('run_config.json', 'r') as config_file:
         config = json.load(config_file)
 
-    # Extract model names, revisions, and input text file from the configuration
     model_names = config['model_names']
     revisions = config['revisions']
     input_text_file = config['input_text_file']
 
-    # Iterate over all combinations of model names and revisions
-    for model_name in model_names:
-        for revision in revisions:
-            print(f"Processing model: {model_name}, revision: {revision}")
-            generate_top_probabilities(model_name, revision, input_text_file)
-            delete_cache_directory(model_name, revision)
+    with open(input_text_file, 'r', encoding="utf8") as file:
+        input_text = file.read()
+
+        for model_name in model_names:
+            for revision in revisions:
+                print(f"Processing model: {model_name}, revision: {revision}")
+                get_probabilities(model_name, revision, input_text)
+                delete_cache_directory(model_name, revision)
 
 
 if __name__ == "__main__":

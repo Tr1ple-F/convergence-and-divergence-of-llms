@@ -2,19 +2,13 @@ import json
 
 import numpy as np
 
-
 def calculate_surprisal(probabilities, correct_indices):
     return -probabilities[np.arange(probabilities.shape[0]), correct_indices]
 
-
-def load_json(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        return json.load(file)
-
-
 def calculate_stats(model_name, revision, correct_indices, top_n=10):
-    # Calculate surprisal for each token
     probabilities = np.load(f'probabilities/{model_name.replace("/", "-")}/{revision}/probabilities.npy')
+
+    # Calculate surprisal
     surprisal = calculate_surprisal(probabilities, correct_indices)
 
     # Get the top N tokens with the highest probabilities for each token
@@ -29,18 +23,15 @@ def calculate_stats(model_name, revision, correct_indices, top_n=10):
     np.save(path2, top_tokens)
     np.save(path3, top_probabilities)
 
-
-# Load kl_config.json
 with open('kl_config.json', 'r') as f:
     config = json.load(f)
 
 model_names = config['model_names']
 revisions = config['revisions']
 
-# Files
 correct_indices_file = 'input_text_encoded.npy'
 correct_indices = np.load(correct_indices_file)
 
 for model_name in model_names:
     for revision in revisions:
-        calculate_stats(model_name, revision, correct_indices_file)
+        calculate_stats(model_name, revision, correct_indices)
