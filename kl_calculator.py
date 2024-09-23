@@ -37,9 +37,6 @@ for model_name_1 in model_names:
 
         for model_name_2 in model_names:
             for revision_2 in revisions:
-                if model_name_1 == model_name_2 and revision_1 == revision_2:
-                    continue
-
                 base_dir_2 = f'probabilities/{model_name_2.replace("/", "-")}/{revision_2}'
                 files_2 = [f for f in os.listdir(base_dir_2) if f.endswith('.npy')]
 
@@ -57,7 +54,7 @@ for model_name_1 in model_names:
                             os.path.join(base_dir_1, files_1[0]),
                             os.path.join(base_dir_2, files_2[0]),
                         )
-                )
+                )  # Model 1 revision 1 is P and Model 2 revision 2 is Q
 
         # Save the results to a npy file
         np.save(output_file, np.array(all_divergences))

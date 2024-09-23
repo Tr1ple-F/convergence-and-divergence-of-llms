@@ -4,3 +4,4 @@ EleutherAI*/
 *.tar.gz
 results/
 .ipynb_checkpoints/
+./graphics/
