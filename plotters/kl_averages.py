@@ -40,7 +40,7 @@ def plot_all_kl_scores():
     plt.title('Average KL Score vs Revisions for Different Model Comparisons')
     plt.legend()
     plt.grid(True)
-    plt.savefig('./graphics/average_kl_vs_revisions.png')
+    plt.savefig('../graphics/average_kl_vs_revisions.png')
 
 
 plot_all_kl_scores()
