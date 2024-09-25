@@ -26,7 +26,7 @@ def plot_kl(tokenized_text, base_model_name, base_revision, target_name, target_
     plt.xlabel("Index")
     plt.ylabel("KL Score")
     plt.title(
-        f"{clean_base} # {base_revision.replace("step", "")} vs. {clean_target} # {target_revision.replace("step", "")}")
+        f"{clean_base} # {base_revision.replace('step', '')} vs. {clean_target} # {target_revision.replace('step', '')}")
 
     plt.yticks(np.arange(0, 36, 2))
     plt.ylim(0, 34)
@@ -71,9 +71,9 @@ def plot_surprisal(tokenized_text, base_model_name, base_revision, data, window_
 
     plt.xlabel("Index")
     plt.ylabel("Suprisal Score")
-    plt.title(f"{clean_base} # {base_revision.replace("step", "")} Suprisal")
+    plt.title(f"{clean_base} # {base_revision.replace('step', '')} Suprisal")
     plt.tight_layout()
-    plt.savefig(f"../graphics/individual_surprisal/{clean_base}_{base_revision.replace("step", "")}_Suprisal.png")
+    plt.savefig(f"../graphics/individual_surprisal/{clean_base}_{base_revision.replace('step', '')}_Suprisal.png")
     f.clear()
     plt.clf()
     plt.close(f)
