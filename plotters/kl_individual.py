@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from plotters.utils import load_npy_file, kl_config, tokenized_text, get_comparison_data
+from utils import load_npy_file, kl_config, tokenized_text, get_comparison_data
 
 def moving_average(data, window_size):
     return np.convolve(data, np.ones(window_size) / window_size, mode='valid')
