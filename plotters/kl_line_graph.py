@@ -11,7 +11,7 @@ def plot_average_kl_values(kl_data, model_name, revision):
     plt.xlabel('Comparison Index')
     plt.ylabel('Average KL Value')
     plt.grid(True)
-    plt.savefig(f'../graphics/{model_name.replace('EleutherAI/pythia-', '').replace('-deduped', '')}-{revision}-line.png')
+    plt.savefig(f'../graphics/{model_name.replace("EleutherAI/pythia-", "").replace("-deduped", "")}-{revision}-line.png')
     plt.close('all')
 
 # Load and plot data
