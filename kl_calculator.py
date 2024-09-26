@@ -30,7 +30,7 @@ for model_name_1 in model_names:
 
         all_divergences = []
 
-        output_file = f'{model_name_1.replace("/", "-")}_{revision_1}_kl.npy'
+        output_file = f'./results/{model_name_1.replace("/", "-")}_{revision_1}_kl.npy'
         if os.path.exists(output_file):
             print(f"Skipping calculation for {output_file} as it already exists.")
             continue

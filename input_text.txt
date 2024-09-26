@@ -1,140 +1,633 @@
-Gonna be at the platform at 11:23. It's platform 33.
+/*
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
+*
+* This software is provided 'as-is', without any express or implied
+* warranty.  In no event will the authors be held liable for any damages
+* arising from the use of this software.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
+* 1. The origin of this software must not be misrepresented; you must not
+* claim that you wrote the original software. If you use this software
+* in a product, an acknowledgment in the product documentation would be
+* appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must not be
+* misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source distribution.
+*/
 
-Did you book seats?
+#ifndef B2_DISTANCE_JOINT_H
+#define B2_DISTANCE_JOINT_H
 
-Yes.
+#include <Box2D/Dynamics/Joints/b2Joint.h>
 
-Am there
+/// Distance joint definition. This requires defining an
+/// anchor point on both bodies and the non-zero length of the
+/// distance joint. The definition uses local anchor points
+/// so that the initial configuration can violate the constraint
+/// slightly. This helps when saving and loading a game.
+/// @warning Do not use a zero or short length.
+struct b2DistanceJointDef : public b2JointDef
+{
+	b2DistanceJointDef()
+	{
+		type = e_distanceJoint;
+		localAnchorA.Set(0.0f, 0.0f);
+		localAnchorB.Set(0.0f, 0.0f);
+		length = 1.0f;
+		frequencyHz = 0.0f;
+		dampingRatio = 0.0f;
+	}
 
-I don't see you
+	/// Initialize the bodies, anchors, and length using the world
+	/// anchors.
+	void Initialize(b2Body* bodyA, b2Body* bodyB,
+					const b2Vec2& anchorA, const b2Vec2& anchorB);
 
-Train arrived
+	/// The local anchor point relative to body1's origin.
+	b2Vec2 localAnchorA;
 
-<|endoftext|>
+	/// The local anchor point relative to body2's origin.
+	b2Vec2 localAnchorB;
 
-We've all heard it, we all know it, we’ve all seen it: Computer science is not regarded as a “beacon” of diversity. In this interview, Professor Kenny Paterson, Head of the Department of Computer Science details his experiences with diversity, the challenges we face, and how D-INFK might be getting a bit better one step at a time.
+	/// The natural length between the anchor points.
+	float32 length;
 
-The Department of Computer Science is notorious for being one of the departments with the least students who are women. On the surface, this does not change. Professor Paterson, as Head of the Department, could you share your thoughts on what you've accomplished in the past few years?
-Indeed, the relative number of women studying computer science at ETH has only grown slightly over the past years. But during the same period, the number of students in computer science has grown, in line with the total number of people starting their studies. So, it hasn't increased much as a percentage – it’s at about 16% now. However, in absolute terms, it has increased substantially. We know that many people drop out of the programme at the end of the first year. Roughly speaking, though, we don't lose women at a higher rate than men. Hence, the number of women in the programme stays about the same percentage. So it's not that once the women are here, they do worse in their exams. But the fundamental issue is that we find it very difficult to move the percentage in the Bachelor's, as we have little control over the admissions there. Ultimately, the goal is to get the starting percentage to 20%, 25% – eventually even 50%. We are closely involved with Swiss schools to try to move the numbers, thanks to efforts like the Schnupperstudium and the introduction of computer science to the school curriculum. But it is an effort that will take years, and we can't do it alone.
+	/// The mass-spring-damper frequency in Hertz.
+	float32 frequencyHz;
 
-You mentioned that the department is restricted in controlling the Bachelor's admissions. How does that change at the Master’s and doctorate level?
-There, we can shape things a bit more. We don't set out to increase the number of women. Still, we try to make sure that the number of women to whom we make offers is roughly in proportion to the number who apply. So, we're trying to ensure that women are not underrepresented in who we select. In fact, I have the latest data for 2024. The ratio of women we admit for a master's at ETH was a bit above 20%. Clearly, our admission process is not biased against or towards women. However, we could do things to encourage more women to apply in the first place. There's quite a bit of evidence from the job market showing that women can be put off from applying for a job by particular types of language and processes. For example, if they don't see themselves meeting every single criterion listed in a job advert, they are less likely to apply than equally well-qualified men. Maybe the same is true when applying to be a student at ETH.
+	/// The damping ratio. 0 = no damping, 1 = critical damping.
+	float32 dampingRatio;
+};
 
-For doctoral and postdoc students, the percentage of women is 20% and 23%, respectively. Can you share some success stories on that level?
-Yes, I can share a couple of things. Notably, we are very proud that with every successive level in academia, we have increased the rate of women a bit. I have also gotten to appreciate that in my research group, where we now have more women than men.
-We recently went on a group retreat to Ticino. We were sitting at dinner one evening and I looked around the table. It was the first time I realised: seven women and six men were at the event, including me as the professor. And it was like, oh wow, how did that happen? So then I asked a few women in my group: Why do you think we have more women than men? One of the things they said is that when you're selecting a research group to do your doctorate or to be a postdoc, you want to know that it will be a good place to work. You want to know that you're not going to be dealing with harassment or sexism all the time and that it will be an overall good experience. So, if there are women already there, new women who are considering joining will ask existing women what it is like to work here. Hopefully, they get the message that it's ok and a good place to be. Then, it can become self-reinforcing. That's working on a small scale in some of the research groups we have in the department. So it is possible to get these pockets where there are more women than men. That's like a mini version of "You can't be it unless you can see it". I can be a doctoral student in that group because there are others. Other women are already there, demonstrating they can succeed in that environment.
-We also see this in the subject my group works on. We do research in cryptography, and if I go to a cryptography conference and look around the room, a good proportion of the audience, much higher than the 15% we have here at the Bachelor's level, are women. It's interesting. One of my guesses for that is that cryptography also has real-world practical and social impacts. We use cryptography to build messaging systems to keep in touch with our families and loved ones. There's an alignment between cryptography as a research topic and social values. That potentially makes it more attractive to women. I don't say it’s a fact because I don't have scientific evidence. But anecdotally, it seems to be the case. So that's one thing.
-There's no department-level initiative to increase the number of female doctoral students and postdocs. We have issues tweaking admissions, which is similar to what I’ve mentioned before. Anything that's happening is happening organically – that also demonstrates a considerable improvement in the department climate.
+/// A distance joint constrains two points on two bodies
+/// to remain at a fixed distance from each other. You can view
+/// this as a massless, rigid rod.
+class b2DistanceJoint : public b2Joint
+{
+public:
 
-Finally, in the academic hierarchy, there are the professors. I believe you have made remarkable progress in increasing gender equality, right?
-Yes, as you have alluded to, we have more women assistant professors than men at the moment – 9 versus 6. We're very proud of that as a department. It's also an ETH-wide policy that the target for the number of new professors is 50% women. One criticism I would make is that that's still a very narrow understanding of diversity: male versus female. There are many different forms of diversity. I think ETH as an institution is at the beginning of this journey toward understanding what diversity means, how to value it, and what it brings to the institution. Still, it's a starting place, and I'm happy about that.
-There's also this concept that if there are women in senior positions, younger people can look up to that and say, ah, I could get to that too. "You cannot be what you cannot see" is one of the phrases I’ve mentioned. The idea is that these women we appoint as assistant professors who will eventually become full professors will act as role models for the generations of women who follow them. I still want to understand better whether having more women in senior positions helps with that. And it takes years, if not decades, for the effect to become apparent because the department still has more professors who are men than women. Because we're hiring young women as assistant professors and many men have to retire before we reach parity, it will take some time to notice this effect. I'm part of that problem. Also, it has been very hard to find senior women to hire. Of course, those women are in massive demand because everybody is in the same business of trying to increase the number of female professors.
-ETH can offer desirable working conditions for professors of all genders in terms of funding, and the students here are outstanding. ETH also has a special place in Swiss society. We're a very highly regarded place both nationally and internationally, which makes some things much easier to get done. For example, getting new research initiatives off the ground.
+	b2Vec2 GetAnchorA() const;
+	b2Vec2 GetAnchorB() const;
 
-Did you notice any limits or issues concerning diversity initiatives?
-With our external presentation and communication, we try to welcome all genders. We try to ensure that women are represented in pictures and events and that students who come see ETH see that there are women here already talking positively about the department. However, this creates a very negative side-effect and worsens the higher up you go. As a woman, you get asked to do everything. You get asked to do more service, be on more committees, and just do more in general. Unfortunately, that's a distraction from the core business of doing research and teaching. It's an effect that is replicated at all levels in academia. In our department, once more if our women who are currently assistant professors have become full professors, the load will be spread more evenly, and it should get better. But at the moment, we only have two full professors who are women – Angelika Steger and Olga Sorkine Hornung. They're amazing people, but they get asked to do everything. As the head of the department, I'm very careful when I ask them for something because I know that my request is probably one of ten that they have from all parts of ETH and outside ETH.
+	/// Get the reaction force given the inverse time step.
+	/// Unit is N.
+	b2Vec2 GetReactionForce(float32 inv_dt) const;
 
-Do you have dedicated processes to address diversity?
-There isn't too much process behind the scenes. We are very aware of the issue and track the numbers. When hiring professors, we do take care to think about diversity and encourage a wide range of candidates to apply. It's interesting to talk about it, but it's not just a numbers problem. It's also a problem of culture and how people feel about their ETH experience. This year, the department committed to working on a diversity strategy in collaboration with the ETH Diversity Office. The Department of Computer Science already stands out because we are the only department with an integrated group for gender equality and diversity: CSNOW. Therefore, uniquely, every year, the department decides to support, promote, and finance activities to engage women students, and we will continue to do so in the future.
+	/// Get the reaction torque given the inverse time step.
+	/// Unit is N*m. This is always zero for a distance joint.
+	float32 GetReactionTorque(float32 inv_dt) const;
 
-Would you like to add some final words?
-Overall, we are moving in the right direction, even if it might not be at the speed we'd hoped for. However, we are proud of our current initiatives and are always open to hearing thoughts from students and staff. My hope for the future is that ETH starts thinking about diversity in a broader way, not just in terms of gender but also ethnicity, social background, and so on. In the long term, we hope to change the reputation of computer science as a "man's" field one step at a time.
+	/// Set/get the natural length.
+	/// Manipulating the length can lead to non-physical behavior when the frequency is zero.
+	void SetLength(float32 length);
+	float32 GetLength() const;
 
-<|endoftext|>
+	// Set/get frequency in Hz.
+	void SetFrequency(float32 hz);
+	float32 GetFrequency() const;
 
-Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me.
+	// Set/get damping ratio.
+	void SetDampingRatio(float32 ratio);
+	float32 GetDampingRatio() const;
 
-There now is your insular city of the Manhattoes, belted round by wharves as Indian isles by coral reefs—commerce surrounds it with her surf. Right and left, the streets take you waterward. Its extreme downtown is the battery, where that noble mole is washed by waves, and cooled by breezes, which a few hours previous were out of sight of land. Look at the crowds of water-gazers there.
+protected:
 
-Circumambulate the city of a dreamy Sabbath afternoon. Go from Corlears Hook to Coenties Slip, and from thence, by Whitehall, northward. What do you see?—Posted like silent sentinels all around the town, stand thousands upon thousands of mortal men fixed in ocean reveries. Some leaning against the spiles; some seated upon the pier-heads; some looking over the bulwarks of ships from China; some high aloft in the rigging, as if striving to get a still better seaward peep. But these are all landsmen; of week days pent up in lath and plaster—tied to counters, nailed to benches, clinched to desks. How then is this? Are the green fields gone? What do they here?
+	friend class b2Joint;
+	b2DistanceJoint(const b2DistanceJointDef* data);
 
-But look! here come more crowds, pacing straight for the water, and seemingly bound for a dive. Strange! Nothing will content them but the extremest limit of the land; loitering under the shady lee of yonder warehouses will not suffice. No. They must get just as nigh the water as they possibly can without falling in. And there they stand—miles of them—leagues. Inlanders all, they come from lanes and alleys, streets and avenues—north, east, south, and west. Yet here they all unite. Tell me, does the magnetic virtue of the needles of the compasses of all those ships attract them thither?
+	void InitVelocityConstraints(const b2SolverData& data);
+	void SolveVelocityConstraints(const b2SolverData& data);
+	bool SolvePositionConstraints(const b2SolverData& data);
 
-Once more. Say you are in the country; in some high land of lakes. Take almost any path you please, and ten to one it carries you down in a dale, and leaves you there by a pool in the stream. There is magic in it. Let the most absent-minded of men be plunged in his deepest reveries—stand that man on his legs, set his feet a-going, and he will infallibly lead you to water, if water there be in all that region. Should you ever be athirst in the great American desert, try this experiment, if your caravan happen to be supplied with a metaphysical professor. Yes, as every one knows, meditation and water are wedded for ever.
+	float32 m_frequencyHz;
+	float32 m_dampingRatio;
+	float32 m_bias;
 
-But here is an artist. He desires to paint you the dreamiest, shadiest, quietest, most enchanting bit of romantic landscape in all the valley of the Saco. What is the chief element he employs? There stand his trees, each with a hollow trunk, as if a hermit and a crucifix were within; and here sleeps his meadow, and there sleep his cattle; and up from yonder cottage goes a sleepy smoke. Deep into distant woodlands winds a mazy way, reaching to overlapping spurs of mountains bathed in their hill-side blue. But though the picture lies thus tranced, and though this pine-tree shakes down its sighs like leaves upon this shepherd’s head, yet all were vain, unless the shepherd’s eye were fixed upon the magic stream before him. Go visit the Prairies in June, when for scores on scores of miles you wade knee-deep among Tiger-lilies—what is the one charm wanting?—Water—there is not a drop of water there! Were Niagara but a cataract of sand, would you travel your thousand miles to see it? Why did the poor poet of Tennessee, upon suddenly receiving two handfuls of silver, deliberate whether to buy him a coat, which he sadly needed, or invest his money in a pedestrian trip to Rockaway Beach? Why is almost every robust healthy boy with a robust healthy soul in him, at some time or other crazy to go to sea? Why upon your first voyage as a passenger, did you yourself feel such a mystical vibration, when first told that you and your ship were now out of sight of land? Why did the old Persians hold the sea holy? Why did the Greeks give it a separate deity, and own brother of Jove? Surely all this is not without meaning. And still deeper the meaning of that story of Narcissus, who because he could not grasp the tormenting, mild image he saw in the fountain, plunged into it and was drowned. But that same image, we ourselves see in all rivers and oceans. It is the image of the ungraspable phantom of life; and this is the key to it all.
+	// Solver shared
+	b2Vec2 m_localAnchorA;
+	b2Vec2 m_localAnchorB;
+	float32 m_gamma;
+	float32 m_impulse;
+	float32 m_length;
 
-<|endoftext|>
+	// Solver temp
+	int32 m_indexA;
+	int32 m_indexB;
+	b2Vec2 m_u;
+	b2Vec2 m_rA;
+	b2Vec2 m_rB;
+	b2Vec2 m_localCenterA;
+	b2Vec2 m_localCenterB;
+	float32 m_invMassA;
+	float32 m_invMassB;
+	float32 m_invIA;
+	float32 m_invIB;
+	float32 m_mass;
+};
 
-// Quick sort algorithm in Java
-public void quickSort(int arr[], int begin, int end) {
-    if (begin < end) {
-        int partitionIndex = partition(arr, begin, end);
-
-        quickSort(arr, begin, partitionIndex-1);
-        quickSort(arr, partitionIndex+1, end);
-    }
+inline void b2DistanceJoint::SetLength(float32 length)
+{
+	m_length = length;
 }
 
-private int partition(int arr[], int begin, int end) {
-    int pivot = arr[end];
-    int i = (begin-1);
-
-    for (int j = begin; j < end; j++) {
-        if (arr[j] <= pivot) {
-            i++;
-
-            int swapTemp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = swapTemp;
-        }
-    }
-
-    int swapTemp = arr[i+1];
-    arr[i+1] = arr[end];
-    arr[end] = swapTemp;
-
-    return i+1;
+inline float32 b2DistanceJoint::GetLength() const
+{
+	return m_length;
 }
 
-<|endoftext|>
-
-/**
- * Controller for handling ESMA files
- */
-@RestController
-@Slf4j
-@RequestMapping(RouteNames.UNDERLYING_ROUTE)
-public class ESMAController {
-
-    private final ESMAExportService exportService;
-
-    /**
-     * Spring constructor
-     *
-     * @param exportService ESMA exportService
-     */
-    public ESMAController(ESMAExportService exportService) {
-        this.exportService = exportService;
-    }
-
-    private static void setExchange(ServerWebExchange exchange) {
-        exchange.getResponse().setStatusCode(HttpStatusCode.valueOf(200));
-        String filename = "esma-underlying-report-" + LocalDate.now() + ".csv";
-        HttpHeaders headers = exchange.getResponse().getHeaders();
-        headers.setContentDisposition(ContentDisposition.attachment().filename(filename).build());
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-    }
-
-    /**
-     * Export all assets in a draft as ESMA CSV
-     *
-     * @param draftId  draft id
-     * @param template template id under which Annex to generate the CSV file for
-     * @param exchange server web exchange
-     * @param auth     authentication
-     * @return csv file
-     */
-    @GetMapping("/export/esma/draft")
-    public Mono<Void> exportESMACSV(
-            @RequestParam ObjectId draftId,
-            @RequestParam ObjectId template,
-            ServerWebExchange exchange,
-            Authentication auth
-    ) {
-        setExchange(exchange);
-        return exchange.getResponse().writeWith(exportService.loadDraftESMA(draftId, template, auth)
-                .map(DefaultDataBufferFactory.sharedInstance::wrap));
-    }
-
+inline void b2DistanceJoint::SetFrequency(float32 hz)
+{
+	m_frequencyHz = hz;
 }
+
+inline float32 b2DistanceJoint::GetFrequency() const
+{
+	return m_frequencyHz;
+}
+
+inline void b2DistanceJoint::SetDampingRatio(float32 ratio)
+{
+	m_dampingRatio = ratio;
+}
+
+inline float32 b2DistanceJoint::GetDampingRatio() const
+{
+	return m_dampingRatio;
+}
+
+#endif
+<|endoftext|><?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright 2006-2015 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://www.citrusframework.org/schema/ssh/message"
+           targetNamespace="http://www.citrusframework.org/schema/ssh/message"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <xs:element name="ssh-request">
+    <xs:annotation>
+      <xs:documentation>SSH message with command and stdin.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="command" type="xs:string"/>
+        <xs:element name="stdin" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ssh-response">
+    <xs:annotation>
+      <xs:documentation>SSH response with stdout, stderr and exit code.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="stdout" type="xs:string" minOccurs="0"/>
+        <xs:element name="stderr" type="xs:string" minOccurs="0"/>
+        <xs:element name="exit" type="xs:int"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema><|endoftext|>Linus Torvalds gave the world Linux 4.8 earlier this week, but now appears to wish he didn't after spotting some code he says can “kill the kernel.”
+
+When Torvalds announced Linux 4.8 on Sunday he said the final version added “a few stragging fixes since rc8.”
+
+But by Tuesday he was back on the Linux Kernel Mailing list apologising for a bug fix gone bad.
+
+“I'm really sorry I applied that last series from Andrew just before doing the 4.8 release, because they cause problems, and now it is in 4.8 (and that buggy crap is marked for stable too).”
+
+The “crap” in question is an attempt to fix a bug that's been present in Linux since version 3.15. Torvalds rates the fix for that bug “clearly worse than the bug it tried to fix, since that original bug has never killed my machine!”
+
+Torvalds isn't happy with kernel contributor Andrew Morton, who he says is debugging with a known bad use of BUG_ON() .
+
+“I've ranted against people using BUG_ON() for debugging in the past. Why the f*ck does this still happen?” Torvalds writes, pointing to a 2002 post to the kernel mailing list outlining how to do BUG_ON() right. He later adds “so excuse me for being upset that people still do this shit almost 15 years later.”
+
+Morton has taken Torvalds' criticisms on the chin. But Torvalds also thinks he could and should have done better, as he writes:
+
+I should have reacted to the damn added BUG_ON() lines. I suspect I will have to finally just remove the idiotic BUG_ON() concept once and for all, because there is NO F*CKING EXCUSE to knowingly kill the kernel.
+
+This problem will soon be sorted, as is the way of Linux.
+
+If you want to enjoy version 4.8 of the kernel now, you'll be able to play with features including: HDMI CEC support, making Linux able to control chained HDMI devices with a single remote control; Hardened Usercopy Protection to secure content as it moves into userspace; Support for the Raspberry Pi 3; Support for the touch screen on Microsoft Surface devices.
+
+The kernel can be downloaded from this link. ®<|endoftext|>Field
+The present disclosure generally relates to optical fibers and, more specifically, to multicore optical fibers.
+Technical Background
+Optical fiber is the leading alternative to traditional materials used for data signal communication such as copper wiring. Optical fiber is now widely utilized in a variety of electronic devices and systems to facilitate the high-speed communication of voice, video, and data signals at high bandwidths. However, as the speed and bandwidth of the electronic systems increases, there is a corresponding need to increase the speed of optical interconnects which interconnect components of the system. One solution to increase the speed of optical interconnects is to increase the fiber density of the optical interconnects. However, increasing the number of individual fibers in an optical interconnect increases the overall size and cost of the optical interconnect. To avoid the increased fiber count, multicore optical fibers (“MCFs”) have been developed. MCFs contain optical core elements contained in a single fiber. The core elements are designed for, for example, the transmission and receiving of data, and can be arranged as transmit and receive (Tx/Rx) pairs. Such MCFs may be used in data networks to enable high speed Tx/Rx transmission of data between system components such as transceivers, processors, servers, and storage devices. For connection and termination in the networks, connectors are attached to the MCFs. For correct Tx/Rx optical transport and connections to be manufactured, it is important for the operators to know the orientation of the optical fibers when the connectors are terminated to the MCFs.<|endoftext|>
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+# Directory and file locations.
+dir               = ./PKI/
+certs             = $dir/certs
+crl_dir           = $dir/crl
+new_certs_dir     = $dir/certs
+database          = $dir/index.txt
+serial            = $dir/serial
+RANDFILE          = $dir/private/.rand
+
+# The root key and root certificate.
+private_key       = $dir/private/ca.key.pem
+certificate       = $dir/certs/ca.cert.pem
+
+# For certificate revocation lists.
+crlnumber         = $dir/crlnumber
+crl               = $dir/crl/ca.crl.pem
+crl_extensions    = crl_ext
+default_crl_days  = 30
+
+# SHA-1 is deprecated, so use SHA-2 instead.
+default_md        = sha256
+
+name_opt          = ca_default
+cert_opt          = ca_default
+default_days      = 730
+preserve          = no
+policy            = policy_loose
+
+[ policy_loose ]
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ req ]
+# Options for the `req` tool (`man req`).
+default_bits        = 2048
+distinguished_name  = req_distinguished_name
+string_mask         = utf8only
+
+# SHA-1 is deprecated, so use SHA-2 instead.
+default_md          = sha256
+
+# Extension to add when the -x509 option is used.
+x509_extensions     = v3_ca
+
+[ req_distinguished_name ]
+# See <https://en.wikipedia.org/wiki/Certificate_signing_request>.
+countryName                     = Country Name (2 letter code)
+stateOrProvinceName             = State or Province Name
+localityName                    = Locality Name
+0.organizationName              = Organization Name
+organizationalUnitName          = Organizational Unit Name
+commonName                      = Common Name
+emailAddress                    = Email Address
+
+# Optionally, specify some defaults.
+countryName_default             = 
+stateOrProvinceName_default     = 
+localityName_default            =
+0.organizationName_default      = 
+organizationalUnitName_default  =
+emailAddress_default            =
+
+[ v3_ca ]
+# Extensions for a typical CA (`man x509v3_config`).
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true, pathlen:1
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+
+[ card_cert ]
+# Extensions for client certificates (`man x509v3_config`).
+basicConstraints = CA:FALSE
+nsCertType = client
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical, nonRepudiation
+
+[ crl_ext ]
+# Extension for CRLs (`man x509v3_config`).
+authorityKeyIdentifier=keyid:always
+
+<|endoftext|>fileFormatVersion: 2
+guid: 00a84ca1e52badc40a6f01939bbe8a99
+folderAsset: yes
+timeCreated: 1446204712
+licenseType: Free
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+<|endoftext|>/*
+Copyright 2017 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package v1
+
+import (
+	"k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
+)
+
+// +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// NetworkPolicy describes what network traffic is allowed for a set of Pods
+type NetworkPolicy struct {
+	metav1.TypeMeta `json:",inline"`
+	// Standard object's metadata.
+	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+	// +optional
+	metav1.ObjectMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+
+	// Specification of the desired behavior for this NetworkPolicy.
+	// +optional
+	Spec NetworkPolicySpec `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
+}
+
+// Policy Type string describes the NetworkPolicy type
+// This type is beta-level in 1.8
+type PolicyType string
+
+const (
+	// PolicyTypeIngress is a NetworkPolicy that affects ingress traffic on selected pods
+	PolicyTypeIngress PolicyType = "Ingress"
+	// PolicyTypeEgress is a NetworkPolicy that affects egress traffic on selected pods
+	PolicyTypeEgress PolicyType = "Egress"
+)
+
+// NetworkPolicySpec provides the specification of a NetworkPolicy
+type NetworkPolicySpec struct {
+	// Selects the pods to which this NetworkPolicy object applies. The array of
+	// ingress rules is applied to any pods selected by this field. Multiple network
+	// policies can select the same set of pods. In this case, the ingress rules for
+	// each are combined additively. This field is NOT optional and follows standard
+	// label selector semantics. An empty podSelector matches all pods in this
+	// namespace.
+	PodSelector metav1.LabelSelector `json:"podSelector" protobuf:"bytes,1,opt,name=podSelector"`
+
+	// List of ingress rules to be applied to the selected pods. Traffic is allowed to
+	// a pod if there are no NetworkPolicies selecting the pod
+	// (and cluster policy otherwise allows the traffic), OR if the traffic source is
+	// the pod's local node, OR if the traffic matches at least one ingress rule
+	// across all of the NetworkPolicy objects whose podSelector matches the pod. If
+	// this field is empty then this NetworkPolicy does not allow any traffic (and serves
+	// solely to ensure that the pods it selects are isolated by default)
+	// +optional
+	Ingress []NetworkPolicyIngressRule `json:"ingress,omitempty" protobuf:"bytes,2,rep,name=ingress"`
+
+	// List of egress rules to be applied to the selected pods. Outgoing traffic is
+	// allowed if there are no NetworkPolicies selecting the pod (and cluster policy
+	// otherwise allows the traffic), OR if the traffic matches at least one egress rule
+	// across all of the NetworkPolicy objects whose podSelector matches the pod. If
+	// this field is empty then this NetworkPolicy limits all outgoing traffic (and serves
+	// solely to ensure that the pods it selects are isolated by default).
+	// This field is beta-level in 1.8
+	// +optional
+	Egress []NetworkPolicyEgressRule `json:"egress,omitempty" protobuf:"bytes,3,rep,name=egress"`
+
+	// List of rule types that the NetworkPolicy relates to.
+	// Valid options are "Ingress", "Egress", or "Ingress,Egress".
+	// If this field is not specified, it will default based on the existence of Ingress or Egress rules;
+	// policies that contain an Egress section are assumed to affect Egress, and all policies
+	// (whether or not they contain an Ingress section) are assumed to affect Ingress.
+	// If you want to write an egress-only policy, you must explicitly specify policyTypes [ "Egress" ].
+	// Likewise, if you want to write a policy that specifies that no egress is allowed,
+	// you must specify a policyTypes value that include "Egress" (since such a policy would not include
+	// an Egress section and would otherwise default to just [ "Ingress" ]).
+	// This field is beta-level in 1.8
+	// +optional
+	PolicyTypes []PolicyType `json:"policyTypes,omitempty" protobuf:"bytes,4,rep,name=policyTypes,casttype=PolicyType"`
+}
+
+// NetworkPolicyIngressRule describes a particular set of traffic that is allowed to the pods
+// matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and from.
+type NetworkPolicyIngressRule struct {
+	// List of ports which should be made accessible on the pods selected for this
+	// rule. Each item in this list is combined using a logical OR. If this field is
+	// empty or missing, this rule matches all ports (traffic not restricted by port).
+	// If this field is present and contains at least one item, then this rule allows
+	// traffic only if the traffic matches at least one port in the list.
+	// +optional
+	Ports []NetworkPolicyPort `json:"ports,omitempty" protobuf:"bytes,1,rep,name=ports"`
+
+	// List of sources which should be able to access the pods selected for this rule.
+	// Items in this list are combined using a logical OR operation. If this field is
+	// empty or missing, this rule matches all sources (traffic not restricted by
+	// source). If this field is present and contains at least on item, this rule
+	// allows traffic only if the traffic matches at least one item in the from list.
+	// +optional
+	From []NetworkPolicyPeer `json:"from,omitempty" protobuf:"bytes,2,rep,name=from"`
+}
+
+// NetworkPolicyEgressRule describes a particular set of traffic that is allowed out of pods
+// matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and to.
+// This type is beta-level in 1.8
+type NetworkPolicyEgressRule struct {
+	// List of destination ports for outgoing traffic.
+	// Each item in this list is combined using a logical OR. If this field is
+	// empty or missing, this rule matches all ports (traffic not restricted by port).
+	// If this field is present and contains at least one item, then this rule allows
+	// traffic only if the traffic matches at least one port in the list.
+	// +optional
+	Ports []NetworkPolicyPort `json:"ports,omitempty" protobuf:"bytes,1,rep,name=ports"`
+
+	// List of destinations for outgoing traffic of pods selected for this rule.
+	// Items in this list are combined using a logical OR operation. If this field is
+	// empty or missing, this rule matches all destinations (traffic not restricted by
+	// destination). If this field is present and contains at least one item, this rule
+	// allows traffic only if the traffic matches at least one item in the to list.
+	// +optional
+	To []NetworkPolicyPeer `json:"to,omitempty" protobuf:"bytes,2,rep,name=to"`
+}
+
+// NetworkPolicyPort describes a port to allow traffic on
+type NetworkPolicyPort struct {
+	// The protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this
+	// field defaults to TCP.
+	// +optional
+	Protocol *v1.Protocol `json:"protocol,omitempty" protobuf:"bytes,1,opt,name=protocol,casttype=k8s.io/api/core/v1.Protocol"`
+
+	// The port on the given protocol. This can either be a numerical or named port on
+	// a pod. If this field is not provided, this matches all port names and numbers.
+	// +optional
+	Port *intstr.IntOrString `json:"port,omitempty" protobuf:"bytes,2,opt,name=port"`
+}
+
+// IPBlock describes a particular CIDR (Ex. "192.168.1.1/24") that is allowed to the pods
+// matched by a NetworkPolicySpec's podSelector. The except entry describes CIDRs that should
+// not be included within this rule.
+type IPBlock struct {
+	// CIDR is a string representing the IP Block
+	// Valid examples are "192.168.1.1/24"
+	CIDR string `json:"cidr" protobuf:"bytes,1,name=cidr"`
+	// Except is a slice of CIDRs that should not be included within an IP Block
+	// Valid examples are "192.168.1.1/24"
+	// Except values will be rejected if they are outside the CIDR range
+	// +optional
+	Except []string `json:"except,omitempty" protobuf:"bytes,2,rep,name=except"`
+}
+
+// NetworkPolicyPeer describes a peer to allow traffic from. Only certain combinations of
+// fields are allowed
+type NetworkPolicyPeer struct {
+	// This is a label selector which selects Pods. This field follows standard label
+	// selector semantics; if present but empty, it selects all pods.
+	//
+	// If NamespaceSelector is also set, then the NetworkPolicyPeer as a whole selects
+	// the Pods matching PodSelector in the Namespaces selected by NamespaceSelector.
+	// Otherwise it selects the Pods matching PodSelector in the policy's own Namespace.
+	// +optional
+	PodSelector *metav1.LabelSelector `json:"podSelector,omitempty" protobuf:"bytes,1,opt,name=podSelector"`
+
+	// Selects Namespaces using cluster-scoped labels. This field follows standard label
+	// selector semantics; if present but empty, it selects all namespaces.
+	//
+	// If PodSelector is also set, then the NetworkPolicyPeer as a whole selects
+	// the Pods matching PodSelector in the Namespaces selected by NamespaceSelector.
+	// Otherwise it selects all Pods in the Namespaces selected by NamespaceSelector.
+	// +optional
+	NamespaceSelector *metav1.LabelSelector `json:"namespaceSelector,omitempty" protobuf:"bytes,2,opt,name=namespaceSelector"`
+
+	// IPBlock defines policy on a particular IPBlock. If this field is set then
+	// neither of the other fields can be.
+	// +optional
+	IPBlock *IPBlock `json:"ipBlock,omitempty" protobuf:"bytes,3,rep,name=ipBlock"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// NetworkPolicyList is a list of NetworkPolicy objects.
+type NetworkPolicyList struct {
+	metav1.TypeMeta `json:",inline"`
+	// Standard list metadata.
+	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+	// +optional
+	metav1.ListMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+
+	// Items is a list of schema objects.
+	Items []NetworkPolicy `json:"items" protobuf:"bytes,2,rep,name=items"`
+}
+<|endoftext|>#ifndef BOOST_SERIALIZATION_ASSUME_ABSTRACT_HPP
+#define BOOST_SERIALIZATION_ASSUME_ABSTRACT_HPP
+
+// MS compatible compilers support #pragma once
+#if defined(_MSC_VER)
+# pragma once
+#endif
+
+/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
+// assume_abstract_class.hpp:
+
+// (C) Copyright 2008 Robert Ramey
+// Use, modification and distribution is subject to the Boost Software
+// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+//  See http://www.boost.org for updates, documentation, and revision history.
+
+// this is useful for compilers which don't support the boost::is_abstract
+
+#include <boost/type_traits/is_abstract.hpp>
+#include <boost/mpl/bool_fwd.hpp>
+
+#ifndef BOOST_NO_IS_ABSTRACT
+
+// if there is an intrinsic is_abstract defined, we don't have to do anything
+#define BOOST_SERIALIZATION_ASSUME_ABSTRACT(T)
+
+// but forward to the "official" is_abstract
+namespace boost {
+namespace serialization {
+    template<class T>
+    struct is_abstract : boost::is_abstract< T > {} ;
+} // namespace serialization
+} // namespace boost
+
+#else
+// we have to "make" one
+
+namespace boost {
+namespace serialization {
+    template<class T>
+    struct is_abstract : boost::false_type {};
+} // namespace serialization
+} // namespace boost
+
+// define a macro to make explicit designation of this more transparent
+#define BOOST_SERIALIZATION_ASSUME_ABSTRACT(T)        \
+namespace boost {                                     \
+namespace serialization {                             \
+template<>                                            \
+struct is_abstract< T > : boost::true_type {};        \
+template<>                                            \
+struct is_abstract< const T > : boost::true_type {};  \
+}}                                                    \
+/**/
+
+#endif // BOOST_NO_IS_ABSTRACT
+
+#endif //BOOST_SERIALIZATION_ASSUME_ABSTRACT_HPP
+<|endoftext|>DESCRIPTION The purpose of this CDA-1 proposal is to provide Dr. Naomi Bramhall with the support and mentorship necessary to make the transition from basic science research to clinical research of noise-induced hearing loss. Dr. Bramhall's previous research has focused on hereditary hearing loss and hair cell regeneration, but as a certified audiologist, she is eager to shift to clinical hearing research. This proposal will provide Dr. Bramhall with the tools and experience necessary to engage in clinical research and generate data which will be used in applying for future funding such as the CDA-2, will guide her path towards independence as a clinical researcher. Her primary mentor for this proposal is Dr. Dawn Konrad-Martin and Dr. M. Charles Liberman is a co-mentor. Loud noise exposure is routinely experienced during military service and hearing loss is the second most common service-related disability among Veterans. Individuals with hearing loss and poor speech discrimination ability often have little success with hearing aids because amplifying sound improves the audibility, but not the clarity, of the speech signal. Loud noise exposure may result not only in damage to outer hair cells, but also lead to auditory neuronal degeneration. Neural loss can result in decreased word recognition (Schuknecht 1994) and may explain why many Veterans have poorer speech discrimination than would be expected based on their ability to detect tones, particularly in noisy environments. Mice show rapid degeneration of auditory nerve peripheral terminals followed by a slow degeneration of spiral ganglion neurons over a period of several months following loud noise exposure, even when their pure tone auditory thresholds recover completely (Kujawa and Liberman 2009). The subpopulation of neurons most vulnerable to noise exposure consists of the low spontaneous rate fibers (Furman et al. 2013), which have a high sensitivity threshold and respond to higher intensity sounds. This neuronal loss is correlated with a decrease in the amplitude of the first wave of the auditory brainstem response (ABR). Age-related reduction in the amplitude of wave I has been demonstrated in humans (Konrad-Martin et al. 2012) and is consistent with temporal bone studies showing auditory neuronal loss with age (Makary et al. 2011), suggesting this metric of auditory neuronal survival is also applicable to humans. Previously, quantification of the degree to which auditory neuronal survival influences speech understanding has been difficult due to limitations in measuring auditory neuronal loss in humans, which could only be accomplished through post-mortem temporal bone studies. The main objectives of this proposal are to use electrophysiological methods to 1) determine if decreased ABR wave I amplitude is associated with noise exposure in humans and 2) examine the impact of noise exposure and decreased wave I amplitude on auditory perception. Our hypothesis is that noise exposure will be associated with decreased wave I amplitude, consistent with animal studies, and that this change will be correlated with decreased speech recognition at high sound levels, difficulty understanding speech in the presence of background noise, and decreased tolerance to loud sounds. Developing the ability to assess auditory neuronal survival with existing clinical tools and advancing our understanding of the specific auditory perceptual deficits resulting from neuronal loss will help guide future treatment options for Veterans suffering from hearing loss.<|endoftext|>The task of the Mashiach is to save the Jews from its enemies and rebuild the Nation of Israel, yet the followers of Jezeus have slaughtered millions and millions of Jews and done everything in their power to keep Israel lowly and weak.
+
+Some people don’t realize that Mashiach’s coming is a process that evolves over time. These people want everything to be finished at the start. They say that when Mashiach comes and does all the work of rebuilding the Land of Israel, and gathers all of the exiled Jews to Israel, and fights the wars of Hashem, and rebuilds the Beit HaMikdash, then they will come on aliyah. First, everything has to be perfect. First, the Mashiach has to do all the work.
+
+An amazing thing happened to me last night! While I was sleeping, an angel appeared in a dream and told me to start a new Jewish religion. “A new Jewish religion?” I asked, bewildered. “That’s right,” he replied. I was certain that I was hallucinating because I had fasted yesterday and that my mind was playing tricks. So I went back to sleep. But the angel appeared once again and told me to start a new Jewish religion.
+
+That’s right. I love Jews. All of them. I love good Jews and I love bad Jews. I love fat Jews and I love skinny Jews. I love reform Jews and deformed Jews, progressive Jews and regressive Jews. I love assimilated Jews and Jews who have married gentiles. I love homosexual Jews and lesbian Jews. […]
+
+Our Sages tell us that HaKodesh Baruch Hu, the Holy One Blessed Be He, weeps when a Jewish home is torn apart by of divorce. Unfortunately, He must be crying quite a lot these days, judging from the vast number of divorcees you discover on the pages of Facebook.
+
+Surveys reveal that only about 15% of Diaspora Jews have visited Israel. To me, that’s simply shocking. How can it be that God gave us back our homeland and so many Jews don’t come? You can say it is hard to move to a country far away, but what’s the big deal about coming for a visit? It certainly isn’t because of the money. Snorkeling in the Caribbean, and enjoying a gondola ride along stinking, garbage-filled sewers of Venice, cost about the same.
+
+Yesterday, in what smacks of a Middle Age witch hunt and blood libel, I was ridiculed and attacked by two supposedly liberal Jewish bloggers. This is all the more interesting since their attack on me falls on the 4th of July, which for them is a cherished holy day, honoring the American principles of equality, pluralism, and freedom of speech, which obviously don’t apply to “idiot lunatic Zionists” like me who disagree with their leftist, anti-Torah opinions.
+
+In my family alone, except for my brother, all of my cousins and second cousins married out of the faith – all of them. Finished. Kaput. The end of the line. After 5000 years of clinging to being Jewish, generation after generation, through times of harsh and often murderous oppression, the candle was snuffed out in the love boat of America.
+
+Being Jewish is a nationality, not merely a religion. We Jews are the Children of Israel. We are members of the Nation of Israel. It doesn’t matter where we live. Only because of having been exiled from our own Jewish Land and scattered to foreign countries for the last 2000 years do we mistakenly think we are members of those foreign, gentile nationalities. Yes, a Jew may have citizenship in the United States or France, but he is still, first and foremost a Jew.
+
+To all of my beloved Jewish brothers and sisters in America, go ahead and eat your hot dogs. Drink your beer. But don’t think that the Fourth of July is really Independence Day for you. Remember that your nation is Israel, not America. Your hearts should beat proudly when you see the Star of David blowing in the wind, not the Stars and Stripes. And always remember that you are only in America, temporarily, because of the curse of galut.
+
+"Word came that hundreds of Arabs were gathering in front of the Hevron police station, demanding the dismantlement of the Shoshana settlement. Not wanting to miss the action, the reporters scattered like roaches to their cars. For all of his supposed extremism, Caleb Cohen was right. It seemed that all the brewing tension of the Middle East had surfaced in Meir's backyard."
+
+"How can it be that in Israel, in the middle of Jerusalem, at the site of the ancient Temple, in the very spot where the House of G-d had stood, that a Jew wasn't allowed to pray?" It didn't make sense. It was racist, undemocratic, completely absurd.
+
+Normally I hate the Germans, but I have to give them credit on this one! Let their banning of brit milah be a reminder to our Jewish brothers and sisters in the Diaspora that we don’t belong in foreign lands. Unfortunately, I doubt whether the new law will affect the Jews of Germany in any meaningful way. After all, if the slaughter of 6 million didn’t make them think twice about living in that polluted, blood-stained gentile land, this new measure isn’t liable to wake them up either.
+
+In spite of the fact that the Chofetz Chaim was vehemently opposed to the non-religious spirit of the secular Zionists, he encouraged the aliyah of God-fearing Jews. He saw the surge of mass aliyah from Russia as “the footsteps of the Mashiach,” and the beginning of the ingathering of the exiles which precedes the Mashiach’s coming.
+
+When Moshe led the war against Amalek, he didn’t just pray on the mountain – he sent Yehoshua to lead the soldiers of the Molech Israelite Army to fight down below on the battlefield. Yehoshua didn’t merely blow shofars in conquering the Land, he cut off the heads of the enemy. And who was a greater scholar than Rabbi Akiva? To defend the Land of Israel from the Romans, he closed his Gemorah, rushed to the battlefield, and accompanied Bar Kochba into battle!!
+
+How can it be that outstanding Torah scholars in Europe, before the Holocaust, and even after it started, were against the Zionist movement and told their congregations not to uproot themselves from where they were and flee to Eretz Yisrael? Even today, there are Torah leaders who tell their followers that the time has not come to go to Israel. The question arises – can Gedolim err?
+
+As the first wave of bombers reached the shores of Tel Aviv, a wall of rain clouds appeared in the sky. Jerusalem vanished in an impenetrable fog. In the lead French bomber, the dials on the instrument panel were spinning wildly in circles. The mysterious fog darkened the cockpit. An unworldly thunder shook the plane like a toy. The terrified pilot tried to swing the giant bomber around, but the steering was jammed.
+
+Imagine that a camera was recording your every move on the computer – would you still click on immodest sites? Would you still go astray after your eyes if you knew that a video of your doings was going to be posted on Youtube for the world to see? You may not be caught in This World, but up in the big Movie Theater in the sky, when you come before the Heavenly Tribunal, your Youtube history is going to be presented on the Big Screen for all of the Celestial Judges to see.
+
+The Jewish Press reports that Kosher Delight is closing its doors in New York, the third Manhattan kosher emporium to do so this year. The real question is: when will “Galut Delight” close up shop? When will the exile lose its delight in the eyes of Diaspora Jews? When will we understand that we don’t belong in gentile lands, no matter how delightful and kosher our Jewish communities may be?
+
+"I've come for my house," the man said. "My family wants to move back tonight." Ehud's voice stuck in his throat. He felt dizzy. He felt weak. Giving up his house was too much. Ehud felt his sons' eyes upon him, watching to see what he would do. "It isn't your house," Ehud said. "Yes it is," the man answered. "We bought it. We have a deed," Ehud insisted. "I have a deed too. The people you bought the house from weren't the legal owners."<|endoftext|>
