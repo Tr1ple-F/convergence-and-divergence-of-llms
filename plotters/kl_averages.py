@@ -3,6 +3,22 @@ import numpy as np
 
 from utils import get_comparison_data, load_npy_file, kl_config
 
+# Assign unique values to each model
+model_values = {
+    "EleutherAI/pythia-70m-deduped": 0.1,
+    "EleutherAI/pythia-410m-deduped": 0.5,
+    "EleutherAI/pythia-1.4b-deduped": 0.9
+}
+
+
+# Function to map base model to lightness and target model to color
+def get_color(base_model, target_model):
+    base_value = model_values[base_model]
+    target_value = model_values[target_model]
+    lightness = 0.5 + 0.5 * base_value
+    hue = 0.5 * target_value
+    return plt.cm.hsv(hue)[:3] + (lightness,)
+
 
 def plot_kl_scores(base_model_name, target_name):
     revisions = kl_config()["revisions"]
@@ -13,7 +29,9 @@ def plot_kl_scores(base_model_name, target_name):
         average_kl_score = np.mean(kl_data)
         kl_scores.append(average_kl_score)
 
-    plt.plot(revisions, kl_scores, marker='o', linestyle='-', label=f'{X(base_model_name)} vs {X(target_name)}')
+    color = get_color(base_model_name, target_name)
+    plt.plot(revisions, kl_scores, marker='o', linestyle='-', color=color,
+             label=f'{X(base_model_name)} vs {X(target_name)}')
 
 
 def X(string):

@@ -6,15 +6,21 @@ from utils import load_npy_file, kl_config, tokenized_text, get_comparison_data
 def moving_average(data, window_size):
     return np.convolve(data, np.ones(window_size) / window_size, mode='valid')
 
+def moving_variance(data, moving_avg, window_size):
+    squared_diff = (data[window_size - 1:] - moving_avg) ** 2
+    return moving_average(squared_diff, window_size)
+
 def plot_kl(tokenized_text, base_model_name, base_revision, target_name, target_revision, data, window_size=20):
     x_indices = np.arange(len(tokenized_text))
     y_scores = data.flatten()
     avg_kl_score = np.mean(y_scores)
 
     y_moving_avg = moving_average(y_scores, window_size)
+    y_moving_var = moving_variance(y_scores, y_moving_avg, window_size)
     f = plt.figure(figsize=(40, 18))
     plt.plot(x_indices, y_scores, '-o', color='blue', label='KL Score')
     plt.plot(x_indices[window_size - 1:], y_moving_avg, color='red', linewidth=2, label='Moving Average')
+    plt.plot(x_indices[window_size - 1:], y_moving_var, color='green', linewidth=2, label='Moving Variance')
 
     for idx, text in enumerate(tokenized_text):
         if text == '<|endoftext|>':
