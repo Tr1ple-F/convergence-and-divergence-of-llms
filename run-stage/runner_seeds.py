@@ -66,7 +66,7 @@ def get_probabilities(model_name, revision, input_text):
     np.save(output_file_path, all_probabilities_matrix)
 
 def main():
-    with open('run_config_standard.json', 'r') as config_file:
+    with open('run_config_seeds.json', 'r') as config_file:
         config = json.load(config_file)
 
     model_names = config['model_names']
