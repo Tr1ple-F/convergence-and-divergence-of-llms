@@ -7,7 +7,7 @@ with open('reduced_config.json', 'r') as f:
     config = json.load(f)
 
 # Load the JSON file containing tokenized data
-with open('input_text_tokenized.json', 'r') as f:
+with open('common/input_text_tokenized.json', 'r') as f:
     tokenized_data = json.load(f)
 
 # Change #1: Create a new DataFrame for word IDs and save it

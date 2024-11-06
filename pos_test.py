@@ -1,13 +1,11 @@
 import nltk
 import json
 
-from nltk import align
-
 nltk.download('punkt')
 nltk.download('punkt_tab')
 nltk.download('averaged_perceptron_tagger_eng')
 # Sample text
-with open("input_text.txt", 'r', encoding="utf8") as file:
+with open("common/input_text.txt", 'r', encoding="utf8") as file:
     text = file.read()
 
 def align_pos_tags(hf_tokens, text):
@@ -37,7 +35,7 @@ def align_pos_tags(hf_tokens, text):
     return aligned_tags
 
 
-with open("input_text_tokenized.json", 'r') as file:
+with open("common/input_text_tokenized.json", 'r') as file:
     hf_tokens = json.load(file)
     hf_tokens.insert(0, "<|endoftext|>")
     hf_tokens.append("<|endoftext|>")

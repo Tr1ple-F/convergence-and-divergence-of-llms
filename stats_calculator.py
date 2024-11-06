@@ -29,7 +29,7 @@ with open('kl_config.json', 'r') as f:
 model_names = config['model_names']
 revisions = config['revisions']
 
-correct_indices_file = 'input_text_encoded.npy'
+correct_indices_file = 'common/input_text_encoded.npy'
 correct_indices = np.load(correct_indices_file)
 
 for model_name in model_names:

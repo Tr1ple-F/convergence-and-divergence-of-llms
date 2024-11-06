@@ -1,5 +1,3 @@
-from shutil import rmtree
-
 import numpy as np
 from transformers import GPTNeoXForCausalLM, AutoTokenizer
 import torch
@@ -8,16 +6,27 @@ import os
 import json
 
 def get_probabilities(model_name, revision, input_text):
+    model_super_large = "6.9b" in model_name or "12b" in model_name
+    model_too_large = "2.8b" in model_name or model_super_large
+
+    if model_super_large:
+        cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
+    else:
+        cache_dir = f"/media/hofmann-scratch/tpimentel/models/{model_name.replace('/', '-')}/{revision}"
+
+    if model_too_large:
+        print(f"Model {model_name} is too large to run on GPU.")
+
     model = GPTNeoXForCausalLM.from_pretrained(
         model_name,
         revision=revision,
-        cache_dir=f"./{model_name.replace('/', '-')}/{revision}",
+        cache_dir=cache_dir,
     )
 
     tokenizer = AutoTokenizer.from_pretrained(
         model_name,
         revision=revision,
-        cache_dir=f"./{model_name.replace('/', '-')}/{revision}",
+        cache_dir=cache_dir,
         bos_token = '<|endoftext|>',
         eos_token = '<|endoftext|>',
         add_bos_token = True,
@@ -26,15 +35,15 @@ def get_probabilities(model_name, revision, input_text):
 
     model.eval()
 
-    if torch.cuda.is_available():
+    if torch.cuda.is_available() and not model_too_large:
         model = model.cuda()
 
-    output_dir = os.path.join("probabilities/" + model_name.replace('/', '-'), revision)
+    output_dir = os.path.join("../probabilities/" + model_name.replace('/', '-'), revision)
     os.makedirs(output_dir, exist_ok=True)
 
     inputs = tokenizer(input_text, return_tensors="pt")
 
-    if torch.cuda.is_available():
+    if torch.cuda.is_available() and not model_too_large:
         inputs = {k: v.cuda() for k, v in inputs.items()}
 
     # Context window settings
@@ -45,7 +54,7 @@ def get_probabilities(model_name, revision, input_text):
     all_probabilities = []
 
     with torch.no_grad():
-        for start_idx in range(0, inputs.input_ids.size(1) - overlap, stride):
+        for start_idx in range(0, inputs["input_ids"].size(1) - overlap, stride):
             end_idx = start_idx + window_size
             window_inputs = {key: value[:, start_idx:end_idx] for key, value in inputs.items()}
 
@@ -65,12 +74,6 @@ def get_probabilities(model_name, revision, input_text):
     output_file_path = os.path.join(output_dir, "probabilities.npy")
     np.save(output_file_path, all_probabilities_matrix)
 
-def delete_cache_directory(model_name, revision):
-    cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
-    if os.path.exists(cache_dir):
-        rmtree(cache_dir) # Comment this line if you want to keep the cache
-        print(f"Deleted cache directory: {cache_dir}")
-
 def main():
     with open('run_config.json', 'r') as config_file:
         config = json.load(config_file)
@@ -86,7 +89,6 @@ def main():
             for revision in revisions:
                 print(f"Processing model: {model_name}, revision: {revision}")
                 get_probabilities(model_name, revision, input_text)
-                delete_cache_directory(model_name, revision)
 
 
 if __name__ == "__main__":
