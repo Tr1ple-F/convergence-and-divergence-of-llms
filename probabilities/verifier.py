@@ -1,30 +1,40 @@
 import os
-import numpy as np
 
-def verify_probabilities(base_folder="."):
-    all_shapes = set()
-    inconsistent_paths = []
+def verify_npy_sizes(directory):
+    # Initialize a list to store the sizes of npy files
+    sizes = []
+    paths = []
 
-    # Walk through the directory structure
-    for root, dirs, files in os.walk(base_folder):
+    # Walk through all subdirectories and files
+    for root, dirs, files in os.walk(directory):
         for file in files:
             if file == "probabilities.npy":
                 file_path = os.path.join(root, file)
-                # Load the numpy array and get its shape
                 try:
-                    arr = np.load(file_path)
-                    shape = arr.shape
-                    print(f"Path: {file_path}, Shape: {shape}")
-                    all_shapes.add(shape)
-                except Exception as e:
-                    print(f"Could not load {file_path}. Error: {e}")
+                    # Get the file size in bytes
+                    file_size = os.path.getsize(file_path)
 
-    # Check for inconsistencies in shapes
-    if len(all_shapes) > 1:
-        print("\nWarning: Inconsistent shapes found!")
-        print(f"Shapes detected: {all_shapes}")
+                    # Store path and size for final aligned output
+                    paths.append((file_path, file_size))
+                    sizes.append(file_size)
+
+                except Exception as e:
+                    print(f"Error reading size of {file_path}: {e}")
+
+    # Determine the maximum path length for alignment
+    max_path_length = max(len(path) for path, _ in paths) if paths else 0
+
+    # Print paths and sizes with fixed-length alignment
+    for path, size in paths:
+        print(f"{path:<{max_path_length}} Size: {size} bytes")
+
+    # Check if all sizes are the same
+    if len(set(sizes)) > 1:
+        print("\nWarning: Not all .npy files have the same size!")
     else:
-        print("\nAll files have the same shape.")
+        print("\nAll .npy files have the same size.")
 
 if __name__ == "__main__":
-    verify_probabilities()
+    # Set the root directory where the 'probabilities' folder is located
+    root_directory = "."  # Adjust this path if needed
+    verify_npy_sizes(root_directory)
