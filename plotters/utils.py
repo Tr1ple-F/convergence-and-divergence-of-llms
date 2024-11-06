@@ -7,7 +7,7 @@ def kl_config():
         return json.load(f)
 
 def tokenized_text():
-    with open("../input_text_tokenized.json") as f:
+    with open("../input_text_tokenized_old.json") as f:
         return json.load(f)
 
 # Function to load the appropriate .npy file
