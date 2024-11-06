@@ -15,9 +15,9 @@ def get_probabilities(model_name, revision, input_text):
     )
 
     tokenizer = AutoTokenizer.from_pretrained(
-        model_name,
-        revision=revision,
-        cache_dir=cache_dir,
+        "EleutherAI/pythia-14m-seed1",
+        revision="step128",
+        cache_dir=f"./EleutherAI-pythia-14m-seed1/step128",
         bos_token = '<|endoftext|>',
         eos_token = '<|endoftext|>',
         add_bos_token = True,

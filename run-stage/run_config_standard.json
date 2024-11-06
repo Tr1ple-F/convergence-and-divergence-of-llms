@@ -1,5 +1,0 @@
-{
-  "model_names": ["EleutherAI/pythia-14m", "EleutherAI/pythia-31m", "EleutherAI/pythia-70m", "EleutherAI/pythia-160m", "EleutherAI/pythia-410m", "EleutherAI/pythia-1b", "EleutherAI/pythia-1.4b", "EleutherAI/pythia-2.8b", "EleutherAI/pythia-6.9b", "EleutherAI/pythia-12b"],
-  "revisions": ["step128","step512","step4000","step8000", "step16000", "step32000", "step64000", "step128000", "step143000"],
-  "input_text_file": "../common/input_text.txt"
-}
