@@ -23,7 +23,7 @@ def calculate_stats(model_name, revision, correct_indices, top_n=10):
         np.save(path1, surprisal)
         np.save(path2, top_tokens)
         np.save(path3, top_probabilities)
-        print("Finished processing {model_name.replace("/", "-")}-{revision}-seed{i}")
+        print(f"Finished processing {model_name.replace('/', '-')}-{revision}-seed{i}")
 
 with open('seeds_config.json', 'r') as f:
     config = json.load(f)
