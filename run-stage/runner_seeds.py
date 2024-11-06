@@ -63,7 +63,7 @@ def get_probabilities(model_name, revision, input_text):
     all_probabilities_matrix = all_probabilities_matrix[:-1]
 
     output_file_path = os.path.join(output_dir, "probabilities.npy")
-    np.save(output_file_path, all_probabilities_matrix)
+    np.save(output_file_path, all_probabilities_matrix.astype(np.float16))
 
 def main():
     with open('run_config_seeds.json', 'r') as config_file:
@@ -78,9 +78,9 @@ def main():
 
         for model_name in model_names:
             for revision in revisions:
-                for i in range(9):
-                    print(f"Processing model: {model_name}-seed{i+1}, revision: {revision}")
-                    get_probabilities(f"{model_name}-seed{i+1}", revision, input_text)
+                for i in [1,3,5,7,9]:
+                    print(f"Processing model: {model_name}-seed{i}, revision: {revision}")
+                    get_probabilities(f"{model_name}-seed{i}", revision, input_text)
 
 
 if __name__ == "__main__":

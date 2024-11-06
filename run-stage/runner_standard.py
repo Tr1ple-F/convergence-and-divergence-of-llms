@@ -69,7 +69,7 @@ def get_probabilities(model_name, revision, input_text):
     all_probabilities_matrix = all_probabilities_matrix[:-1]
 
     output_file_path = os.path.join(output_dir, "probabilities.npy")
-    np.save(output_file_path, all_probabilities_matrix)
+    np.save(output_file_path, all_probabilities_matrix.astype(np.float16))
 
 def main():
     with open('run_config_standard.json', 'r') as config_file:

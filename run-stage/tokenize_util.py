@@ -32,6 +32,8 @@ with open('../common/vocab.json', 'w', encoding="utf8") as out_file:
 
 # Save encoded text (token ids)
 np.save('../common/input_text_encoded.npy', encoding)
+print("Sampling has size ...")
+print(encoding.shape)
 
 # Save decoded text (text split into token parts)
 decoded_arr = []
