@@ -48,7 +48,7 @@ for model_name_1 in model_names:
                         )
 
                         print(
-                            f"Calculating KL divergence between model: {model_name_1} revision: {revision_1} and model: {model_name_2} revision: {revision_2}"
+                            f"Calculating KL divergence between model: {model_name_1} revision: {revision_1} seed: {i} and model: {model_name_2} revision: {revision_2} seed: {j}"
                         )
 
                         all_divergences.append(
