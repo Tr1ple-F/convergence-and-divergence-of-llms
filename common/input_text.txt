@@ -1,633 +1,201 @@
-/*
-* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
-*
-* This software is provided 'as-is', without any express or implied
-* warranty.  In no event will the authors be held liable for any damages
-* arising from the use of this software.
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-* 1. The origin of this software must not be misrepresented; you must not
-* claim that you wrote the original software. If you use this software
-* in a product, an acknowledgment in the product documentation would be
-* appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-* misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*/
-
-#ifndef B2_DISTANCE_JOINT_H
-#define B2_DISTANCE_JOINT_H
-
-#include <Box2D/Dynamics/Joints/b2Joint.h>
-
-/// Distance joint definition. This requires defining an
-/// anchor point on both bodies and the non-zero length of the
-/// distance joint. The definition uses local anchor points
-/// so that the initial configuration can violate the constraint
-/// slightly. This helps when saving and loading a game.
-/// @warning Do not use a zero or short length.
-struct b2DistanceJointDef : public b2JointDef
-{
-	b2DistanceJointDef()
-	{
-		type = e_distanceJoint;
-		localAnchorA.Set(0.0f, 0.0f);
-		localAnchorB.Set(0.0f, 0.0f);
-		length = 1.0f;
-		frequencyHz = 0.0f;
-		dampingRatio = 0.0f;
-	}
-
-	/// Initialize the bodies, anchors, and length using the world
-	/// anchors.
-	void Initialize(b2Body* bodyA, b2Body* bodyB,
-					const b2Vec2& anchorA, const b2Vec2& anchorB);
-
-	/// The local anchor point relative to body1's origin.
-	b2Vec2 localAnchorA;
-
-	/// The local anchor point relative to body2's origin.
-	b2Vec2 localAnchorB;
-
-	/// The natural length between the anchor points.
-	float32 length;
-
-	/// The mass-spring-damper frequency in Hertz.
-	float32 frequencyHz;
-
-	/// The damping ratio. 0 = no damping, 1 = critical damping.
-	float32 dampingRatio;
-};
-
-/// A distance joint constrains two points on two bodies
-/// to remain at a fixed distance from each other. You can view
-/// this as a massless, rigid rod.
-class b2DistanceJoint : public b2Joint
-{
-public:
-
-	b2Vec2 GetAnchorA() const;
-	b2Vec2 GetAnchorB() const;
-
-	/// Get the reaction force given the inverse time step.
-	/// Unit is N.
-	b2Vec2 GetReactionForce(float32 inv_dt) const;
-
-	/// Get the reaction torque given the inverse time step.
-	/// Unit is N*m. This is always zero for a distance joint.
-	float32 GetReactionTorque(float32 inv_dt) const;
-
-	/// Set/get the natural length.
-	/// Manipulating the length can lead to non-physical behavior when the frequency is zero.
-	void SetLength(float32 length);
-	float32 GetLength() const;
-
-	// Set/get frequency in Hz.
-	void SetFrequency(float32 hz);
-	float32 GetFrequency() const;
-
-	// Set/get damping ratio.
-	void SetDampingRatio(float32 ratio);
-	float32 GetDampingRatio() const;
-
-protected:
-
-	friend class b2Joint;
-	b2DistanceJoint(const b2DistanceJointDef* data);
-
-	void InitVelocityConstraints(const b2SolverData& data);
-	void SolveVelocityConstraints(const b2SolverData& data);
-	bool SolvePositionConstraints(const b2SolverData& data);
-
-	float32 m_frequencyHz;
-	float32 m_dampingRatio;
-	float32 m_bias;
-
-	// Solver shared
-	b2Vec2 m_localAnchorA;
-	b2Vec2 m_localAnchorB;
-	float32 m_gamma;
-	float32 m_impulse;
-	float32 m_length;
-
-	// Solver temp
-	int32 m_indexA;
-	int32 m_indexB;
-	b2Vec2 m_u;
-	b2Vec2 m_rA;
-	b2Vec2 m_rB;
-	b2Vec2 m_localCenterA;
-	b2Vec2 m_localCenterB;
-	float32 m_invMassA;
-	float32 m_invMassB;
-	float32 m_invIA;
-	float32 m_invIB;
-	float32 m_mass;
-};
-
-inline void b2DistanceJoint::SetLength(float32 length)
-{
-	m_length = length;
-}
-
-inline float32 b2DistanceJoint::GetLength() const
-{
-	return m_length;
-}
-
-inline void b2DistanceJoint::SetFrequency(float32 hz)
-{
-	m_frequencyHz = hz;
-}
-
-inline float32 b2DistanceJoint::GetFrequency() const
-{
-	return m_frequencyHz;
-}
-
-inline void b2DistanceJoint::SetDampingRatio(float32 ratio)
-{
-	m_dampingRatio = ratio;
-}
-
-inline float32 b2DistanceJoint::GetDampingRatio() const
-{
-	return m_dampingRatio;
-}
-
-#endif
-<|endoftext|><?xml version="1.0" encoding="UTF-8"?>
-
-<!--
-  ~ Copyright 2006-2015 the original author or authors.
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns="http://www.citrusframework.org/schema/ssh/message"
-           targetNamespace="http://www.citrusframework.org/schema/ssh/message"
-           elementFormDefault="qualified"
-           attributeFormDefault="unqualified">
-
-  <xs:element name="ssh-request">
-    <xs:annotation>
-      <xs:documentation>SSH message with command and stdin.</xs:documentation>
-    </xs:annotation>
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="command" type="xs:string"/>
-        <xs:element name="stdin" type="xs:string"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="ssh-response">
-    <xs:annotation>
-      <xs:documentation>SSH response with stdout, stderr and exit code.</xs:documentation>
-    </xs:annotation>
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="stdout" type="xs:string" minOccurs="0"/>
-        <xs:element name="stderr" type="xs:string" minOccurs="0"/>
-        <xs:element name="exit" type="xs:int"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-</xs:schema><|endoftext|>Linus Torvalds gave the world Linux 4.8 earlier this week, but now appears to wish he didn't after spotting some code he says can “kill the kernel.”
-
-When Torvalds announced Linux 4.8 on Sunday he said the final version added “a few stragging fixes since rc8.”
-
-But by Tuesday he was back on the Linux Kernel Mailing list apologising for a bug fix gone bad.
-
-“I'm really sorry I applied that last series from Andrew just before doing the 4.8 release, because they cause problems, and now it is in 4.8 (and that buggy crap is marked for stable too).”
-
-The “crap” in question is an attempt to fix a bug that's been present in Linux since version 3.15. Torvalds rates the fix for that bug “clearly worse than the bug it tried to fix, since that original bug has never killed my machine!”
-
-Torvalds isn't happy with kernel contributor Andrew Morton, who he says is debugging with a known bad use of BUG_ON() .
-
-“I've ranted against people using BUG_ON() for debugging in the past. Why the f*ck does this still happen?” Torvalds writes, pointing to a 2002 post to the kernel mailing list outlining how to do BUG_ON() right. He later adds “so excuse me for being upset that people still do this shit almost 15 years later.”
-
-Morton has taken Torvalds' criticisms on the chin. But Torvalds also thinks he could and should have done better, as he writes:
-
-I should have reacted to the damn added BUG_ON() lines. I suspect I will have to finally just remove the idiotic BUG_ON() concept once and for all, because there is NO F*CKING EXCUSE to knowingly kill the kernel.
-
-This problem will soon be sorted, as is the way of Linux.
-
-If you want to enjoy version 4.8 of the kernel now, you'll be able to play with features including: HDMI CEC support, making Linux able to control chained HDMI devices with a single remote control; Hardened Usercopy Protection to secure content as it moves into userspace; Support for the Raspberry Pi 3; Support for the touch screen on Microsoft Surface devices.
-
-The kernel can be downloaded from this link. ®<|endoftext|>Field
-The present disclosure generally relates to optical fibers and, more specifically, to multicore optical fibers.
-Technical Background
-Optical fiber is the leading alternative to traditional materials used for data signal communication such as copper wiring. Optical fiber is now widely utilized in a variety of electronic devices and systems to facilitate the high-speed communication of voice, video, and data signals at high bandwidths. However, as the speed and bandwidth of the electronic systems increases, there is a corresponding need to increase the speed of optical interconnects which interconnect components of the system. One solution to increase the speed of optical interconnects is to increase the fiber density of the optical interconnects. However, increasing the number of individual fibers in an optical interconnect increases the overall size and cost of the optical interconnect. To avoid the increased fiber count, multicore optical fibers (“MCFs”) have been developed. MCFs contain optical core elements contained in a single fiber. The core elements are designed for, for example, the transmission and receiving of data, and can be arranged as transmit and receive (Tx/Rx) pairs. Such MCFs may be used in data networks to enable high speed Tx/Rx transmission of data between system components such as transceivers, processors, servers, and storage devices. For connection and termination in the networks, connectors are attached to the MCFs. For correct Tx/Rx optical transport and connections to be manufactured, it is important for the operators to know the orientation of the optical fibers when the connectors are terminated to the MCFs.<|endoftext|>
-[ ca ]
-default_ca = CA_default
-
-[ CA_default ]
-# Directory and file locations.
-dir               = ./PKI/
-certs             = $dir/certs
-crl_dir           = $dir/crl
-new_certs_dir     = $dir/certs
-database          = $dir/index.txt
-serial            = $dir/serial
-RANDFILE          = $dir/private/.rand
-
-# The root key and root certificate.
-private_key       = $dir/private/ca.key.pem
-certificate       = $dir/certs/ca.cert.pem
-
-# For certificate revocation lists.
-crlnumber         = $dir/crlnumber
-crl               = $dir/crl/ca.crl.pem
-crl_extensions    = crl_ext
-default_crl_days  = 30
-
-# SHA-1 is deprecated, so use SHA-2 instead.
-default_md        = sha256
-
-name_opt          = ca_default
-cert_opt          = ca_default
-default_days      = 730
-preserve          = no
-policy            = policy_loose
-
-[ policy_loose ]
-countryName             = optional
-stateOrProvinceName     = optional
-localityName            = optional
-organizationName        = optional
-organizationalUnitName  = optional
-commonName              = supplied
-emailAddress            = optional
-
-[ req ]
-# Options for the `req` tool (`man req`).
-default_bits        = 2048
-distinguished_name  = req_distinguished_name
-string_mask         = utf8only
-
-# SHA-1 is deprecated, so use SHA-2 instead.
-default_md          = sha256
-
-# Extension to add when the -x509 option is used.
-x509_extensions     = v3_ca
-
-[ req_distinguished_name ]
-# See <https://en.wikipedia.org/wiki/Certificate_signing_request>.
-countryName                     = Country Name (2 letter code)
-stateOrProvinceName             = State or Province Name
-localityName                    = Locality Name
-0.organizationName              = Organization Name
-organizationalUnitName          = Organizational Unit Name
-commonName                      = Common Name
-emailAddress                    = Email Address
-
-# Optionally, specify some defaults.
-countryName_default             = 
-stateOrProvinceName_default     = 
-localityName_default            =
-0.organizationName_default      = 
-organizationalUnitName_default  =
-emailAddress_default            =
-
-[ v3_ca ]
-# Extensions for a typical CA (`man x509v3_config`).
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true, pathlen:1
-keyUsage = critical, digitalSignature, cRLSign, keyCertSign
-
-[ card_cert ]
-# Extensions for client certificates (`man x509v3_config`).
-basicConstraints = CA:FALSE
-nsCertType = client
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid,issuer
-keyUsage = critical, nonRepudiation
-
-[ crl_ext ]
-# Extension for CRLs (`man x509v3_config`).
-authorityKeyIdentifier=keyid:always
-
-<|endoftext|>fileFormatVersion: 2
-guid: 00a84ca1e52badc40a6f01939bbe8a99
-folderAsset: yes
-timeCreated: 1446204712
-licenseType: Free
-DefaultImporter:
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
-<|endoftext|>/*
-Copyright 2017 The Kubernetes Authors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-package v1
-
-import (
-	"k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
-)
-
-// +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// NetworkPolicy describes what network traffic is allowed for a set of Pods
-type NetworkPolicy struct {
-	metav1.TypeMeta `json:",inline"`
-	// Standard object's metadata.
-	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	// +optional
-	metav1.ObjectMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
-
-	// Specification of the desired behavior for this NetworkPolicy.
-	// +optional
-	Spec NetworkPolicySpec `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
-}
-
-// Policy Type string describes the NetworkPolicy type
-// This type is beta-level in 1.8
-type PolicyType string
-
-const (
-	// PolicyTypeIngress is a NetworkPolicy that affects ingress traffic on selected pods
-	PolicyTypeIngress PolicyType = "Ingress"
-	// PolicyTypeEgress is a NetworkPolicy that affects egress traffic on selected pods
-	PolicyTypeEgress PolicyType = "Egress"
-)
-
-// NetworkPolicySpec provides the specification of a NetworkPolicy
-type NetworkPolicySpec struct {
-	// Selects the pods to which this NetworkPolicy object applies. The array of
-	// ingress rules is applied to any pods selected by this field. Multiple network
-	// policies can select the same set of pods. In this case, the ingress rules for
-	// each are combined additively. This field is NOT optional and follows standard
-	// label selector semantics. An empty podSelector matches all pods in this
-	// namespace.
-	PodSelector metav1.LabelSelector `json:"podSelector" protobuf:"bytes,1,opt,name=podSelector"`
-
-	// List of ingress rules to be applied to the selected pods. Traffic is allowed to
-	// a pod if there are no NetworkPolicies selecting the pod
-	// (and cluster policy otherwise allows the traffic), OR if the traffic source is
-	// the pod's local node, OR if the traffic matches at least one ingress rule
-	// across all of the NetworkPolicy objects whose podSelector matches the pod. If
-	// this field is empty then this NetworkPolicy does not allow any traffic (and serves
-	// solely to ensure that the pods it selects are isolated by default)
-	// +optional
-	Ingress []NetworkPolicyIngressRule `json:"ingress,omitempty" protobuf:"bytes,2,rep,name=ingress"`
-
-	// List of egress rules to be applied to the selected pods. Outgoing traffic is
-	// allowed if there are no NetworkPolicies selecting the pod (and cluster policy
-	// otherwise allows the traffic), OR if the traffic matches at least one egress rule
-	// across all of the NetworkPolicy objects whose podSelector matches the pod. If
-	// this field is empty then this NetworkPolicy limits all outgoing traffic (and serves
-	// solely to ensure that the pods it selects are isolated by default).
-	// This field is beta-level in 1.8
-	// +optional
-	Egress []NetworkPolicyEgressRule `json:"egress,omitempty" protobuf:"bytes,3,rep,name=egress"`
-
-	// List of rule types that the NetworkPolicy relates to.
-	// Valid options are "Ingress", "Egress", or "Ingress,Egress".
-	// If this field is not specified, it will default based on the existence of Ingress or Egress rules;
-	// policies that contain an Egress section are assumed to affect Egress, and all policies
-	// (whether or not they contain an Ingress section) are assumed to affect Ingress.
-	// If you want to write an egress-only policy, you must explicitly specify policyTypes [ "Egress" ].
-	// Likewise, if you want to write a policy that specifies that no egress is allowed,
-	// you must specify a policyTypes value that include "Egress" (since such a policy would not include
-	// an Egress section and would otherwise default to just [ "Ingress" ]).
-	// This field is beta-level in 1.8
-	// +optional
-	PolicyTypes []PolicyType `json:"policyTypes,omitempty" protobuf:"bytes,4,rep,name=policyTypes,casttype=PolicyType"`
-}
-
-// NetworkPolicyIngressRule describes a particular set of traffic that is allowed to the pods
-// matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and from.
-type NetworkPolicyIngressRule struct {
-	// List of ports which should be made accessible on the pods selected for this
-	// rule. Each item in this list is combined using a logical OR. If this field is
-	// empty or missing, this rule matches all ports (traffic not restricted by port).
-	// If this field is present and contains at least one item, then this rule allows
-	// traffic only if the traffic matches at least one port in the list.
-	// +optional
-	Ports []NetworkPolicyPort `json:"ports,omitempty" protobuf:"bytes,1,rep,name=ports"`
-
-	// List of sources which should be able to access the pods selected for this rule.
-	// Items in this list are combined using a logical OR operation. If this field is
-	// empty or missing, this rule matches all sources (traffic not restricted by
-	// source). If this field is present and contains at least on item, this rule
-	// allows traffic only if the traffic matches at least one item in the from list.
-	// +optional
-	From []NetworkPolicyPeer `json:"from,omitempty" protobuf:"bytes,2,rep,name=from"`
-}
-
-// NetworkPolicyEgressRule describes a particular set of traffic that is allowed out of pods
-// matched by a NetworkPolicySpec's podSelector. The traffic must match both ports and to.
-// This type is beta-level in 1.8
-type NetworkPolicyEgressRule struct {
-	// List of destination ports for outgoing traffic.
-	// Each item in this list is combined using a logical OR. If this field is
-	// empty or missing, this rule matches all ports (traffic not restricted by port).
-	// If this field is present and contains at least one item, then this rule allows
-	// traffic only if the traffic matches at least one port in the list.
-	// +optional
-	Ports []NetworkPolicyPort `json:"ports,omitempty" protobuf:"bytes,1,rep,name=ports"`
-
-	// List of destinations for outgoing traffic of pods selected for this rule.
-	// Items in this list are combined using a logical OR operation. If this field is
-	// empty or missing, this rule matches all destinations (traffic not restricted by
-	// destination). If this field is present and contains at least one item, this rule
-	// allows traffic only if the traffic matches at least one item in the to list.
-	// +optional
-	To []NetworkPolicyPeer `json:"to,omitempty" protobuf:"bytes,2,rep,name=to"`
-}
-
-// NetworkPolicyPort describes a port to allow traffic on
-type NetworkPolicyPort struct {
-	// The protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this
-	// field defaults to TCP.
-	// +optional
-	Protocol *v1.Protocol `json:"protocol,omitempty" protobuf:"bytes,1,opt,name=protocol,casttype=k8s.io/api/core/v1.Protocol"`
-
-	// The port on the given protocol. This can either be a numerical or named port on
-	// a pod. If this field is not provided, this matches all port names and numbers.
-	// +optional
-	Port *intstr.IntOrString `json:"port,omitempty" protobuf:"bytes,2,opt,name=port"`
-}
-
-// IPBlock describes a particular CIDR (Ex. "192.168.1.1/24") that is allowed to the pods
-// matched by a NetworkPolicySpec's podSelector. The except entry describes CIDRs that should
-// not be included within this rule.
-type IPBlock struct {
-	// CIDR is a string representing the IP Block
-	// Valid examples are "192.168.1.1/24"
-	CIDR string `json:"cidr" protobuf:"bytes,1,name=cidr"`
-	// Except is a slice of CIDRs that should not be included within an IP Block
-	// Valid examples are "192.168.1.1/24"
-	// Except values will be rejected if they are outside the CIDR range
-	// +optional
-	Except []string `json:"except,omitempty" protobuf:"bytes,2,rep,name=except"`
-}
-
-// NetworkPolicyPeer describes a peer to allow traffic from. Only certain combinations of
-// fields are allowed
-type NetworkPolicyPeer struct {
-	// This is a label selector which selects Pods. This field follows standard label
-	// selector semantics; if present but empty, it selects all pods.
-	//
-	// If NamespaceSelector is also set, then the NetworkPolicyPeer as a whole selects
-	// the Pods matching PodSelector in the Namespaces selected by NamespaceSelector.
-	// Otherwise it selects the Pods matching PodSelector in the policy's own Namespace.
-	// +optional
-	PodSelector *metav1.LabelSelector `json:"podSelector,omitempty" protobuf:"bytes,1,opt,name=podSelector"`
-
-	// Selects Namespaces using cluster-scoped labels. This field follows standard label
-	// selector semantics; if present but empty, it selects all namespaces.
-	//
-	// If PodSelector is also set, then the NetworkPolicyPeer as a whole selects
-	// the Pods matching PodSelector in the Namespaces selected by NamespaceSelector.
-	// Otherwise it selects all Pods in the Namespaces selected by NamespaceSelector.
-	// +optional
-	NamespaceSelector *metav1.LabelSelector `json:"namespaceSelector,omitempty" protobuf:"bytes,2,opt,name=namespaceSelector"`
-
-	// IPBlock defines policy on a particular IPBlock. If this field is set then
-	// neither of the other fields can be.
-	// +optional
-	IPBlock *IPBlock `json:"ipBlock,omitempty" protobuf:"bytes,3,rep,name=ipBlock"`
-}
-
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// NetworkPolicyList is a list of NetworkPolicy objects.
-type NetworkPolicyList struct {
-	metav1.TypeMeta `json:",inline"`
-	// Standard list metadata.
-	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	// +optional
-	metav1.ListMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
-
-	// Items is a list of schema objects.
-	Items []NetworkPolicy `json:"items" protobuf:"bytes,2,rep,name=items"`
-}
-<|endoftext|>#ifndef BOOST_SERIALIZATION_ASSUME_ABSTRACT_HPP
-#define BOOST_SERIALIZATION_ASSUME_ABSTRACT_HPP
-
-// MS compatible compilers support #pragma once
-#if defined(_MSC_VER)
-# pragma once
-#endif
-
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// assume_abstract_class.hpp:
-
-// (C) Copyright 2008 Robert Ramey
-// Use, modification and distribution is subject to the Boost Software
-// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-//  See http://www.boost.org for updates, documentation, and revision history.
-
-// this is useful for compilers which don't support the boost::is_abstract
-
-#include <boost/type_traits/is_abstract.hpp>
-#include <boost/mpl/bool_fwd.hpp>
-
-#ifndef BOOST_NO_IS_ABSTRACT
-
-// if there is an intrinsic is_abstract defined, we don't have to do anything
-#define BOOST_SERIALIZATION_ASSUME_ABSTRACT(T)
-
-// but forward to the "official" is_abstract
-namespace boost {
-namespace serialization {
-    template<class T>
-    struct is_abstract : boost::is_abstract< T > {} ;
-} // namespace serialization
-} // namespace boost
-
-#else
-// we have to "make" one
-
-namespace boost {
-namespace serialization {
-    template<class T>
-    struct is_abstract : boost::false_type {};
-} // namespace serialization
-} // namespace boost
-
-// define a macro to make explicit designation of this more transparent
-#define BOOST_SERIALIZATION_ASSUME_ABSTRACT(T)        \
-namespace boost {                                     \
-namespace serialization {                             \
-template<>                                            \
-struct is_abstract< T > : boost::true_type {};        \
-template<>                                            \
-struct is_abstract< const T > : boost::true_type {};  \
-}}                                                    \
-/**/
-
-#endif // BOOST_NO_IS_ABSTRACT
-
-#endif //BOOST_SERIALIZATION_ASSUME_ABSTRACT_HPP
-<|endoftext|>DESCRIPTION The purpose of this CDA-1 proposal is to provide Dr. Naomi Bramhall with the support and mentorship necessary to make the transition from basic science research to clinical research of noise-induced hearing loss. Dr. Bramhall's previous research has focused on hereditary hearing loss and hair cell regeneration, but as a certified audiologist, she is eager to shift to clinical hearing research. This proposal will provide Dr. Bramhall with the tools and experience necessary to engage in clinical research and generate data which will be used in applying for future funding such as the CDA-2, will guide her path towards independence as a clinical researcher. Her primary mentor for this proposal is Dr. Dawn Konrad-Martin and Dr. M. Charles Liberman is a co-mentor. Loud noise exposure is routinely experienced during military service and hearing loss is the second most common service-related disability among Veterans. Individuals with hearing loss and poor speech discrimination ability often have little success with hearing aids because amplifying sound improves the audibility, but not the clarity, of the speech signal. Loud noise exposure may result not only in damage to outer hair cells, but also lead to auditory neuronal degeneration. Neural loss can result in decreased word recognition (Schuknecht 1994) and may explain why many Veterans have poorer speech discrimination than would be expected based on their ability to detect tones, particularly in noisy environments. Mice show rapid degeneration of auditory nerve peripheral terminals followed by a slow degeneration of spiral ganglion neurons over a period of several months following loud noise exposure, even when their pure tone auditory thresholds recover completely (Kujawa and Liberman 2009). The subpopulation of neurons most vulnerable to noise exposure consists of the low spontaneous rate fibers (Furman et al. 2013), which have a high sensitivity threshold and respond to higher intensity sounds. This neuronal loss is correlated with a decrease in the amplitude of the first wave of the auditory brainstem response (ABR). Age-related reduction in the amplitude of wave I has been demonstrated in humans (Konrad-Martin et al. 2012) and is consistent with temporal bone studies showing auditory neuronal loss with age (Makary et al. 2011), suggesting this metric of auditory neuronal survival is also applicable to humans. Previously, quantification of the degree to which auditory neuronal survival influences speech understanding has been difficult due to limitations in measuring auditory neuronal loss in humans, which could only be accomplished through post-mortem temporal bone studies. The main objectives of this proposal are to use electrophysiological methods to 1) determine if decreased ABR wave I amplitude is associated with noise exposure in humans and 2) examine the impact of noise exposure and decreased wave I amplitude on auditory perception. Our hypothesis is that noise exposure will be associated with decreased wave I amplitude, consistent with animal studies, and that this change will be correlated with decreased speech recognition at high sound levels, difficulty understanding speech in the presence of background noise, and decreased tolerance to loud sounds. Developing the ability to assess auditory neuronal survival with existing clinical tools and advancing our understanding of the specific auditory perceptual deficits resulting from neuronal loss will help guide future treatment options for Veterans suffering from hearing loss.<|endoftext|>The task of the Mashiach is to save the Jews from its enemies and rebuild the Nation of Israel, yet the followers of Jezeus have slaughtered millions and millions of Jews and done everything in their power to keep Israel lowly and weak.
-
-Some people don’t realize that Mashiach’s coming is a process that evolves over time. These people want everything to be finished at the start. They say that when Mashiach comes and does all the work of rebuilding the Land of Israel, and gathers all of the exiled Jews to Israel, and fights the wars of Hashem, and rebuilds the Beit HaMikdash, then they will come on aliyah. First, everything has to be perfect. First, the Mashiach has to do all the work.
-
-An amazing thing happened to me last night! While I was sleeping, an angel appeared in a dream and told me to start a new Jewish religion. “A new Jewish religion?” I asked, bewildered. “That’s right,” he replied. I was certain that I was hallucinating because I had fasted yesterday and that my mind was playing tricks. So I went back to sleep. But the angel appeared once again and told me to start a new Jewish religion.
-
-That’s right. I love Jews. All of them. I love good Jews and I love bad Jews. I love fat Jews and I love skinny Jews. I love reform Jews and deformed Jews, progressive Jews and regressive Jews. I love assimilated Jews and Jews who have married gentiles. I love homosexual Jews and lesbian Jews. […]
-
-Our Sages tell us that HaKodesh Baruch Hu, the Holy One Blessed Be He, weeps when a Jewish home is torn apart by of divorce. Unfortunately, He must be crying quite a lot these days, judging from the vast number of divorcees you discover on the pages of Facebook.
-
-Surveys reveal that only about 15% of Diaspora Jews have visited Israel. To me, that’s simply shocking. How can it be that God gave us back our homeland and so many Jews don’t come? You can say it is hard to move to a country far away, but what’s the big deal about coming for a visit? It certainly isn’t because of the money. Snorkeling in the Caribbean, and enjoying a gondola ride along stinking, garbage-filled sewers of Venice, cost about the same.
-
-Yesterday, in what smacks of a Middle Age witch hunt and blood libel, I was ridiculed and attacked by two supposedly liberal Jewish bloggers. This is all the more interesting since their attack on me falls on the 4th of July, which for them is a cherished holy day, honoring the American principles of equality, pluralism, and freedom of speech, which obviously don’t apply to “idiot lunatic Zionists” like me who disagree with their leftist, anti-Torah opinions.
-
-In my family alone, except for my brother, all of my cousins and second cousins married out of the faith – all of them. Finished. Kaput. The end of the line. After 5000 years of clinging to being Jewish, generation after generation, through times of harsh and often murderous oppression, the candle was snuffed out in the love boat of America.
-
-Being Jewish is a nationality, not merely a religion. We Jews are the Children of Israel. We are members of the Nation of Israel. It doesn’t matter where we live. Only because of having been exiled from our own Jewish Land and scattered to foreign countries for the last 2000 years do we mistakenly think we are members of those foreign, gentile nationalities. Yes, a Jew may have citizenship in the United States or France, but he is still, first and foremost a Jew.
-
-To all of my beloved Jewish brothers and sisters in America, go ahead and eat your hot dogs. Drink your beer. But don’t think that the Fourth of July is really Independence Day for you. Remember that your nation is Israel, not America. Your hearts should beat proudly when you see the Star of David blowing in the wind, not the Stars and Stripes. And always remember that you are only in America, temporarily, because of the curse of galut.
-
-"Word came that hundreds of Arabs were gathering in front of the Hevron police station, demanding the dismantlement of the Shoshana settlement. Not wanting to miss the action, the reporters scattered like roaches to their cars. For all of his supposed extremism, Caleb Cohen was right. It seemed that all the brewing tension of the Middle East had surfaced in Meir's backyard."
-
-"How can it be that in Israel, in the middle of Jerusalem, at the site of the ancient Temple, in the very spot where the House of G-d had stood, that a Jew wasn't allowed to pray?" It didn't make sense. It was racist, undemocratic, completely absurd.
-
-Normally I hate the Germans, but I have to give them credit on this one! Let their banning of brit milah be a reminder to our Jewish brothers and sisters in the Diaspora that we don’t belong in foreign lands. Unfortunately, I doubt whether the new law will affect the Jews of Germany in any meaningful way. After all, if the slaughter of 6 million didn’t make them think twice about living in that polluted, blood-stained gentile land, this new measure isn’t liable to wake them up either.
-
-In spite of the fact that the Chofetz Chaim was vehemently opposed to the non-religious spirit of the secular Zionists, he encouraged the aliyah of God-fearing Jews. He saw the surge of mass aliyah from Russia as “the footsteps of the Mashiach,” and the beginning of the ingathering of the exiles which precedes the Mashiach’s coming.
-
-When Moshe led the war against Amalek, he didn’t just pray on the mountain – he sent Yehoshua to lead the soldiers of the Molech Israelite Army to fight down below on the battlefield. Yehoshua didn’t merely blow shofars in conquering the Land, he cut off the heads of the enemy. And who was a greater scholar than Rabbi Akiva? To defend the Land of Israel from the Romans, he closed his Gemorah, rushed to the battlefield, and accompanied Bar Kochba into battle!!
-
-How can it be that outstanding Torah scholars in Europe, before the Holocaust, and even after it started, were against the Zionist movement and told their congregations not to uproot themselves from where they were and flee to Eretz Yisrael? Even today, there are Torah leaders who tell their followers that the time has not come to go to Israel. The question arises – can Gedolim err?
-
-As the first wave of bombers reached the shores of Tel Aviv, a wall of rain clouds appeared in the sky. Jerusalem vanished in an impenetrable fog. In the lead French bomber, the dials on the instrument panel were spinning wildly in circles. The mysterious fog darkened the cockpit. An unworldly thunder shook the plane like a toy. The terrified pilot tried to swing the giant bomber around, but the steering was jammed.
-
-Imagine that a camera was recording your every move on the computer – would you still click on immodest sites? Would you still go astray after your eyes if you knew that a video of your doings was going to be posted on Youtube for the world to see? You may not be caught in This World, but up in the big Movie Theater in the sky, when you come before the Heavenly Tribunal, your Youtube history is going to be presented on the Big Screen for all of the Celestial Judges to see.
-
-The Jewish Press reports that Kosher Delight is closing its doors in New York, the third Manhattan kosher emporium to do so this year. The real question is: when will “Galut Delight” close up shop? When will the exile lose its delight in the eyes of Diaspora Jews? When will we understand that we don’t belong in gentile lands, no matter how delightful and kosher our Jewish communities may be?
-
-"I've come for my house," the man said. "My family wants to move back tonight." Ehud's voice stuck in his throat. He felt dizzy. He felt weak. Giving up his house was too much. Ehud felt his sons' eyes upon him, watching to see what he would do. "It isn't your house," Ehud said. "Yes it is," the man answered. "We bought it. We have a deed," Ehud insisted. "I have a deed too. The people you bought the house from weren't the legal owners."<|endoftext|>
+Join us for our 5th Annual WARRIOR VoLLEYball Tournament on
+
+Sunday, August 20, 2017!
+
+Register your team of 4 below. If you don't have a team of 4, you will be grouped with other individuals looking to build a team. The fee to register is $35 for a team of 4 or $10 per person. Men, Women, and Co-Ed teams are welcome (This event is for 9th grade and up).
+
+REGISTRATION DEADLINE IS FRIDAY, AUGUST 18TH.
+
+Food and beverages will be available for purchase at our concession stand. We'll have a DJ, gaga for the kids, and a great atmosphere! Bring your lawn chairs and coolers (no alcoholic beverages please).
+
+(Name of player registering the team OR your name if you are just registering yourself and need to be put on a team)
+
+First Name
+
+Last Name
+
+Email Address *
+
+Player 2
+
+Player 2
+
+First Name
+
+Last Name
+
+Player 3
+
+Player 3
+
+First Name
+
+Last Name
+
+Player 4
+
+Player 4
+
+First Name
+
+Last Name
+
+Thank you! Please submit your payment by clicking on the link below the Register button. Payments can also be made in cash or check in an offering envelope. Please include "Volleyball" on the check memo line and on the envelope.<|endoftext|>Canada's Private Sector Union
+
+Montreal – August 21, 2014 – UFCW Quebec activists joined more than 2,000 participants in the Montreal Pride Parade to show their support for the LGBTQ community and respect for the human rights of all.
+
+The 30th Annual Parade took place under the theme of “Our Flag, Our Fire”, where orange, one of the rainbow flag colours, was predominant. Proudly wearing orange t-shirts, members of the UFCW Quebec contingent marched past an enthusiastic crowd of nearly 240,000 spectators who had gathered along René-Lévesque Boulevard.
+
+As is customary, participants paused for a minute of commemoration for those who have died of AIDS, and for all who are victims of homophobia and physical violence.
+
+“As a progressive and welcoming organization, we are very proud to support our gay, lesbian, bisexual, and trans brothers and sisters in the fight for equality in their workplace and their community,” said Antonio Filato, president of the UFCW Quebec Provincial Council and president of UFCW Canada Local 500.
+
+“Sexual orientation is a human right that must be protected inside and outside the workplace," said Anouk Collet, director of the UFCW Canada Quebec regional office. "We are proud to stand by our brothers and sisters of the LGBTQ community today and every day.”<|endoftext|>Christian Social Responsibility
+
+Christian Social Responsibility (CSR, Kristet Samhällsansvar) was a lobby organization that was founded in the mid-1950s in Sweden. The goal of the organisation was to get Christian politicians placed high up on the voting papers of the Swedish political parties. The CSR had a grassroots network of active members over the entire nation and produced their own material. 
+
+The chairman of the organisation was Centre Party voter Sven Danell. Lewi Pethrus, one of the founders of the Christian Democratic Party was the vice chairman. Birger Ekstedt, later to become the chairman of the Christian Democratic Party, was the secretary of the organisation.
+
+Category:Christian Democrats (Sweden)<|endoftext|>Another giant solar explosion follows Tuesday’s enormous solar flare
+
+30 October 2003
+
+ESA PR 71-2003. Since Tuesday 28 October, explosive events originating from the Sun have been bathing the Earth and its surroundings in high energy radiation.
+
+Although 150 million kilometres away, the Sun is still capable of causing major disruption here on Earth to a range of systems that we depend on in everyday life. These include communication and navigation systems, aircraft and spacecraft operations and the distribution of electricity at high latitudes.
+
+The activity started on Tuesday with a giant solar flare - the second biggest ever seen by SOHO, the ESA-NASA solar observatory that maintains a constant watch on the Sun, monitoring these events as they happen. A few minutes later, spacecraft circling the Earth began to detect high levels of energetic radiation, capable of blinding satellites and causing increased radiation levels down to normal aircraft cruising altitudes. About 24 hours after the solar flare was observed, an accompanying coronal mass ejection - a giant cloud of magnetised plasma - reached the Earth, causing rapid changes in the Earth's magnetic field and what is known as a geomagnetic storm. This storm caused widespread disruption to communications; both satellite-based and HF radio.
+
+These events are truly sporadic and extremely difficult to predict. On Wednesday it appeared that radiation levels were decreasing. However, a second flare overnight has caused a further sharp increase in radiation levels. Here on Earth, the disruption continues today with a further coronal mass ejection expected to reach the Earth tomorrow in time for Halloween.
+
+Solar eruptions of this type together with the associated increased radiation levels and electromagnetic disturbances around the Earth have real immediate and long-term economic impacts. During the last few days, space weather related problems have been detected on spacecraft operated by a range of agencies across the globe and operations teams are on alert. On Earth, telecommunication links have been disrupted and steps have been taken to safeguard aircraft, which including some changes in scheduling. Effects have also been detected in high latitude power grids and are being carefully monitored.
+
+The increased dependency of our society on systems which are directly or indirectly influenced by solar and other events seen in space raises concerns about our ability to monitor and anticipate these events and the resulting changes collectively referred to as space weather. At the European Space Agency these issues are being handled jointly in the Electromagnetics and Space Environment Division by Dr Eamonn Daly’s group for the specifications of spacecraft protection and in the spacecraft operations teams.
+
+In addition, Europe-wide coordination is currently being set up together with the European Union via its COST (Coordination in Science and Technology) programme and ESA’s General Studies Programme. This coordination aims to optimise our existing resources (together with our international partners) in order to develop an operational resource which will enable society to respond effectively to immediate as well as long-term changes in our space weather.<|endoftext|>Q:
+
+using same kind of javascript in more than 1 divs
+
+I am creating cube animations using javascript which is working fine but when i create another div with the same id of javascript then second div is not using dat same script. How do i do that? so i can use same scripts in more than one divs?
+Code
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>jQuery Image Cube</title>
+<style type="text/css">
+#basicCube { width: 150px; height: 150px;}
+#basicCube img{border:3px solid #ccc}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.imagecube.js"></script>
+<script type="text/javascript">
+$(function () {
+    $('#basicCube').imagecube();
+});
+</script>
+</head>
+<body>
+<div id="basicCube">
+    <img src="1.jpg" alt="Gorge" title="Gorge">
+    <img src="2.jpg" alt="Gorge" title="Gorge">
+    <img src="3.jpg" alt="Gorge" title="Gorge">
+    <img src="4.jpg" alt="Gorge" title="Gorge">
+    <img src="5.jpg" alt="Gorge" title="Gorge">
+    <img src="6.jpg" alt="Gorge" title="Gorge">
+</div>
+</body>
+</html>
+
+A:
+
+You shouldn't use an identifier more than once in a document. In this case you will want to use classes instead:
+CSS
+.basicCube { width: 150px; height: 150px;}
+.basicCube img{border:3px solid #ccc}
+
+HTML
+<div class="basicCube">
+    <img src="1.jpg" alt="Gorge" title="Gorge">
+    <img src="2.jpg" alt="Gorge" title="Gorge">
+    <img src="3.jpg" alt="Gorge" title="Gorge">
+    <img src="4.jpg" alt="Gorge" title="Gorge">
+    <img src="5.jpg" alt="Gorge" title="Gorge">
+    <img src="6.jpg" alt="Gorge" title="Gorge">
+</div>
+<div class="basicCube">
+    <img src="1.jpg" alt="Gorge" title="Gorge">
+    <img src="2.jpg" alt="Gorge" title="Gorge">
+    <img src="3.jpg" alt="Gorge" title="Gorge">
+    <img src="4.jpg" alt="Gorge" title="Gorge">
+    <img src="5.jpg" alt="Gorge" title="Gorge">
+    <img src="6.jpg" alt="Gorge" title="Gorge">
+</div>
+
+JavaScript
+$(function () {
+    $('.basicCube').imagecube();
+});
+
+<|endoftext|>Instagram's Looking to Launch a Standalone App for Online Shopping
+
+Author
+
+Published
+
+Share it
+
+That, reportedly, is what the Facebook-owned company is developing, which would enable it to maximize the potential of shopping on the visual platform, without risking the current Instagram user-experience in a significant way.
+
+“The app - which may be called IG Shopping - would let users browse collections of goods from merchants that they follow, and purchase them directly within the app.”
+
+The direct connection between Instagram’s main app and its proposed shopping channel is essential – as noted here, based on the information provided, Instagram Shopping would highlight items from businesses you already follow on IG, while you would also expect that brands on Instagram would be given additional options to link to their Instagram Shopping channels from their Instagram posts.
+
+You can currently only link to your own website via your Instagram profile (and in Stories for eligible brands). For Instagram Shopping to work, you’d expect that it would look to open up a lot more cross-channel support - which could prove a significant lure for brands already working to build an Instagram following.
+
+And an increasing number of brands are doing exactly that – with the platform now up to a billion monthly active users, there are now also more than 25 million active Instagram business profiles, and growing every day. The rapid rise of the platform has brands clamoring to utilize Stories and connect with usage trends, and the addition of more direct conversion options – which can more clearly attribute on-platform efforts to bottom line results – will no doubt be welcomed.
+
+Interestingly, The Verge also notes that a standalone IG Shopping app could actually become a rival for Shopify:
+
+“Over time, Facebook could introduce more tools for merchants who are building their businesses on Instagram, directly challenging e-commerce platforms like Shopify, according to a person familiar with the company’s thinking. Most online businesses need an Instagram account already, the thinking goes; many of them would surely use paid business tools if they became available.”
+
+That opens up a lot of new potential for both Facebook and Instagram. It’s yet to be seen whether splitting the Instagram experience into separate elements is an effective strategy (Instagram has reportedly been testing a standalone app for DMs, while its recently launched app for IGTV is not performing well in isolation), but it would enable the platform to create a wholly aligned shopping experience, without the concerns of annoying its userbase with blatant promotions, and over-stuffing the main app.
+
+That could also reflect Facebook’s learnings from Messenger. Facebook has been pushing to monetize Messenger - and its 1.3 billion users – by adding in new functionality, including bots and shopping tools to facilitate more business behavior. But that push hasn’t seen Messenger become the all-purpose tool that Facebook had envisioned, and earlier this year, former Facebook Messenger chief David Marcus admitted that the app had become ‘too cluttered’ and needed to be pared back.
+
+Maybe that’s why Instagram’s going the separate app route – which seems like more work, it’ll take more effort to get people opening a completely different app. But maybe, by providing direct links, and promoting them in the main app, it could facilitate all new user behaviors. The precedent set by IGTV thus far doesn’t seem overly positive, but it’s still early days in the rollout.
+
+There’s not a lot to go on at this stage – we don’t have any visuals or any dates for a possible rollout. But it’s definitely an interesting consideration. We’ll keep you updated on any progress.<|endoftext|>Networks are messy. Although they can be made to look neat and tidy by holding all the gear in rack mounted cabinets with serious cable management makeovers, they are still comprised of small islands of hardware each running its own proprietary software and firmware, often on proprietary silicon. For home users this isn’t really an issue, but for large government and business networks things get complicated and convoluted quickly. Especially in the case of internal networks used by governments that need to be as locked down as possible, changing even one switch, server, or connected device on the network is a tedious (and expensive!) process of rewriting security rules on a each and every hardware device.
+
+Each hardware device (be it a switch, router, server, or firewall) operates as its own isolated island which requires individual configuration. Seeing the shortcomings of such a setup, researchers and startup companies like Nicira have started to develop open software control systems under a coined term of “software defined networking” (SDN). Stuart Miniman defines SDN as “a model for network control, based on the idea that network traffic flow can be made programmable at scale, thus enabling new dynamic models for traffic management.” Similar to the way virtualization can be used to host many (virtual) computers on one physical piece of hardware, these virtualized networks could allow companies to run multiple network slices off of a single physical network.
+
+This is a level of control and programmability that is not currently possible due to network hardware vendors using proprietary software in all their devices (Cisco’s IOS for example). SDN takes the proprietary code out of the equation, and — using open software on all the routers, switches, firewalls, and other network devices — separates the data and control planes (the packets and the logic that determines what to do with those packets). The network hardware is then connected and mapped out in software, and network admins are able to manage the entire network from a software interface. They are also able to specialize their network and add new functionality by writing their own code and deploying it across the network.
+
+One of the most important benefits of SDN is that commodity hardware can be used, instead of specialty hardware from specific manufacturers. Removing or relocating devices on the network would involve a few mouse clicks in a GUI rather than physically switching Ethernet cables and reconfiguring all the appropriate network devices. Martin Casado, CTO of Nicira (who is one of the companies developing SDN technologies) said that “we’re virtualizing away this physical fabric, and because now we have a virtual layer, you can do anything you want with it. Because of this virtualization, the network can be fashioned from any and all compatible hardware, and can be controlled, transformed, and secured from a software interface rather than from configuring each device individually.
+
+There is talk around the web that SDN will spell the end for special network hardwar companies like Cisco as well as eliminate the jobs of network operators. While entirely possible, such an event is not going to happen overnight. Cisco is not likely to give up without a fight, and at this point it still has a chance to react and adapt to this new technology. The reduction in network operator IT positions is possible as well but this virtualization technology is going to open up its own field of study as well, which should lead to positions maintaining SDN. Especially while software defined networking is still a new technology, businesses are going to need their IT personnel.
+
+Networking giant Cisco has recently responded to rumors of SDN killing its business by stating that some customers do not want programmable networks. Also, for those customers that do want the flexibility of SDN, it has funded and plans to acquire network startup company Insieme. Insieme is reportedly working on a line of programmable network switches that support OpenStack as the SDN abstraction layer. The CTO of Cisco has been quoted by Network World in stating “Networking is about to be reinvented and Cisco will do that reinvention of networking.”
+
+In the end, the idea of a truly modular virtualized network that allows control from a software GUI is really cool. It is a big shift in networking to a programmable, open, and modular network controlled via software software that will make managing large scale networks much easier.
+
+[Image credit]<|endoftext|>Head of coalition and Syria's Tomorrow movement meet in Istanbul to discuss repairing relations between Syrians and the country's Alawite sect
+
+Head of the Syria’s Tomorrow movement Fouad Humeira met with Syrian National Coalition President Anas al-Abdah and his deputy Samira al-Massalama at the coalition headquarters in Istanbul late last week.
+
+Talks during the meeting touched on the need to focus necessary attention on the group of Alawite girls kidnapped and held by military factions for about three years. Mr. Humeira said that he had previously received a promise from the Army of Islam rebel group to release eight of the prisoners as a goodwill initiative, but the issue has not been resolved because of the assassination of the group’s previous leader Zahran Alloush.
+
+Attendees at the meeting discussed reasons behind widespread frustration within the Alawite sect towards the goals of the revolution. Humeira said: “The regime succeeded over 50 years in tying its survival in power to the interests of the sect.” He added: “It has become urgent and necessary to establish descriptions of revolutionary acts to distinguish them from criminal acts.”
+
+For his part, coalition president Abdah said that “the revolution must win morally over the regime” and expressed the coalition’s willingness to give all necessary support to the Syria’s Tomorrow movement, which aims to repair relations between the Alawite sect and the rest of Syria’s communities as a result of the regime’s distortions.
+
+Abdah stressed the need for wider representation of the Alawite sect in the institutions of the revolution and its official agencies, to reflect positively on the course of revolutionary work.
+
+He said that “the coalition is in the process of developing a plan for a broad and full Syrian dialogue with the aim of bridging the current gap in the Syrian fabric, which was caused by the regime and its gangs over the last five years.”
+
+This article was translated and edited by The Syrian Observer. Responsibility for the information and views set out in this article lies entirely with the author.<|endoftext|>Coronary stents and subsequent surgery: reported provider attitudes and practice patterns.
+Management of antiplatelet therapy in patients with cardiac stents who need subsequent surgery is complex. Current guidelines recommend delaying elective surgery or, if surgery is emergent, proceeding without aspirin cessation. This study assessed provider knowledge, attitudes, and practices for patients with cardiac stents needing subsequent surgery. A national survey was administered to Veterans Administration surgeons, anesthesiologists, and cardiologists. Questions examined guideline awareness and agreement, perceptions of bleeding risk and stent thrombosis, practice patterns for antiplatelet therapy management, and experience with perioperative stent thrombosis. Chi-square tests and generalized estimating equations were used to examine differences in reported practices. Among 295 respondents, guideline awareness (92%) and agreement (93%) were high but higher among cardiologists and anesthesiologists than surgeons. Guideline agreement and personal experience with stent thrombosis were also associated with reported practice patterns. In adjusted models for early surgeries, cardiologists and anesthesiologists were more likely to report continuation of dual therapy as compared with surgeons regardless of stent type (drug-eluting P = 0.03; bare metal P < 0.01). Despite successful guideline adoption, significant variations in practice patterns by provider type were found. Understanding reasons behind the variation and outcomes of various antiplatelet management strategies are important steps in optimizing care of patients with coronary stents undergoing noncardiac surgery.<|endoftext|>Blairmhor 8 year old Scotch whisky is produced from a vatting of up to 20 different single malt whiskies, the majority from the Highland and Speyside regions. All of these malts have been distilled in traditional copper stills and then matured in casks for a minimum of eight years resulting in this smooth uncomplicated Scotch that offers the perfect introduction to Blended Malt Scotch Whisky.
+
+This blended malt has a rich, full-bodied nose and a perfect golden honey colour. It has a peat flavour on the palate with heather overtones and a touch of malted spice together with a mature sweetness in the long finish,
+
+Altogether Blairmhor is a smooth, finely balanced, blended malt of exceptional character and reputation.<|endoftext|>
