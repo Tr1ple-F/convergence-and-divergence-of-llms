@@ -78,7 +78,7 @@ def main():
 
         for model_name in model_names:
             for revision in revisions:
-                for i in [1,3,5,7,9]:
+                for i in [1,5,9]:
                     print(f"Processing model: {model_name}-seed{i}, revision: {revision}")
                     get_probabilities(f"{model_name}-seed{i}", revision, input_text)
 
