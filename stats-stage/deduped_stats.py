@@ -6,24 +6,23 @@ def calculate_surprisal(probabilities, correct_indices):
     return -probabilities[np.arange(probabilities.shape[0]), correct_indices]
 
 def calculate_stats(model_name, revision, correct_indices, top_n=10):
-    for i in [1,3,5,7,9]:
-        probabilities = np.load(f'../probabilities/{model_name.replace("/", "-")}-seed{i}/{revision}/probabilities.npy')[:, :50304]
+    probabilities = np.load(f'../probabilities/{model_name.replace("/", "-")}/{revision}/probabilities.npy')[:, :50304]
 
-        # Calculate surprisal
-        surprisal = calculate_surprisal(probabilities, correct_indices[1:])
+    # Calculate surprisal
+    surprisal = calculate_surprisal(probabilities, correct_indices[1:])
 
-        # Get the top N tokens with the highest probabilities for each token
-        top_tokens = np.argsort(probabilities, axis=-1)[:, -top_n:]
-        top_probabilities = np.take_along_axis(probabilities, top_tokens, axis=-1)
+    # Get the top N tokens with the highest probabilities for each token
+    top_tokens = np.argsort(probabilities, axis=-1)[:, -top_n:]
+    top_probabilities = np.take_along_axis(probabilities, top_tokens, axis=-1)
 
-        # Save as npy files
-        path1 = f'../results/deduped/{model_name.replace("/", "-")}-{revision}-seed{i}-surprisal.npy'
-        path2 = f'../results/deduped/{model_name.replace("/", "-")}-{revision}-seed{i}-top_tokens.npy'
-        path3 = f'../results/deduped/{model_name.replace("/", "-")}-{revision}-seed{i}-top_probabilities.npy'
-        np.save(path1, surprisal)
-        np.save(path2, top_tokens)
-        np.save(path3, top_probabilities)
-        print(f"Finished processing {model_name.replace('/', '-')}-{revision}-seed{i}")
+    # Save as npy files
+    path1 = f'../results/deduped/{model_name.replace("/", "-")}-{revision}-surprisal.npy'
+    path2 = f'../results/deduped/{model_name.replace("/", "-")}-{revision}-top_tokens.npy'
+    path3 = f'../results/deduped/{model_name.replace("/", "-")}-{revision}-top_probabilities.npy'
+    np.save(path1, surprisal)
+    np.save(path2, top_tokens)
+    np.save(path3, top_probabilities)
+    print(f"Finished processing {model_name.replace('/', '-')}-{revision}")
 
 with open('deduped_config.json', 'r') as f:
     config = json.load(f)
