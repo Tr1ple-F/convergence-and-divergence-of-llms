@@ -9,10 +9,23 @@ def now():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def calculate_kl_divergence(log_p, log_q):
-    return cp.sum(cp.exp(log_p) * (log_p - log_q), axis=-1)
+    """Calculate KL divergence with renormalization on GPU."""
+    # Renormalize each log distribution
+    p = cp.exp(log_p)
+    q = cp.exp(log_q)
+
+    p /= cp.sum(p, axis=-1, keepdims=True)  # Renormalize p
+    q /= cp.sum(q, axis=-1, keepdims=True)  # Renormalize q
+
+    # Recompute log after normalization
+    log_p = cp.log(p)
+    log_q = cp.log(q)
+
+    # Calculate KL divergence
+    return cp.sum(p * (log_p - log_q), axis=-1)
 
 def process_file_pair(probs1, file2_path):
-    probs2 = cp.asarray(np.load(file2_path))
+    probs2 = cp.asarray(np.load(file2_path)[:, :50254])
     assert probs1.shape == probs2.shape, (
         f"Shape mismatch between {file2_path}"
     )
@@ -39,7 +52,7 @@ for model_name_1 in model_names:
                 print(f"Skipping calculation for {output_file} as it already exists.")
                 continue
 
-            probs1 = cp.asarray(np.load(os.path.join(base_dir_1, files_1[0])))
+            probs1 = cp.asarray(np.load(os.path.join(base_dir_1, files_1[0]))[:, :50254])
 
             print(
                 f"Calculating KL divergence for model: {model_name_1} revision: {revision_1} seed: {i}"
