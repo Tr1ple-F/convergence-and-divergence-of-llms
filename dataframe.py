@@ -28,13 +28,13 @@ data = []
 
 for size in config["sizes"]:
     for step in config["steps"]:
-        surprisals.append(np.load(f'./results/EleutherAI-pythia-{size}-deduped-step{step}-surprisal.npy'))
+        surprisals.append(np.load(f'./results/deduped/EleutherAI-pythia-{size}-deduped-step{step}-surprisal.npy'))
 
 model_index = 0
 for size in config["sizes"]:
     for step in config["steps"]:
         # Construct file names based on size and step
-        kl_filename = f'./results/EleutherAI-pythia-{size}-deduped_step{step}_kl.npy'
+        kl_filename = f'./results/deduped/EleutherAI-pythia-{size}-deduped-step{step}-kl.npy'
 
         kl_values = np.load(kl_filename)
 
