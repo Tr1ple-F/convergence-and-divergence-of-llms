@@ -1,13 +1,18 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from utils import get_comparison_data, load_npy_file, kl_config
+from utils import get_comparison_data, load_npy_file, deduped_config
 
 # Assign unique values to each model
 model_values = {
     "EleutherAI/pythia-70m-deduped": 0.1,
-    "EleutherAI/pythia-410m-deduped": 0.5,
-    "EleutherAI/pythia-1.4b-deduped": 0.9
+    "EleutherAI/pythia-160m-deduped": 0.2,
+    "EleutherAI/pythia-410m-deduped": 0.3,
+    "EleutherAI/pythia-1b-deduped": 0.4,
+    "EleutherAI/pythia-1.4b-deduped": 0.5,
+    "EleutherAI/pythia-2.8b-deduped": 0.6,
+    "EleutherAI/pythia-6.9b-deduped": 0.7,
+    "EleutherAI/pythia-12b-deduped": 0.8,
 }
 
 
@@ -21,11 +26,11 @@ def get_color(base_model, target_model):
 
 
 def plot_kl_scores(base_model_name, target_name):
-    revisions = kl_config()["revisions"]
+    revisions = deduped_config()["revisions"]
     kl_scores = []
 
     for revision in revisions:
-        kl_data = get_comparison_data(load_npy_file(base_model_name, revision), target_name, revision)
+        kl_data = get_comparison_data(load_npy_file(base_model_name, revision, "-"), target_name, revision)
         average_kl_score = np.mean(kl_data)
         kl_scores.append(average_kl_score)
 
@@ -39,14 +44,11 @@ def X(string):
 
 
 def plot_all_kl_scores():
-    model_pairs = [
-        ("EleutherAI/pythia-70m-deduped", "EleutherAI/pythia-410m-deduped"),
-        ("EleutherAI/pythia-410m-deduped", "EleutherAI/pythia-70m-deduped"),
-        ("EleutherAI/pythia-410m-deduped", "EleutherAI/pythia-1.4b-deduped"),
-        ("EleutherAI/pythia-1.4b-deduped", "EleutherAI/pythia-410m-deduped"),
-        ("EleutherAI/pythia-70m-deduped", "EleutherAI/pythia-1.4b-deduped"),
-        ("EleutherAI/pythia-1.4b-deduped", "EleutherAI/pythia-70m-deduped")
-    ]
+    model_pairs = []
+    for x in model_values.keys():
+        for y in model_values.keys():
+            if x != y:
+                model_pairs.append((x, y))
 
     plt.figure(figsize=(12, 8))
 
@@ -56,7 +58,7 @@ def plot_all_kl_scores():
     plt.xlabel('Revisions')
     plt.ylabel('Average KL Score')
     plt.title('Average KL Score vs Revisions for Different Model Comparisons')
-    plt.legend()
+    # plt.legend()
     plt.grid(True)
     plt.savefig('../graphics/average_kl_vs_revisions.png')
 

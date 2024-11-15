@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from utils import load_npy_file, kl_config, tokenized_text, get_comparison_data
+from utils import load_npy_file, deduped_config, tokenized_text, get_comparison_data
 
 def moving_average(data, window_size):
     return np.convolve(data, np.ones(window_size) / window_size, mode='valid')
@@ -84,12 +84,12 @@ def plot_surprisal(tokenized_text, base_model_name, base_revision, data, window_
     plt.clf()
     plt.close(f)
 
-for base_model_name in kl_config()['model_names']:
-    for base_revision in kl_config()['revisions']:
+for base_model_name in deduped_config()['model_names']:
+    for base_revision in deduped_config()['revisions']:
         surprisal = load_npy_file(base_model_name, base_revision, "-", "surprisal")
         plot_surprisal(tokenized_text()[1:], base_model_name, base_revision, surprisal)
-        for target_name in kl_config()['model_names']:
-            for target_revision in kl_config()['revisions']:
+        for target_name in deduped_config()['model_names']:
+            for target_revision in deduped_config()['revisions']:
                 comparison_data = get_comparison_data(load_npy_file(base_model_name, base_revision), target_name,
                                                       target_revision)
                 plot_kl(tokenized_text()[1:], base_model_name, base_revision, target_name, target_revision,

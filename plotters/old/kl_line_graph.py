@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import kl_config
+from utils import deduped_config
 
 # Function to plot average KL values
 def plot_average_kl_values(kl_data, model_name, revision):
@@ -15,9 +15,9 @@ def plot_average_kl_values(kl_data, model_name, revision):
     plt.close('all')
 
 # Load and plot data
-for base_model_name in kl_config()['model_names']:
-    for base_revision in kl_config()['revisions']:
+for base_model_name in deduped_config()['model_names']:
+    for base_revision in deduped_config()['revisions']:
         # Load the file and calculate the averages
-        file_path = f'../results/{base_model_name.replace("/", "-")}_{base_revision}_kl.npy'
+        file_path = f'../results/deduped/{base_model_name.replace("/", "-")}-{base_revision}-kl.npy'
         loaded_data = np.load(file_path)
         plot_average_kl_values(loaded_data, base_model_name, base_revision)
