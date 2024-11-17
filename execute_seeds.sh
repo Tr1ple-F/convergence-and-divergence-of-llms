@@ -11,7 +11,7 @@ WORKING_DIR="$1"
 
 # Step 1: Run python tokenize_util inside ./run-stage
 cd ./run-stage || { echo "Directory ./run-stage not found"; exit 1; }
-python tokenize_util "$WORKING_DIR" || { echo "Failed to run tokenize_util"; exit 1; }
+python tokenize_util.py "$WORKING_DIR" || { echo "Failed to run tokenize_util"; exit 1; }
 
 # Step 2: Run pos_tagger.py in the root directory
 cd .. || exit
