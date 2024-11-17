@@ -2,7 +2,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from utils import deduped_config
+from utils import deduped_config, strip
 
 config = deduped_config()
 revisions = config['revisions']
@@ -10,13 +10,6 @@ models = config['model_names']
 number_of_steps = len(revisions)
 number_of_models = len(models)
 last_step = revisions[-1]
-
-def strip(name):
-    if "EleutherAI" in name:
-        return name.replace("EleutherAI/pythia-", "").replace("-deduped", "")
-    if "step" in name:
-        return name.replace("step", "")
-    return name
 
 # Idea 1
 # x = training step

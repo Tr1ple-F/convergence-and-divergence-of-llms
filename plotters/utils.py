@@ -1,6 +1,4 @@
-import numpy as np
 import json
-import os
 
 def deduped_config():
     with open("./deduped_config.json") as f:
@@ -23,3 +21,10 @@ def find_comparison_index(model_name, revision):
 def get_comparison_data(data, target_model_name, target_revision):
     comparison_index = find_comparison_index(target_model_name, target_revision)
     return data[comparison_index, :]
+
+def strip(name):
+    if "EleutherAI" in name:
+        return name.replace("EleutherAI/pythia-", "").replace("-deduped", "")
+    if "step" in name:
+        return name.replace("step", "")
+    return name
