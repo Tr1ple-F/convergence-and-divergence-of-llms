@@ -26,7 +26,7 @@ def process_file_pair(probs1, file2_path, device):
 # Check if GPU is available, fallback to CPU if not
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-with open(f'../working_dir/{sys.argv[0]}/deduped_config.json', 'r') as f:
+with open(f'../working_dir/{sys.argv[1]}/deduped_config.json', 'r') as f:
     config = json.load(f)
 
 model_names = config['model_names']
@@ -34,12 +34,12 @@ revisions = config['revisions']
 
 for model_name_1 in model_names:
     for revision_1 in revisions:
-        base_dir_1 = f'../working_dir/{sys.argv[0]}/probabilities/{model_name_1.replace("/", "-")}/{revision_1}'
+        base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}/{revision_1}'
         files_1 = [f for f in os.listdir(base_dir_1) if f.endswith('.npy')]
 
         all_divergences = []
 
-        output_file = f'../working_dir/{sys.argv[0]}/results/deduped/{model_name_1.replace("/", "-")}-{revision_1}-kl.npy'
+        output_file = f'../working_dir/{sys.argv[1]}/results/deduped/{model_name_1.replace("/", "-")}-{revision_1}-kl.npy'
         if os.path.exists(output_file):
             print(f"Skipping calculation for {output_file} as it already exists.")
             continue
@@ -56,7 +56,7 @@ for model_name_1 in model_names:
 
         for model_name_2 in model_names:
             for revision_2 in revisions:
-                base_dir_2 = f'../working_dir/{sys.argv[0]}/probabilities/{model_name_2.replace("/", "-")}/{revision_2}'
+                base_dir_2 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_2.replace("/", "-")}/{revision_2}'
                 files_2 = [f for f in os.listdir(base_dir_2) if f.endswith('.npy')]
 
                 assert len(files_1) == len(files_2), (

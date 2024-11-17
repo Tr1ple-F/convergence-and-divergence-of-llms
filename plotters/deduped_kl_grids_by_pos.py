@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import json
+import sys
 
 from utils import deduped_config, tagged_tokens, pos_tags
 
@@ -11,7 +11,7 @@ def create_kl_grid_deduped_by_pos():
         ticks = []
         for base_model_name in deduped_config()['model_names']:
             for base_revision in deduped_config()['revisions']:
-                loaded_data = np.load(f'../results/deduped/{base_model_name.replace("/", "-")}-{base_revision}-kl.npy')
+                loaded_data = np.load(f'../working_dir/{sys.argv[1]}/results/deduped/{base_model_name.replace("/", "-")}-{base_revision}-kl.npy')
                 pos_indices = [idx for idx, tag in enumerate(tagged_tokens()) if tag[1] == pos_tag["tag"]]
                 averages = np.mean(loaded_data[:, pos_indices], axis=1)
                 data[i, :] = averages
@@ -28,7 +28,7 @@ def create_kl_grid_deduped_by_pos():
         fig.colorbar(cax)
         plt.xticks(range(72), ticks, rotation=45)
         plt.yticks(range(72), ticks)
-        plt.savefig(f'../graphics/kl_grid_deduped_{pos_id}.png')
+        plt.savefig(f'../working_dir/{sys.argv[1]}/output/kl_grid_deduped_{pos_id}.png')
         plt.close('all')
 
 create_kl_grid_deduped_by_pos()

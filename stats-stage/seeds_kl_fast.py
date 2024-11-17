@@ -25,7 +25,7 @@ def process_file_pair(probs1, file2_path):
     return cp.asnumpy(divergences)
 
 
-with open(f'../working_dir/{sys.argv[0]}/seeds_config.json', 'r') as f:
+with open(f'../working_dir/{sys.argv[1]}/seeds_config.json', 'r') as f:
     config = json.load(f)
 
 model_names = config['model_names']
@@ -34,12 +34,12 @@ revisions = config['revisions']
 for model_name_1 in model_names:
     for revision_1 in revisions:
         for i in [1,5,9]:
-            base_dir_1 = f'../working_dir/{sys.argv[0]}/probabilities/{model_name_1.replace("/", "-")}-seed{i}/{revision_1}'
+            base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed{i}/{revision_1}'
             files_1 = [f for f in os.listdir(base_dir_1) if f.endswith('.npy')]
 
             all_divergences = []
 
-            output_file = f'../working_dir/{sys.argv[0]}/results/seeds/{model_name_1.replace("/", "-")}-{revision_1}-seed{i}-kl.npy'
+            output_file = f'../working_dir/{sys.argv[1]}/results/seeds/{model_name_1.replace("/", "-")}-{revision_1}-seed{i}-kl.npy'
             if os.path.exists(output_file):
                 print(f"Skipping calculation for {output_file} as it already exists.")
                 continue
@@ -53,7 +53,7 @@ for model_name_1 in model_names:
             for model_name_2 in model_names:
                 for revision_2 in revisions:
                     for j in [1,5,9]:
-                        base_dir_2 = f'../working_dir/{sys.argv[0]}/probabilities/{model_name_2.replace("/", "-")}-seed{j}/{revision_2}'
+                        base_dir_2 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_2.replace("/", "-")}-seed{j}/{revision_2}'
                         files_2 = [f for f in os.listdir(base_dir_2) if f.endswith('.npy')]
 
                         assert len(files_1) == len(files_2), (

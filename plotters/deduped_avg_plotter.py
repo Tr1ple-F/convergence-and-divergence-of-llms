@@ -2,6 +2,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import sys
 from utils import deduped_config, strip
 
 config = deduped_config()
@@ -15,7 +16,7 @@ last_step = revisions[-1]
 # x = training step
 # y = multiple KLs, different model size
 for model in models:
-    kl_data = np.load(f'../results/deduped/{model.replace("/", "-")}-{last_step}-kl.npy')
+    kl_data = np.load(f'../working_dir/{sys.argv[1]}/results/deduped/{model.replace("/", "-")}-{last_step}-kl.npy')
     selected_data = np.average(kl_data, axis=1)
 
     data = []
@@ -25,14 +26,14 @@ for model in models:
 
     sns.lineplot(x='Training Step', y='KL Value', hue='Model', data=df, estimator=None)
 
-    plt.savefig(f'../graphics/across_training_{model.replace("/", "-")}.png')
+    plt.savefig(f'../working_dir/{sys.argv[1]}/output/across_training_{model.replace("/", "-")}.png')
     plt.close()
 
 # Idea 2
 # x = model_size
 # y = multiple KLs, all same model, different training steps
 for model in models:
-    kl_data = np.load(f'../results/deduped/{model.replace("/", "-")}-{last_step}-kl.npy')
+    kl_data = np.load(f'../working_dir/{sys.argv[1]}/results/deduped/{model.replace("/", "-")}-{last_step}-kl.npy')
     selected_data = np.average(kl_data, axis=1)
 
     data = []
@@ -42,5 +43,5 @@ for model in models:
 
     sns.lineplot(x='Model', y='KL Value', hue='Training Step', data=df, estimator=None)
 
-    plt.savefig(f'../graphics/across_model_{model.replace("/", "-")}.png')
+    plt.savefig(f'../working_dir/{sys.argv[1]}/output/across_model_{model.replace("/", "-")}.png')
     plt.close()

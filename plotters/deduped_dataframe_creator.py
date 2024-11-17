@@ -1,4 +1,4 @@
-import json
+import sys
 import numpy as np
 import pandas as pd
 from utils import deduped_config, strip, tagged_tokens, pos_tags
@@ -10,8 +10,8 @@ models = config['model_names']
 data = []
 for model1 in models:
     for revision1 in revisions:
-        kl_data = np.load(f'../results/deduped/{model1.replace("/", "-")}-{revision1}-kl.npy')
-        surprisal_data = np.load(f'../results/deduped/{model1.replace("/", "-")}-{revision1}-surprisal.npy')
+        kl_data = np.load(f'../working_dir/{sys.argv[1]}/results/deduped/{model1.replace("/", "-")}-{revision1}-kl.npy')
+        surprisal_data = np.load(f'../working_dir/{sys.argv[1]}/results/deduped/{model1.replace("/", "-")}-{revision1}-surprisal.npy')
 
         pos_kl = []
         pos_surprisal = []
@@ -37,4 +37,4 @@ for model1 in models:
                 i += 1
 
 df = pd.DataFrame(data)
-df.to_csv('../graphics/average_dataframe.csv')
+df.to_csv(f'../working_dir/{sys.argv[1]}/output/average_dataframe.csv')

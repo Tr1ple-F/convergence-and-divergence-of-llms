@@ -5,7 +5,7 @@ import sys
 
 def load_data(x, y):
     """Loads surprisal, top probabilities, and top tokens for given x and y."""
-    base_path = f'../working_dir/{sys.argv[0]}/results/deduped'
+    base_path = f'../working_dir/{sys.argv[1]}/results/deduped'
     surprisal_path = os.path.join(base_path, f"EleutherAI-pythia-{x}-deduped-step{y}-surprisal.npy")
     top_prob_path = os.path.join(base_path, f"EleutherAI-pythia-{x}-deduped-step{y}-top_probabilities.npy")
     top_tokens_path = os.path.join(base_path, f"EleutherAI-pythia-{x}-deduped-step{y}-top_tokens.npy")
@@ -23,7 +23,7 @@ def load_vocab():
 
 def load_tokenized_text():
     """Loads tokenized input text."""
-    with open(f"../working_dir/{sys.argv[0]}/input_text_tokenized.json", "r") as text_file:
+    with open(f"../working_dir/{sys.argv[1]}/input_text_tokenized.json", "r") as text_file:
         return json.load(text_file)
 
 def calculate_percent(value):
