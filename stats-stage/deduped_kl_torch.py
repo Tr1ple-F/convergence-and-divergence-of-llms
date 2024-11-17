@@ -1,8 +1,6 @@
 import json
 import os
-
-import cupy as cp
-import cupyx as cpx
+import torch
 import numpy as np
 from datetime import datetime
 
@@ -10,20 +8,22 @@ def now():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def calculate_kl_divergence(log_p, log_q):
-    log_p = cpx.scipy.special.log_softmax(log_p, axis=-1)
-    log_q = cpx.scipy.special.log_softmax(log_q, axis=-1)
+    log_p = torch.nn.functional.log_softmax(log_p, dim=-1)
+    log_q = torch.nn.functional.log_softmax(log_q, dim=-1)
 
     # Calculate KL divergence
-    return cp.sum(cp.exp(log_p) * (log_p - log_q), axis=-1)
+    return torch.sum(torch.exp(log_p) * (log_p - log_q), dim=-1)
 
-def process_file_pair(probs1, file2_path):
-    probs2 = cp.asarray(np.load(file2_path)[:, :50254])
+def process_file_pair(probs1, file2_path, device):
+    probs2 = torch.tensor(np.load(file2_path)[:, :50254], dtype=torch.float16, device=device)
     assert probs1.shape == probs2.shape, (
         f"Shape mismatch between {file2_path}"
     )
     divergences = calculate_kl_divergence(probs1, probs2)
-    return cp.asnumpy(divergences)
+    return divergences.cpu().numpy()
 
+# Check if GPU is available, fallback to CPU if not
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 with open('deduped_config.json', 'r') as f:
     config = json.load(f)
@@ -43,7 +43,11 @@ for model_name_1 in model_names:
             print(f"Skipping calculation for {output_file} as it already exists.")
             continue
 
-        probs1 = cp.asarray(np.load(os.path.join(base_dir_1, files_1[0]))[:, :50254])
+        probs1 = torch.tensor(
+            np.load(os.path.join(base_dir_1, files_1[0]))[:, :50254],
+            dtype=torch.float16,
+            device=device
+        )
 
         print(
             f"Calculating KL divergence for model: {model_name_1} revision: {revision_1}"
@@ -63,6 +67,7 @@ for model_name_1 in model_names:
                     process_file_pair(
                         probs1,
                         os.path.join(base_dir_2, files_2[0]),
+                        device=device
                     )
                 )
 
