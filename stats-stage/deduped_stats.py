@@ -1,12 +1,12 @@
 import json
-
+import sys
 import numpy as np
 
 def calculate_surprisal(probabilities, correct_indices):
     return -probabilities[np.arange(probabilities.shape[0]), correct_indices]
 
 def calculate_stats(model_name, revision, correct_indices, top_n=10):
-    probabilities = np.load(f'../other/{model_name.replace("/", "-")}/{revision}/probabilities.npy')[:, :50254]
+    probabilities = np.load(f'../working_dir/{sys.argv[0]}/probabilities/{model_name.replace("/", "-")}/{revision}/probabilities.npy')[:, :50254]
 
     # Calculate surprisal
     surprisal = calculate_surprisal(probabilities, correct_indices[1:])
@@ -16,21 +16,21 @@ def calculate_stats(model_name, revision, correct_indices, top_n=10):
     top_probabilities = np.take_along_axis(probabilities, top_tokens, axis=-1)
 
     # Save as npy files
-    path1 = f'../results/deduped/{model_name.replace("/", "-")}-{revision}-surprisal.npy'
-    path2 = f'../results/deduped/{model_name.replace("/", "-")}-{revision}-top_tokens.npy'
-    path3 = f'../results/deduped/{model_name.replace("/", "-")}-{revision}-top_probabilities.npy'
+    path1 = f'../working_dir/{sys.argv[0]}/results/deduped/{model_name.replace("/", "-")}-{revision}-surprisal.npy'
+    path2 = f'../working_dir/{sys.argv[0]}/results/deduped/{model_name.replace("/", "-")}-{revision}-top_tokens.npy'
+    path3 = f'../working_dir/{sys.argv[0]}/results/deduped/{model_name.replace("/", "-")}-{revision}-top_probabilities.npy'
     np.save(path1, surprisal)
     np.save(path2, top_tokens)
     np.save(path3, top_probabilities)
     print(f"Finished processing {model_name.replace('/', '-')}-{revision}")
 
-with open('deduped_config.json', 'r') as f:
+with open(f'../working_dir/{sys.argv[0]}/deduped_config.json', 'r') as f:
     config = json.load(f)
 
 model_names = config['model_names']
 revisions = config['revisions']
 
-correct_indices_file = '../common/input_text_encoded.npy'
+correct_indices_file = f'../working_dir/{sys.argv[0]}/common/input_text_encoded.npy'
 correct_indices = np.load(correct_indices_file)
 
 for model_name in model_names:
