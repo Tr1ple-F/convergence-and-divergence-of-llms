@@ -26,7 +26,7 @@ for model1 in models:
 
         i = 0
         for model2 in models:
-            for revision2 in models:
+            for revision2 in revisions:
                 row = {'Model 1': strip(model1), 'Revision 1': strip(revision1), "Model 2": strip(model2), "Revision 2": strip(revision2), 'KL Average': overall_average[i], 'Surprisal Average': np.mean(surprisal_data[i])}
 
                 for j, pos_tag in enumerate(pos_tags()):
