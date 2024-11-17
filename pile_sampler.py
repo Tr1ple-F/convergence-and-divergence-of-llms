@@ -8,6 +8,6 @@ num_samples = 10
 
 samples = random.sample(list(ds['validation']), num_samples)
 
-with open("../common/input_text.txt", "w", encoding="utf-8") as file:
+with open("working_dir/sample_text.txt", "w", encoding="utf-8") as file:
     for sample in samples:
         file.write(sample['text'] + "<|endoftext|>")

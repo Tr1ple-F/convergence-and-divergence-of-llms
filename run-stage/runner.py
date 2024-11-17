@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 from transformers import GPTNeoXForCausalLM, AutoTokenizer
 import torch
@@ -34,7 +36,7 @@ def get_probabilities(model_name, revision, input_text):
     if torch.cuda.is_available() and not model_too_large:
         model = model.cuda()
 
-    output_dir = os.path.join("../probabilities/" + model_name.replace('/', '-'), revision)
+    output_dir = os.path.join(f"../working_dir/{sys.argv[0]}/probabilities/" + model_name.replace('/', '-'), revision)
     os.makedirs(output_dir, exist_ok=True)
 
     inputs = tokenizer(input_text, return_tensors="pt")
@@ -71,14 +73,13 @@ def get_probabilities(model_name, revision, input_text):
     np.save(output_file_path, all_probabilities_matrix.astype(np.float16))
 
 def main():
-    with open('run_config.json', 'r') as config_file:
+    with open(f'../working_dir/{sys.argv[0]}/deduped_config.json', 'r') as config_file:
         config = json.load(config_file)
 
     model_names = config['model_names']
     revisions = config['revisions']
-    input_text_file = config['input_text_file']
 
-    with open(input_text_file, 'r', encoding="utf8") as file:
+    with open(f'../working_dir/{sys.argv[0]}/input_text.txt', 'r', encoding="utf8") as file:
         input_text = file.read()
 
         for model_name in model_names:

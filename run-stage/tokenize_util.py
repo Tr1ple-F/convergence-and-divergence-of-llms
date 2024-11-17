@@ -1,5 +1,5 @@
 import json
-
+import sys
 import numpy as np
 from transformers import AutoTokenizer
 
@@ -16,22 +16,13 @@ tokenizer = AutoTokenizer.from_pretrained(
     add_eos_token=True
 )
 
-with open("../common/input_text.txt", 'r', encoding="utf8") as file:
+with open(f'../working_dir/{sys.argv[0]}/seeds_config.json', 'r', encoding="utf8") as file:
   input_text = file.read()
 
 encoding = tokenizer.encode(input_text)
 
-# Create vocab.json
-ids = list(range(50304))
-token_arr = []
-for token in ids:
-  token_arr.append(tokenizer.decode(token))
-
-with open('../common/vocab.json', 'w', encoding="utf8") as out_file:
-  json.dump(token_arr, out_file)
-
 # Save encoded text (token ids)
-np.save('../common/input_text_encoded.npy', encoding)
+np.save(f'../working_dir/{sys.argv[0]}/seeds_config.json', encoding)
 print(len(encoding))
 
 # Save decoded text (text split into token parts)
@@ -39,5 +30,5 @@ decoded_arr = []
 for token in encoding:
   decoded_arr.append(tokenizer.decode(token))
 
-with open('../common/input_text_tokenized.json', 'w') as out_file:
+with open(f'../working_dir/{sys.argv[0]}/seeds_config.json', 'w') as out_file:
   json.dump(decoded_arr, out_file)

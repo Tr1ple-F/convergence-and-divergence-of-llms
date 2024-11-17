@@ -1,15 +1,22 @@
 import nltk
 import json
+import sys
+import os
 from collections import Counter
 
 nltk.download('punkt')
 nltk.download('punkt_tab')
 nltk.download('averaged_perceptron_tagger_eng')
 
-with open("common/input_text.txt", 'r', encoding="utf8") as file:
+workspace = os.path.join("../working_dir", sys.argv[1])
+input_text_path = os.path.join(workspace, "input_text.txt")
+input_text_tokenized_path = os.path.join(workspace, "input_text_tokenized.json")
+output_path = os.path.join(workspace, "pos_tagged_tokens.json")
+
+with open(input_text_path, 'r', encoding="utf8") as file:
     text = file.read()
 
-with open("common/input_text_tokenized.json", 'r') as file:
+with open(input_text_tokenized_path, 'r') as file:
     hf_tokens = json.load(file)
     hf_tokens = hf_tokens[1:-1]
 
@@ -47,5 +54,5 @@ tagged_tokens.insert(0, ('<|endoftext|>', 'UNK'))
 tagged_tokens.append(('<|endoftext|>', 'UNK'))
 
 # Step 4: Save the tagged tokens to a JSON file
-with open("common/pos_tagged_tokens.json", 'w') as file:
+with open(output_path, 'w') as file:
     json.dump(tagged_tokens, file)

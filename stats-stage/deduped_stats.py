@@ -6,7 +6,7 @@ def calculate_surprisal(probabilities, correct_indices):
     return -probabilities[np.arange(probabilities.shape[0]), correct_indices]
 
 def calculate_stats(model_name, revision, correct_indices, top_n=10):
-    probabilities = np.load(f'../probabilities/{model_name.replace("/", "-")}/{revision}/probabilities.npy')[:, :50254]
+    probabilities = np.load(f'../other/{model_name.replace("/", "-")}/{revision}/probabilities.npy')[:, :50254]
 
     # Calculate surprisal
     surprisal = calculate_surprisal(probabilities, correct_indices[1:])

@@ -1,13 +1,15 @@
 import json
+import sys
+
 import numpy as np
 import pandas as pd
 
 # Load configuration from JSON for model sizes and steps
-with open('reduced_config.json', 'r') as f:
+with open(f'../working_dir/{sys.argv[0]}/deduped_config.json', 'r') as f:
     config = json.load(f)
 
 # Load the JSON file containing tokenized data
-with open('common/input_text_tokenized.json', 'r') as f:
+with open(f'../working_dir/{sys.argv[0]}/input_text_tokenized.json', 'r') as f:
     tokenized_data = json.load(f)
 
 # Change #1: Create a new DataFrame for word IDs and save it
@@ -21,20 +23,20 @@ for j in range(len(tokenized_data)):
     }])], ignore_index=True)
 
 # Save word IDs to a CSV file
-word_id_df.to_csv('word_ids.csv', index=False)
+word_id_df.to_csv(f'../working_dir/{sys.argv[0]}/word_ids.csv', index=False)
 
 surprisals = []
 data = []
 
 for size in config["sizes"]:
     for step in config["steps"]:
-        surprisals.append(np.load(f'./results/deduped/EleutherAI-pythia-{size}-deduped-step{step}-surprisal.npy'))
+        surprisals.append(np.load(f'../working_dir/{sys.argv[0]}/results/deduped/EleutherAI-pythia-{size}-deduped-step{step}-surprisal.npy'))
 
 model_index = 0
 for size in config["sizes"]:
     for step in config["steps"]:
         # Construct file names based on size and step
-        kl_filename = f'./results/deduped/EleutherAI-pythia-{size}-deduped-step{step}-kl.npy'
+        kl_filename = f'../working_dir/{sys.argv[0]}/results/deduped/EleutherAI-pythia-{size}-deduped-step{step}-kl.npy'
 
         kl_values = np.load(kl_filename)
 
@@ -61,4 +63,4 @@ for size in config["sizes"]:
 
 # Save the combined DataFrame to a CSV file
 df = pd.DataFrame(data)
-df.to_csv('output.csv', index=False)
+df.to_csv(f'../working_dir/{sys.argv[0]}/dataframe.csv', index=False)
