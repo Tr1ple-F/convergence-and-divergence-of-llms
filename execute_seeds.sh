@@ -28,6 +28,6 @@ python seeds_stats.py "$WORKING_DIR" || { echo "Failed to run seeds_stats.py"; e
 cd .. || exit
 timestamp=$(date +"%Y-%m-%d-%H%M%S")
 output_file="run-${timestamp}.tar.gz"
-tar -czvf "$output_file" ./$WORKING_DIR/results/seeds || { echo "Failed to create tar.gz file"; exit 1; }
+tar -czvf "$output_file" ./working_dir/$WORKING_DIR/results/seeds || { echo "Failed to create tar.gz file"; exit 1; }
 
 echo "Process completed successfully. Output file: $output_file"
