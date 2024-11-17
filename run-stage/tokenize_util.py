@@ -16,13 +16,13 @@ tokenizer = AutoTokenizer.from_pretrained(
     add_eos_token=True
 )
 
-with open(f'../working_dir/{sys.argv[1]}/seeds_config.json', 'r', encoding="utf8") as file:
+with open(f'../working_dir/{sys.argv[1]}/input_text.txt', 'r', encoding="utf8") as file:
   input_text = file.read()
 
 encoding = tokenizer.encode(input_text)
 
 # Save encoded text (token ids)
-np.save(f'../working_dir/{sys.argv[1]}/seeds_config.json', encoding)
+np.save(f'../working_dir/{sys.argv[1]}/input_text_encoded.npy', encoding)
 print(len(encoding))
 
 # Save decoded text (text split into token parts)
@@ -30,5 +30,5 @@ decoded_arr = []
 for token in encoding:
   decoded_arr.append(tokenizer.decode(token))
 
-with open(f'../working_dir/{sys.argv[1]}/seeds_config.json', 'w') as out_file:
+with open(f'../working_dir/{sys.argv[1]}/input_text_tokenized.json', 'w') as out_file:
   json.dump(decoded_arr, out_file)
