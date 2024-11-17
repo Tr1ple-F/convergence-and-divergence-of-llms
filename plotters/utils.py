@@ -1,15 +1,17 @@
 import json
+import sys
+
 
 def deduped_config():
-    with open("./deduped_config.json") as f:
+    with open(f'../working_dir/{sys.argv[0]}/deduped_config.json') as f:
         return json.load(f)
 
 def seeds_config():
-    with open("./seeds_config.json") as f:
+    with open(f'../working_dir/{sys.argv[0]}/seeds_config.json') as f:
         return json.load(f)
 
 def tagged_tokens():
-    with open('../common/pos_tagged_tokens.json', 'r') as f:
+    with open(f'../working_dir/{sys.argv[0]}/pos_tagged_tokens.json', 'r') as f:
         return json.load(f)
 
 def pos_tags():

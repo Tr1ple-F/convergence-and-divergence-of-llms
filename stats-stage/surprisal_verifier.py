@@ -23,7 +23,7 @@ def load_vocab():
 
 def load_tokenized_text():
     """Loads tokenized input text."""
-    with open("../common/input_text_tokenized.json", "r") as text_file:
+    with open(f"../working_dir/{sys.argv[0]}/input_text_tokenized.json", "r") as text_file:
         return json.load(text_file)
 
 def calculate_percent(value):
