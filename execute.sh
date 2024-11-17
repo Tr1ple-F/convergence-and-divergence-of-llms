@@ -13,12 +13,10 @@ WORKING_DIR="$1"
 cd ./run-stage || { echo "Directory ./run-stage not found"; exit 1; }
 python tokenize_util.py "$WORKING_DIR" || { echo "Failed to run tokenize_util"; exit 1; }
 
-# Step 2: Run pos_tagger.py in the root directory
-cd .. || exit
+# Step 2: Run pos_tagger.py inside ./run-stage
 python pos_tagger.py "$WORKING_DIR" || { echo "Failed to run pos_tagger.py"; exit 1; }
 
 # Step 3: Run python runner.py inside ./run-stage
-cd ./run-stage || { echo "Directory ./run-stage not found"; exit 1; }
 python runner.py "$WORKING_DIR" || { echo "Failed to run runner.py"; exit 1; }
 
 # Step 4: Run python deduped_kl_torch.py and deduped_stats.py in ./stats-stage
