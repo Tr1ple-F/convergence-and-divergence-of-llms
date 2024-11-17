@@ -1,0 +1,281 @@
+[
+    {
+        "type": "api-change",
+        "category": "EC2",
+        "description": "As part of this release we are introducing EC2 On-Demand Capacity Reservations. With On-Demand Capacity Reservations, customers can reserve the exact EC2 capacity they need, and can keep it only for as long as they need it."
+    }
+]<|endoftext|>Q:
+
+Robust way to play multiple audio files concurrently from the shell?
+
+I'm experimenting with playing audio files on a Mac (OS X 10.10.5) via several concurrent shell scripts. Each script runs in a separate Terminal session and periodically invokes an instance of sox (v. 14.4.2) to play an audio file. For example, one script might do this:
+sox foo.aif -t coreaudio
+while another script does this:
+sox bar.aif -t coreaudio
+The second file plays OK, but only after echoing the error message 
+sox[8139:17123955] *** CFMessagePort: bootstrap_register(): failed 1100 (0x44c) 'Permission denied', port = 0x46407, name = 'sox'
+See /usr/include/servers/bootstrap_defs.h for the error codes.
+(/usr/include/servers/bootstrap_defs.h isn't too helpful: it says that error code 1100 is defined as BOOTSTRAP_NOT_PRIVILEGED.)
+Each subsequent invocation of sox throws the same error, as long as another instance is still playing. I've tried running up to 4 concurrent instances and get the same results.
+Even though sox appears to be playing the files OK, this error message makes me nervous, since my application demands rock-solid stability (it will be playing up to 4 files concurrently 24/7/365). Also, I don't like peppering my Terminal sessions (or, after redirection of stderr, my log files) with unhelpful error messages. 
+Questions:
+
+Can I safely ignore this error, since the sound files appear to be playing OK?
+Might this error somehow be related to issues I'm having with other "downstream" audio applications? (For example, when I send audio from these sox instances to instances of BUTT (Broadcast Using this Tool), BUTT stops streaming and behaves as if it has lost connection with its audio source).
+Are there any alternatives to sox that can play audio files from the command line in concurrent sessions without throwing this error?
+
+A:
+
+Try afplay, it ships with macOS.  Just did a quick test with 5 instances and it seems to work. 
+afplay path/to/file.  
+
+A:
+
+Just to close this thread... The error messages do not appear when I repeat the test on on a newer Mac running OS X 10.12.4. I can run 5 concurrent instances of sox or afplay without error.
+As to part (3) of my original question... afplay is indeed a handy quick-n-dirty alternative to sox for previewing audio files from the command line (thanks, @Dave !). My situation, however, is multichannel (>8 channels) -- something afplay can't do but which sox does handily. But since I didn't mention the multichannel aspect in my question, I consider the question answered. Thanks!
+
+<|endoftext|>Q:
+
+Setup and Teardown (and self invalidating) EmberJS Views
+
+I would like to have the ability to setup and teardown functions for views inside EmberJS, for this example I will say displaying logs that are fetched via AJAX every 5 seconds, buts its a problem I encounter quite a lot
+I have created a switchView method here which will handle the setup / teardown events, however right now it cant invalidate itself to show the updated information.
+Em.Application.create({
+
+  wrapper: $('#content'),
+  currentView: null,
+
+  ready: function() {
+
+    this._super();
+
+    this.self = this;
+
+    Em.routes.add('/log/', this, 'showLogs');
+    Em.routes.add('*', this, 'show404');
+
+  },
+
+  switchView: function(name, view) {
+
+    if (this.currentView) {
+      $(document.body).removeClass('page-' + this.currentView.name);
+
+      if (this.currentView.view.unload) {
+        this.currentView.view.unload();
+      }
+
+      this.currentView.view.remove();
+    }
+
+    if (name) {
+      $(document.body).addClass('page-' + name);
+    }
+
+    if (view.load) {
+      view.load();
+    }
+    view.appendTo(this.wrapper);
+    this.currentView = {name: name, view: view};
+  }
+
+});
+
+var LogView = Ember.View.create({
+
+  templateName: 'logs',
+
+  logs: [],
+
+  load: function() {
+    var self = this;
+    this.interval = setInterval(function() {
+      self.fetchLogs.apply(self);
+    }, 5000);
+    this.fetchLogs();
+  },
+
+  unload: function() {
+    clearInterval(this.interval);
+  },
+
+  fetchLogs: function() {
+    var self = this;
+    $.get('/logs', function(data) {
+      self.logs = data.list;
+    });
+  }
+
+});
+
+A:
+
+I'm not 100% clear on what you're asking for, but you should look into willInsertElement, didInsertElement and willDestroyElement. These are all called relative to the view element's insertion and removal from the DOM.
+
+<|endoftext|>Residential context, walking and obesity: two African-American neighborhoods compared.
+We compare walking and obesity rates in two African-American neighborhoods that are similar in urban form but different in level of neighborhood disadvantage. We find higher rates of utilitarian walking in the neighborhood with higher density and disadvantage and more destinations within walking distance. However levels of leisure walking and physical activity were not higher, and rates of obesity were not lower in the non-poor neighborhood with better maintenance, more sidewalks and recreational facilities. Different types of barriers to physical activity reported in the two neighborhoods and the high rates of overweight and obesity in both may explain the findings.<|endoftext|>Keeping Your Pet Safe in All WeatherNo Place Like Home
+No matter what the weather, the best way to ensure comfort and safety of your pet is to keep it where you are comfortable and safe – in your house. Consider offering your pet unlimited access to your house during weather extremes such as the hot, humid days of summer or the icy, cold days of winter.
+As pets spend more time indoors, other issues may arise.
+Many pets who aren’t used to being indoors may not know the rules and demonstrate normal, but destructive, behaviors such as chewing and clawing. Therefore, make sure you keep house plants and valuables out of reach.
+Pets with access to the outdoors during warm weather may also bring in unwanted guests – fleas. And a change in seasons usually brings with it a change in coat. Regular brushing can reduce the amount of pet hair on your rugs and furniture.Summer
+Summer heat puts extra stress on your pet’s body. Because of this, it’s best to keep your pet inside where there is access to shade, water and cool air whether from open windows or air conditioning.
+If your pet is outside all day, make sure he has a shady area, preferably on grass since pavement tends to heat up in warm weather. Check at different times to make sure the area is shaded all day.
+You may need to provide extra water in summer. Try larger water containers, or special devices that attach to an easy to reach faucet for unlimited access.
+Most veterinarians don’t recommend shaving dogs or cats, since the hair helps them insulate against heat. Heavy-coated breeds of dogs and cats are especially prone to heat illnesses, especially in hot, humid climates. Many heavy-coated dogs appreciate a wading pool to loll in on extra hot days.
+Other animals with an increased risk of overheating include senior pets, puppies and kittens, working pets, and flat-faced breeds (Pugs, Bulldogs, Pekes, Persians).
+If your dog or cat is used to running errands with you in your car, leave it home during hot summer days. Even with the windows cracked, your car can reach 130 degrees inside in less than 30 minutes. Don’t risk giving your pet heat stroke!
+
+Treating Overheating
+The best way to treat overheating is prevention. However, if you notice that your pet has abnormally rapid breathing, tremors, muscle weakness, vomiting, or fainting, your pet may have heat exhaustion.
+Wet your pet with cool – not cold – water, place in an area with a breeze, and transport your pet to the veterinarian immediately.
+
+Winter
+Cold weather also brings special care requirements for your pets.
+Again, the ideal place for your pets in cold weather is indoors where they have shelter from cold temperatures, drifting snow, and ice. Outdoor pets require shelter with insulation, fresh food and water that doesn’t freeze. Consider an electric bowl heater to keep water from freezing outdoors.
+If you take your pet outside in snowy or icy weather, be sure to check its paws for cuts or ice balls. After walking on pavement treated with salt or chemical snow removers, wipe your pet’s paws with a damp cloth.Treating Frostbite
+Cover chilled pets with blankets and allow them to regain normal body temperature gradually.
+Warm water baths – not hot baths – are another good way to gradually warm a chilled pet. Don’t use electric blankets or heating pads as they can burn your pet’s skin.
+If your pet is severely chilled or unresponsive, take him to your veterinarian immediately.Other Winter Concerns
+Antifreeze (containing ethylene glycol) poses a special danger to pets in winter. Both dogs and cats are attracted by the sweet taste, and mere teaspoonfuls can cause kidney damage or death.
+
+If you keep cars and pets in your garage, be sure your radiator does not leak. If you suspect your pet has ingested antifreeze, contact your veterinarian immediately.
+
+Treatment within two to four hours can save some pets.
+
+Carbon monoxide poisoning is another potential problem for pets kept in the garage with vehicles during winter months. Never start your car and let it warm up in the garage unless you remove your pet during this time.<|endoftext|>You are only as good as your aim and swing. And its not as “tappy” as some other games. If you want a hit to count, you got to put some intent behind it.
+
+]]>By: deraxelhttp://www.npccomic.com/comic/2010/11/19/geekercise/#comment-9102
+Sun, 21 Nov 2010 22:25:10 +0000http://www.npccomic.com/2010/11/19/geekercise/#comment-9102If you want a real exercise larp try amtgard, darkon, or boffing (sp) they are pretty much like laire from the movie role models. Amtgard is the wide spread one but the first two are a lot of fun. I haven’t done the boffing game. go to the website to find the group nearest to you.
+]]>By: Farflehttp://www.npccomic.com/comic/2010/11/19/geekercise/#comment-9099
+Sun, 21 Nov 2010 04:34:23 +0000http://www.npccomic.com/2010/11/19/geekercise/#comment-9099I’m so sad… I wish I had talent in comics like you do…
+]]>By: tirsdenhttp://www.npccomic.com/comic/2010/11/19/geekercise/#comment-9098
+Sat, 20 Nov 2010 23:06:41 +0000http://www.npccomic.com/2010/11/19/geekercise/#comment-9098Oh wow. Thank you. Thank you for that. XD
+]]>By: Squirrelshttp://www.npccomic.com/comic/2010/11/19/geekercise/#comment-9096
+Sat, 20 Nov 2010 05:49:07 +0000http://www.npccomic.com/2010/11/19/geekercise/#comment-9096Exsercise? Good one. Back when I played, the definition of larp was: a bunch of people with now self esteem going around town at night playing rock-paper-scissors which is all the more reason to go play it.
+]]>By: Dazhttp://www.npccomic.com/comic/2010/11/19/geekercise/#comment-9094
+Sat, 20 Nov 2010 02:20:46 +0000http://www.npccomic.com/2010/11/19/geekercise/#comment-9094Hipster-Geek?
+]]>By: Warsabihttp://www.npccomic.com/comic/2010/11/19/geekercise/#comment-9092
+Fri, 19 Nov 2010 23:18:17 +0000http://www.npccomic.com/2010/11/19/geekercise/#comment-9092Come on give it a try, wont hurt (unless he’s thunderbolting you)
+]]>By: Lokihttp://www.npccomic.com/comic/2010/11/19/geekercise/#comment-9091
+Fri, 19 Nov 2010 22:00:47 +0000http://www.npccomic.com/2010/11/19/geekercise/#comment-9091its true, she does.
+]]><|endoftext|>Q:
+
+REST API: is a redirect (303) a good idea
+
+In my RESTful API I return a redirect (303) in some special cases (e.g. an internal subscription is expired; I know this doesn't sound REST). In order to test my API I wrote a simple webpage using jQuery. However, in case I get a 303 it seems like the browser (XHR?) takes care of the redirect itself and GETs the new resource. As this is hidden from the Ajax call it gets just a 200 at the end. Of course this is misleading as the original call didn't succeed! Obviously this is not what I had in mind: I wanted my client-script to know it has to do something different (-> GET another resource).
+Now I'm asking myself whether it's a good idea to even return a 303? Instead I could return a simple 4xx and leave the client on its own.... (probably starting from scratch)
+$.ajax({
+url: self.links()[0].href,
+type: "POST",
+statusCode: {
+    200: function () {
+        //I always ended up here
+    },
+    303: function () {
+    }
+},
+complete: function (e, xhr, settings) {
+    if (e.status === 200) {
+        //..and then here
+    } else if (e.status === 303) {
+    } else {                           
+    }
+}
+
+A:
+
+jQuery $.ajax always follows redirects. I'm afraid it can't be disabled.
+Returning redirect as response to XHR request
+How to prevent jQuery ajax from following a redirect after a post?
+
+<|endoftext|>Using the colorful autumn leaves, create a lasting impression of nature¬ís magnificence in this FREE monthly open studio program for families. Next, enjoy a guided family tour at 1:00 p.m. or take a self-guided tour of the Museum.
+
+Get your passport stamped 10 out of 12 months and be eligible to
+win a free Kids Plus! Membership!<|endoftext|>Usher, Gucci Mane and Young Thug Shoot Video for ‘No Limit’
+
+Guwop’s girlfriend Keyshia Ka’oir documented his boyfriend’s participation in the video on his Snapchat account. In the clip, Gucci Mane is sitting on a throne surrounded by gorgeous models painted in gold behind a graffiti-covered wall. There was even a zebra on the set, which Gucci didn’t want no part of.
+
+Behind the scenes, Gucci was using a stack of dollar bills as a fan and showing love to his doting boo, Keyshia.
+
+Usher's “No Limit” originally featured Thugger but the new version will get some extra shine with the Zone 6 leader on the track. The song is expected to appear on his upcoming album Flawed.
+
+Meanwhile, Gucci Mane's new album Everybody Looking hits stores on Friday (July 22)—and he's already dropped several videos to support the release. The most recent video, "No Sleep" features Guwop trying to catch some sleep but unable to focus because there’s a pillow fight between scantily clad women going down in the next room, and who wouldn’t want to partake in that?
+
+For his part, Young Thug has also been busy prepping his next mixtape project called Jeffery.
+
+Check out the behind-the-scenes footage above and a flick from the video set below.<|endoftext|>Categories
+
+Statistics
+
+View count:
+
+263,449
+
+Likes:
+
+20,917
+
+Dislikes:
+
+85
+
+Comments:
+
+1,199
+
+Duration:
+
+03:57
+
+Uploaded:
+
+2017-10-27
+
+Last sync:
+
+2019-07-23 04:00
+
+IMPORTANT NOTE
+I'm not saying that this is the best or only way. I have lots of friends who go to 100% every time and they are extremely prolific and effective creators. And they make things that are better than the things I make. I also am not trying to say that I don't think the stuff I make is good, I think "good" is a combination of time, skill, talent, and ability to choose and understand your own objectives. I just shave on time spent and do my best to optimize the other stuff.
+
+This is what I do, not what I suggest other people do.
+
+In general, when people try to sell you on some life-vision for being an ULTLA EFFECTIVE PERSON, what they're really trying to do is make you feel like you haven't accomplished enough or aren't awesome enough, and thus need them to become the thing you should be but which you're being held back from by some lack of knowledge. I hate that shit so much, and I really hope I'm not doing it here. Every person will find different ways of doing things that help the world and other people, which is the important thing.
+
+But...don't let perfection hold you back from making things or doing things. Revel in your imperfection, because perfect doesn't exist.
+
+It is Friday. I've been thinking about making this video and not doing it for years.
+
+For 3 reasons: one, I work too hard. It's a problem. Content like this tends to assume that everybody's gonna want to have whatever the person making the content has, and, like, I have a fine life, but there are lots of other great lives out there.
+
+Two: I am extremely lucky. One of the keys to productivity is having financial and mental and social stability, and I have all those things. I just lucked into it.
+
+Three: my secret to productivity. I'm not ashamed of it. I'm a little ashamed of it. Here it is: 80%.
+
+Everything creative I do, I do my best to get it 80% of the way to as good as I can make it and go no further. I just don't try to get it to 100%.
+
+In every creative project, we have in our minds, and in reality, a place where it can get to where we will think it is the best. It looks like this. And we can keep pushing and tweaking until we get it right into the center there. And that seems like worthwhile. Get it as good as you can get it. But this is a lie in four different ways.
+
+One: no one knows what best is, best is subjective, it's one your head but it's different in every person who's gonna consume the thing that you make. And so it doesn't look like this, it looks like this.
+
+Two: not only are there different bests inside of everyone's heads, there are different categories of best. Like I want my videos to do multiple different things, and sometimes if I want to do better at one goal I'm gonna have to pull away from another of my goals.
+
+Three: even if there are actually hard outlines to these things, I'm not gonna be able to see it, like that's the future that's far away I wont know until I get there. The whole world is just me with my glasses off. I cant see anything.
+
+And four: best is always changing, people's opinions and ideas are always changing and so are mine.
+
+So trying to get 100% the best that I can do, which is far away from perfect, is even that an impossible idea? I'm not saying you can't increase your odds of getting into the bull's eye. Yes, you can, that's what the 80% is about.
+
+But I am saying: you'll never really know where you're gonna hit until you actually throw the dart. And if you spend a ton of time thinking about how you're gonna throw the dart and you never throw it you might be doing a whole lot of work that isn't actually helping.
+
+So when I get to 80%, I throw the dart because I know that perfect doesn't exist. I know that the last 20% of getting to what I think is best is gonna be like 90% of the work, and I know that 90% of what I'm gonna learn, I'm gonna learn doing that first 80% and releasing the thing and having it be out in the world. For me, those final tweaks, I'm not learning anything. I'm just scared, and maybe I am making it better, but also maybe I'm not.
+
+Now, stopping at 80% is hard, especially when your 100% isn't that good yet, 'cause you're new to whatever you're doing. And that's even harder when you have that one thing that cannot be taught, good taste, because you know how bad your thing is.
+
+But worse than that, and this is sort of a separate tip, you are gonna know the thing you create better than anyone else will ever know it. You're gonna know all of its imperfections, all of its issues, all of the things that it could have been but it isn't. So you're gonna see that flawed picture of the thing that you make, whereas when you look at something someone else made you won't see those things. So your things are always going to look worse than other people's things.
+
+So in my mind, getting it done is success. Getting it perfect is not. Especially because perfect doesn't exist.
+
+This is my secret to productivity, not just because it helps me do a bunch of stuff, but because it helps me learn a bunch of stuff, learn how to do new things, and get more data points as to what's working, and what people like, and what I like doing. And as I get to 80% of the best that I can do, over and over again really fast, suddenly, my new 80% is way better than my old 100% effort could have been.
+
+John, I'll see you on Tuesday. No, I'll see you tonight. Also, our Halloween show in San Francisco still has tickets available, and we're having a Halloween costume contest. You know, it's not required, but I am looking forward to seeing what people put together.<|endoftext|>
