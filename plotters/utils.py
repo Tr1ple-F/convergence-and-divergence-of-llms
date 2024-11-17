@@ -8,6 +8,14 @@ def seeds_config():
     with open("./seeds_config.json") as f:
         return json.load(f)
 
+def tagged_tokens():
+    with open('../common/pos_tagged_tokens.json', 'r') as f:
+        return json.load(f)
+
+def pos_tags():
+    with open('../common/pos_tags.json', 'r') as f:
+        return json.load(f)
+
 def find_comparison_index(model_name, revision):
     try:
         model_names = deduped_config()['model_names']

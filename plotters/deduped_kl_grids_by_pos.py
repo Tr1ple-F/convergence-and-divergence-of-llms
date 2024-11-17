@@ -2,24 +2,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import json
 
-from utils import deduped_config
-
-# Load POS tags from JSON file
-with open('../common/pos_tagged_tokens.json', 'r') as f:
-    pos_tagged_tokens = json.load(f)
-
-with open('../common/pos_tags.json', 'r') as f:
-    unique_pos_tags = json.load(f)
+from utils import deduped_config, tagged_tokens, pos_tags
 
 def create_kl_grid_deduped_by_pos():
-    for pos_id,pos_tag in enumerate(unique_pos_tags):
+    for pos_id,pos_tag in enumerate(pos_tags()):
         data = np.zeros((72, 72))
         i = 0
         ticks = []
         for base_model_name in deduped_config()['model_names']:
             for base_revision in deduped_config()['revisions']:
                 loaded_data = np.load(f'../results/deduped/{base_model_name.replace("/", "-")}-{base_revision}-kl.npy')
-                pos_indices = [idx for idx, tag in enumerate(pos_tagged_tokens) if tag[1] == pos_tag["tag"]]
+                pos_indices = [idx for idx, tag in enumerate(tagged_tokens()) if tag[1] == pos_tag["tag"]]
                 averages = np.mean(loaded_data[:, pos_indices], axis=1)
                 data[i, :] = averages
                 i += 1
