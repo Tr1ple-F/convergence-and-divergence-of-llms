@@ -1,21 +1,30 @@
 import json
 import os
+
+import torch
 import numpy as np
+from datetime import datetime
+
+def now():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def calculate_kl_divergence(log_p, log_q):
-    return np.sum(np.exp(log_p) * (log_p - log_q), axis=-1)
+    log_p = torch.nn.functional.log_softmax(log_p, dim=-1)
+    log_q = torch.nn.functional.log_softmax(log_q, dim=-1)
 
-def process_file_pair(file1_path, file2_path):
-    probs1 = np.load(file1_path)
-    probs2 = np.load(file2_path)
+    # Calculate KL divergence
+    return torch.sum(torch.exp(log_p) * (log_p - log_q), dim=-1)
 
+def process_file_pair(probs1, file2_path):
+    probs2 = torch.tensor(np.load(file2_path)[:, :50254], dtype=torch.float16, device=device)
     assert probs1.shape == probs2.shape, (
-        f"Shape mismatch between {file1_path} and {file2_path}"
+        f"Shape mismatch between {file2_path}"
     )
-
     divergences = calculate_kl_divergence(probs1, probs2)
-    return divergences
+    return divergences.cpu().numpy()
 
+# Check if GPU is available, fallback to CPU if not
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 with open('seeds_config.json', 'r') as f:
     config = json.load(f)
@@ -31,10 +40,20 @@ for model_name_1 in model_names:
 
             all_divergences = []
 
-            output_file = f'../results/seeds/{model_name_1.replace("/", "-")}-{revision_1}-kl.npy'
+            output_file = f'../results/seeds/{model_name_1.replace("/", "-")}-{revision_1}-seed{i}-kl.npy'
             if os.path.exists(output_file):
                 print(f"Skipping calculation for {output_file} as it already exists.")
                 continue
+
+            probs1 = torch.tensor(
+                np.load(os.path.join(base_dir_1, files_1[0]))[:, :50254],
+                dtype=torch.float16,
+                device=device
+            )
+
+            print(
+                f"Calculating KL divergence for model: {model_name_1} revision: {revision_1} seed: {i}"
+            )
 
             for model_name_2 in model_names:
                 for revision_2 in revisions:
@@ -47,16 +66,12 @@ for model_name_1 in model_names:
                             f"and model {model_name_2} revision {revision_2}."
                         )
 
-                        print(
-                            f"Calculating KL divergence between model: {model_name_1} revision: {revision_1} seed: {i} and model: {model_name_2} revision: {revision_2} seed: {j}"
+                        all_divergences.append(
+                            process_file_pair(
+                                probs1,
+                                os.path.join(base_dir_2, files_2[0]),
+                                device=device
+                            )
                         )
 
-                        all_divergences.append(
-                                process_file_pair(
-                                    os.path.join(base_dir_1, files_1[0]),
-                                    os.path.join(base_dir_2, files_2[0]),
-                                )
-                        )  # Model 1 revision 1 is P and Model 2 revision 2 is Q
-
-            # Save the results to a npy file
             np.save(output_file, np.array(all_divergences))

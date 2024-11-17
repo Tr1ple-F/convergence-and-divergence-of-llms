@@ -2,6 +2,7 @@ import json
 import os
 
 import cupy as cp
+import cupyx as cpx
 import numpy as np
 from datetime import datetime
 
@@ -9,20 +10,11 @@ def now():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def calculate_kl_divergence(log_p, log_q):
-    """Calculate KL divergence with renormalization on GPU."""
-    # Renormalize each log distribution
-    p = cp.exp(log_p)
-    q = cp.exp(log_q)
-
-    p /= cp.sum(p, axis=-1, keepdims=True)  # Renormalize p
-    q /= cp.sum(q, axis=-1, keepdims=True)  # Renormalize q
-
-    # Recompute log after normalization
-    log_p = cp.log(p)
-    log_q = cp.log(q)
+    log_p = cpx.scipy.special.log_softmax(log_p, axis=-1)
+    log_q = cpx.scipy.special.log_softmax(log_q, axis=-1)
 
     # Calculate KL divergence
-    return cp.sum(p * (log_p - log_q), axis=-1)
+    return cp.sum(cp.exp(log_p) * (log_p - log_q), axis=-1)
 
 def process_file_pair(probs1, file2_path):
     probs2 = cp.asarray(np.load(file2_path)[:, :50254])
