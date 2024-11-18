@@ -30,7 +30,7 @@ with open(f'../working_dir/{sys.argv[1]}/deduped_config.json', 'r') as f:
 model_names = config['model_names']
 revisions = config['revisions']
 
-correct_indices_file = f'../working_dir/{sys.argv[1]}/common/input_text_encoded.npy'
+correct_indices_file = f'../working_dir/{sys.argv[1]}/input_text_encoded.npy'
 correct_indices = np.load(correct_indices_file)
 
 for model_name in model_names:
