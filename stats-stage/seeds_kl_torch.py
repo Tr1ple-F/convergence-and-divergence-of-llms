@@ -16,7 +16,7 @@ def calculate_kl_divergence(log_p, log_q):
     return torch.sum(torch.exp(log_p) * (log_p - log_q), dim=-1)
 
 def process_file_pair(probs1, file2_path, device):
-    probs2 = torch.tensor(np.load(file2_path)[:, :50254], dtype=torch.float16, device=device)
+    probs2 = torch.tensor(np.load(file2_path)[:, :50277], dtype=torch.float16, device=device)
     assert probs1.shape == probs2.shape, (
         f"Shape mismatch between {file2_path}"
     )
@@ -46,7 +46,7 @@ for model_name_1 in model_names:
                 continue
 
             probs1 = torch.tensor(
-                np.load(os.path.join(base_dir_1, files_1[0]))[:, :50254],
+                np.load(os.path.join(base_dir_1, files_1[0]))[:, :50277],
                 dtype=torch.float16,
                 device=device
             )
