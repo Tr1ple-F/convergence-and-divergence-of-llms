@@ -11,6 +11,8 @@ def get_probabilities(model_name, revision, input_text):
     model_too_large = "2.8b" in model_name or "6.9b" in model_name or "12b" in model_name
 
     cache_dir = f"/media/hofmann-scratch/tpimentel/models/{model_name.replace('/', '-')}/{revision}"
+    if not os.path.exists(cache_dir):
+        cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
 
     if model_too_large:
         print(f"Model {model_name} is too large to run on GPU.")
