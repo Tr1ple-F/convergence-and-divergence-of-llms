@@ -1,0 +1,4 @@
+{
+  "model_names": ["EleutherAI/pythia-70m-deduped", "EleutherAI/pythia-160m-deduped", "EleutherAI/pythia-410m-deduped", "EleutherAI/pythia-1b-deduped", "EleutherAI/pythia-1.4b-deduped", "EleutherAI/pythia-2.8b-deduped", "EleutherAI/pythia-6.9b-deduped", "EleutherAI/pythia-12b-deduped"],
+  "revisions": ["step128","step256","step512","step1000", "step2000", "step3000", "step4000"]
+}

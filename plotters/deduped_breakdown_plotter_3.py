@@ -16,6 +16,8 @@ revision2_end = int(input("Enter the end value for Revision 2 (default 143k): ")
 
 df = df[df["Revision 1"].between(left=revision1_start, right=revision1_end, inclusive="both")]
 df = df[df["Revision 2"].between(left=revision2_start, right=revision2_end, inclusive="both")]
+df = df[df["Model 1"] == '12b']
+df = df[df["Model 2"] == '6.9b']
 
 note = f" (Revisions {revision1_start}-{revision1_end} and {revision2_start}-{revision2_end})"
 note_short = f"_rev1_{revision1_start}_{revision1_end}_rev2_{revision2_start}_{revision2_end}"
