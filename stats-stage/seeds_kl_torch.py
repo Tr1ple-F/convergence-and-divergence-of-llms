@@ -31,10 +31,11 @@ with open(f'../working_dir/{sys.argv[1]}/seeds_config.json', 'r') as f:
 
 model_names = config['model_names']
 revisions = config['revisions']
+seeds = config['seeds']
 
-for model_name_1 in model_names:
+for model_name_1 in [sys.argv[2]]:
     for revision_1 in revisions:
-        for i in [1,5,9]:
+        for i in seeds:
             base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed{i}/{revision_1}'
             files_1 = [f for f in os.listdir(base_dir_1) if f.endswith('.npy')]
 
@@ -57,7 +58,7 @@ for model_name_1 in model_names:
 
             for model_name_2 in model_names:
                 for revision_2 in revisions:
-                    for j in [1,5,9]:
+                    for j in seeds:
                         base_dir_2 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_2.replace("/", "-")}-seed{j}/{revision_2}'
                         files_2 = [f for f in os.listdir(base_dir_2) if f.endswith('.npy')]
 

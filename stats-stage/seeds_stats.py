@@ -6,7 +6,7 @@ def calculate_surprisal(probabilities, correct_indices):
     return -probabilities[np.arange(probabilities.shape[0]), correct_indices]
 
 def calculate_stats(model_name, revision, correct_indices, top_n=10):
-    for i in [1,5,9]:
+    for i in seeds:
         probabilities = np.load(f'../working_dir/{sys.argv[1]}/probabilities/{model_name.replace("/", "-")}-seed{i}/{revision}/probabilities.npy')[:, :50277]
 
         # Calculate surprisal
@@ -30,6 +30,7 @@ with open(f'../working_dir/{sys.argv[1]}/seeds_config.json', 'r') as f:
 
 model_names = config['model_names']
 revisions = config['revisions']
+seeds = config['seeds']
 
 correct_indices_file = f'../working_dir/{sys.argv[1]}/input_text_encoded.npy'
 correct_indices = np.load(correct_indices_file)

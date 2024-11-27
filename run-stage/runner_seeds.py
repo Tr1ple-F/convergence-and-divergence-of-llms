@@ -72,13 +72,14 @@ def main():
 
     model_names = config['model_names']
     revisions = config['revisions']
+    seeds = config['seeds']
 
     with open(f'../working_dir/{sys.argv[1]}/input_text.txt', 'r', encoding="utf8") as file:
         input_text = file.read()
 
         for model_name in model_names:
             for revision in revisions:
-                for i in [1,5,9]:
+                for i in seeds:
                     print(f"Processing model: {model_name}-seed{i}, revision: {revision}")
                     get_probabilities(f"{model_name}-seed{i}", revision, input_text)
 

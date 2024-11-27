@@ -8,11 +8,12 @@ from utils import seeds_config, strip, tagged_tokens, pos_tags
 config = seeds_config()
 revisions = config['revisions']
 models = config['model_names']
+seeds = config['seeds']
 
 data = []
 for model1 in models:
     for revision1 in revisions:
-        for seed1 in [1, 5, 9]:
+        for seed1 in seeds:
             kl_data = np.load(
                 f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revision1}-seed{seed1}-kl.npy')
             surprisal_data = np.load(
@@ -32,7 +33,7 @@ for model1 in models:
             i = 0
             for model2 in models:
                 for revision2 in revisions:
-                    for seed2 in [1, 5, 9]:
+                    for seed2 in seeds:
                         row = {'Model 1': strip(model1), 'Revision 1': strip(revision1), "Seed 1": seed1,
                                "Model 2": strip(model2), "Revision 2": strip(revision2), "Seed 2": seed2,
                                'KL Average': overall_average[i], 'Surprisal Average': np.mean(surprisal_data[i])}
