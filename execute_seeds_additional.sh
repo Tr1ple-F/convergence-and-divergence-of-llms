@@ -22,14 +22,14 @@ python runner_seeds.py "$WORKING_DIR" || { echo "Failed to run runner_seeds.py";
 # Step 4: Run python seeds_kl_torch.py and seeds_stats.py in ./stats-stage
 cd ../stats-stage || { echo "Directory ./stats-stage not found"; exit 1; }
 for index in {0..4}; do
-    tmux new-session -d -s "kl_torch_$index" \
-        "CUDA_VISIBLE_DEVICES=$index python seeds_kl_torch.py \"\$WORKING_DIR\" $index || { echo \"Failed to run seeds_kl_torch.py for index $index\"; exit 1; }"
+    tmux new-session -d -s "kl_torch_$index"
+    tmux send-keys -t "kl_torch_$index" "CUDA_VISIBLE_DEVICES=$index python seeds_kl_torch.py \"\$WORKING_DIR\" $index || { echo \"Failed to run seeds_kl_torch.py for index $index\"; exit 1; }" C-m
     echo "Started Tmux session 'kl_torch_$index'"
 done
 
 # Create and start Tmux session for seeds_stats.py
-tmux new-session -d -s "stats" \
-    "python seeds_stats.py \"\$WORKING_DIR\" || { echo \"Failed to run seeds_stats.py\"; exit 1; }"
+tmux new-session -d -s "stats"
+tmux send-keys -t "stats" "python seeds_stats.py \"\$WORKING_DIR\" || { echo \"Failed to run seeds_stats.py\"; exit 1; }" C-m
 echo "Started Tmux session 'stats'"
 
 # Step 5: Tar zip the folder ./results/seeds
