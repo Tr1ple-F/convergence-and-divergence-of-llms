@@ -1,0 +1,4 @@
+{
+  "model_names": ["EleutherAI/pythia-14m", "EleutherAI/pythia-31m", "EleutherAI/pythia-70m", "EleutherAI/pythia-160m", "EleutherAI/pythia-410m"],
+  "revisions": ["step0", "step1", "step2", "step4", "step8", "step32", "step128", "step512", "step2000", "step4000", "step16000", "step64000", "step143000"]
+}
