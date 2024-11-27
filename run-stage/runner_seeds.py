@@ -7,6 +7,13 @@ import json
 import sys
 
 def get_probabilities(model_name, revision, input_text):
+    output_dir = os.path.join(f"../working_dir/{sys.argv[1]}/probabilities/" + model_name.replace('/', '-'), revision)
+    os.makedirs(output_dir, exist_ok=True)
+    output_file_path = os.path.join(output_dir, "probabilities.npy")
+    if (os.path.exists(output_file_path)):
+        print(f"Probabilities for model {model_name}, revision {revision} already exist. Skipping.")
+        return
+
     cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
 
     model = GPTNeoXForCausalLM.from_pretrained(
@@ -29,9 +36,6 @@ def get_probabilities(model_name, revision, input_text):
 
     if torch.cuda.is_available():
         model = model.cuda()
-
-    output_dir = os.path.join(f"../working_dir/{sys.argv[1]}/probabilities/" + model_name.replace('/', '-'), revision)
-    os.makedirs(output_dir, exist_ok=True)
 
     inputs = tokenizer(input_text, return_tensors="pt")
 
@@ -63,7 +67,6 @@ def get_probabilities(model_name, revision, input_text):
     all_probabilities_matrix = np.concatenate(all_probabilities, axis=0)
     all_probabilities_matrix = all_probabilities_matrix[:-1]
 
-    output_file_path = os.path.join(output_dir, "probabilities.npy")
     np.save(output_file_path, all_probabilities_matrix.astype(np.float16))
 
 def main():

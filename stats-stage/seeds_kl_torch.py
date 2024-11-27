@@ -33,7 +33,7 @@ model_names = config['model_names']
 revisions = config['revisions']
 seeds = config['seeds']
 
-for model_name_1 in [sys.argv[2]]:
+for model_name_1 in [model_names[sys.argv[2]]]:
     for revision_1 in revisions:
         for i in seeds:
             base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed{i}/{revision_1}'

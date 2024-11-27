@@ -1,12 +1,21 @@
 import json
 import sys
 import numpy as np
+import os
 
 def calculate_surprisal(probabilities, correct_indices):
     return -probabilities[np.arange(probabilities.shape[0]), correct_indices]
 
 def calculate_stats(model_name, revision, correct_indices, top_n=10):
     for i in seeds:
+        path1 = f'../working_dir/{sys.argv[1]}/results/seeds/{model_name.replace("/", "-")}-{revision}-seed{i}-surprisal.npy'
+        path2 = f'../working_dir/{sys.argv[1]}/results/seeds/{model_name.replace("/", "-")}-{revision}-seed{i}-top_tokens.npy'
+        path3 = f'../working_dir/{sys.argv[1]}/results/seeds/{model_name.replace("/", "-")}-{revision}-seed{i}-top_probabilities.npy'
+
+        if os.path.exists(path1) and os.path.exists(path2) and os.path.exists(path3):
+            print(f"Skipping {model_name.replace('/', '-')}-{revision}-seed{i}")
+            continue
+
         probabilities = np.load(f'../working_dir/{sys.argv[1]}/probabilities/{model_name.replace("/", "-")}-seed{i}/{revision}/probabilities.npy')[:, :50277]
 
         # Calculate surprisal
@@ -17,9 +26,6 @@ def calculate_stats(model_name, revision, correct_indices, top_n=10):
         top_probabilities = np.take_along_axis(probabilities, top_tokens, axis=-1)
 
         # Save as npy files
-        path1 = f'../working_dir/{sys.argv[1]}/results/seeds/{model_name.replace("/", "-")}-{revision}-seed{i}-surprisal.npy'
-        path2 = f'../working_dir/{sys.argv[1]}/results/seeds/{model_name.replace("/", "-")}-{revision}-seed{i}-top_tokens.npy'
-        path3 = f'../working_dir/{sys.argv[1]}/results/seeds/{model_name.replace("/", "-")}-{revision}-seed{i}-top_probabilities.npy'
         np.save(path1, surprisal)
         np.save(path2, top_tokens)
         np.save(path3, top_probabilities)
