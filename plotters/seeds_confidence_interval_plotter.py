@@ -7,6 +7,9 @@ import json
 # Load the dataframe
 df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/average_dataframe_seeds.csv')
 
+print(df['KL Average'])
+exit()
+
 # Plot 0
 with open(f'../common/pos_tags.json', 'r') as f:
     pos_tags = json.load(f)
