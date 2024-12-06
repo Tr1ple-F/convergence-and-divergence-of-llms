@@ -34,7 +34,7 @@ unigram_base = torch.tensor(np.load('../unigram_dist.npy'), dtype=torch.float16,
 for model_name_1 in model_names[int(sys.argv[2]):int(sys.argv[3])]:
     for revision_1 in revisions:
         for seed_1 in seeds:
-            base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}/{revision_1}'
+            base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed{i}/{revision_1}'
             files_1 = [f for f in os.listdir(base_dir_1) if f.endswith('.npy')]
 
             all_divergences = []
@@ -52,9 +52,6 @@ for model_name_1 in model_names[int(sys.argv[2]):int(sys.argv[3])]:
 
             uniform = uniform_base.expand(probs1.shape[0], -1)
             unigram = unigram_base.expand(probs1.shape[0], -1)
-
-            print(uniform.shape)
-            print(unigram.shape)
 
             print(
                 f"Calculating KL divergence for model: {model_name_1} revision: {revision_1}"

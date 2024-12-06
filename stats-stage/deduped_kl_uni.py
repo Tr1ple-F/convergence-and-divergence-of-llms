@@ -51,9 +51,6 @@ for model_name_1 in model_names[int(sys.argv[2]):int(sys.argv[3])]:
         uniform = uniform_base.expand(probs1.shape[0], -1)
         unigram = unigram_base.expand(probs1.shape[0], -1)
 
-        print(uniform.shape)
-        print(unigram.shape)
-
         print(
             f"Calculating KL divergence for model: {model_name_1} revision: {revision_1}"
         )
