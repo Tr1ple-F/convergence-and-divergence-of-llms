@@ -39,7 +39,7 @@ for model_name_1 in model_names[int(sys.argv[2]):int(sys.argv[3])]:
 
             all_divergences = []
 
-            output_file = f'../working_dir/{sys.argv[1]}/results/deduped/{model_name_1.replace("/", "-")}-{revision_1}-seed{seed_1}-uni.npy'
+            output_file = f'../working_dir/{sys.argv[1]}/results/seeds/{model_name_1.replace("/", "-")}-{revision_1}-seed{seed_1}-uni.npy'
             if os.path.exists(output_file):
                 print(f"Skipping calculation for {output_file} as it already exists.")
                 continue
