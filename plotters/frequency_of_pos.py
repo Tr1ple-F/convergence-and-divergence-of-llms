@@ -11,6 +11,9 @@ with open(f'../working_dir/{sys.argv[1]}/pos_tagged_tokens.json', 'r') as f:
 pos_tags_1 = [x[1] for x in pos_tags]
 
 pos_tags_1_counts = pd.Series(pos_tags_1).value_counts()
+pos_tags_1_counts.drop('UNK', inplace=True)
+print(pos_tags_1_counts)
+
 plt.figure(figsize=(10, 6))
 sns.barplot(x=pos_tags_1_counts.index, y=pos_tags_1_counts.values)
 plt.title('Distribution of PoS Tags')

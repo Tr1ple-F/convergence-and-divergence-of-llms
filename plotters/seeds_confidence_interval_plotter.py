@@ -27,10 +27,10 @@ def plot_internal(value_vars, appendix=""):
 # value_vars = [f'KL Average - {x}' for x in ["VB", "CC", "CD", "JJ", "PRP", "RP", "RB", "WP", "DT", "IN", "MD", "NN"]]
 # value_vars = [f'KL Average - {x["tag"]}' for x in pos_tags]
 
-plot_internal([f'KL Average - {x}' for x in ["VB", "JJ", "IN", "NN", "NNS", "NNP", "NNPS", "VBG", "VBN", "VBD", "VBZ"]], "_all")
-plot_internal([f'KL Average - {x}' for x in ["NN", "NNS", "NNP", "NNPS"]], "_nouns")
-plot_internal([f'KL Average - {x}' for x in ["VB", "VBG", "VBN", "VBD", "VBZ"]], "_verbs")
-plot_internal([f'KL Average - {x}' for x in ["JJ", "IN", "CC", "RB", "TO", "DT", "Nouns", "Verbs"]], "_grouped")
+plot_internal([f'KL Average - {x}' for x in ["JJ", "IN", "CC", "RB", "TO", "DT", "PRP", "PRP$"]], "_other")
+plot_internal([f'KL Average - {x}' for x in ["NN", "NNS", "NNP"]], "_nouns")
+plot_internal([f'KL Average - {x}' for x in ["VB", "VBG", "VBN", "VBD", "VBZ", "VBP"]], "_verbs")
+plot_internal([f'KL Average - {x}' for x in ["JJ", "IN", "DT", "Nouns", "Verbs"]], "_grouped")
 
 '''
 df_plot = df #[df['Model 1'] != df['Model 2']]

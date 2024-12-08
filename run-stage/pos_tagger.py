@@ -2,7 +2,64 @@ import nltk
 import json
 import sys
 import os
-from collections import Counter
+
+# Code section 1
+code1 = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>jQuery Image Cube</title>
+<style type="text/css">
+#basicCube { width: 150px; height: 150px;}
+#basicCube img{border:3px solid #ccc}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.imagecube.js"></script>
+<script type="text/javascript">
+$(function () {
+    $('#basicCube').imagecube();
+});
+</script>
+</head>
+<body>
+<div id="basicCube">
+    <img src="1.jpg" alt="Gorge" title="Gorge">
+    <img src="2.jpg" alt="Gorge" title="Gorge">
+    <img src="3.jpg" alt="Gorge" title="Gorge">
+    <img src="4.jpg" alt="Gorge" title="Gorge">
+    <img src="5.jpg" alt="Gorge" title="Gorge">
+    <img src="6.jpg" alt="Gorge" title="Gorge">
+</div>
+</body>
+</html>'''
+
+# Code section 2
+code2 = '''CSS
+.basicCube { width: 150px; height: 150px;}
+.basicCube img{border:3px solid #ccc}
+
+HTML
+<div class="basicCube">
+    <img src="1.jpg" alt="Gorge" title="Gorge">
+    <img src="2.jpg" alt="Gorge" title="Gorge">
+    <img src="3.jpg" alt="Gorge" title="Gorge">
+    <img src="4.jpg" alt="Gorge" title="Gorge">
+    <img src="5.jpg" alt="Gorge" title="Gorge">
+    <img src="6.jpg" alt="Gorge" title="Gorge">
+</div>
+<div class="basicCube">
+    <img src="1.jpg" alt="Gorge" title="Gorge">
+    <img src="2.jpg" alt="Gorge" title="Gorge">
+    <img src="3.jpg" alt="Gorge" title="Gorge">
+    <img src="4.jpg" alt="Gorge" title="Gorge">
+    <img src="5.jpg" alt="Gorge" title="Gorge">
+    <img src="6.jpg" alt="Gorge" title="Gorge">
+</div>
+
+JavaScript
+$(function () {
+    $('.basicCube').imagecube();
+});'''
 
 nltk.download('punkt')
 nltk.download('punkt_tab')
@@ -20,36 +77,56 @@ with open(input_text_tokenized_path, 'r') as file:
     hf_tokens = json.load(file)
     hf_tokens = hf_tokens[1:-1]
 
-# Step 1: Tokenize the text and generate POS tags
 nltk_tokens = nltk.word_tokenize(text)
 nltk_pos_tags = nltk.pos_tag(nltk_tokens)
 
-# Step 2: Create a character-by-character mask of the input text with POS tags
 char_pos_mask = ['UNK'] * len(text)  # Initialize mask with 'UNK' for unknown
 
 current_index = 0
 for token, pos_tag in nltk_pos_tags:
+    if pos_tag == '``' or pos_tag == "''":
+        continue
+    while current_index < len(text) and text[current_index:(current_index + len(token))] != token:
+        current_index += 1
     for char in token:
-        if current_index < len(text):
-            char_pos_mask[current_index] = pos_tag
-            current_index += 1
-    # Move past any whitespace between tokens
-    while current_index < len(text) and text[current_index].isspace():
+        char_pos_mask[current_index] = pos_tag
         current_index += 1
 
-# Step 3: Assign POS tags to hf_tokens based on the majority of tags in the mask
-def get_majority_tag(token, mask, text):
-    start_index = text.find(token)
-    if start_index == -1:
-        return 'UNK'
-    end_index = start_index + len(token)
-    token_tags = mask[start_index:end_index]
-    if not token_tags:
-        return 'UNK'
-    most_common_tag = Counter(token_tags).most_common(1)[0][0]
-    return most_common_tag
+# Erase code section:
+code1_index = text.index(code1)
+code2_index = text.index(code2)
+for i in range(code1_index, code1_index + len(code1)):
+    char_pos_mask[i] = 'UNK'
+for i in range(code2_index, code2_index + len(code2)):
+    char_pos_mask[i] = 'UNK'
+print(f"Erased code section 1 from index {code1_index} to {code1_index + len(code1)}")
+print(f"Erased code section 2 from index {code2_index} to {code2_index + len(code2)}")
 
-tagged_tokens = [(token, get_majority_tag(token.strip(), char_pos_mask, text)) for token in hf_tokens]
+tagged_tokens = []
+
+current_index = 0
+for token in hf_tokens:
+    tags = char_pos_mask[current_index:(current_index + len(token))]
+    tag_counts = {}
+    for tag in tags:
+        if tag in tag_counts:
+            tag_counts[tag] += 1
+        else:
+            tag_counts[tag] = 1
+    max_tag = 'UNK'
+    max_count = 0
+    for tag, count in tag_counts.items():
+        if count > max_count:
+            max_tag = tag
+            max_count = count
+
+    if max_count > len(tags) / 2:
+        tagged_tokens.append((token, max_tag))
+    else:
+        tagged_tokens.append((token, 'UNK'))
+
+    current_index += len(token)
+
 tagged_tokens.insert(0, ('<|endoftext|>', 'UNK'))
 tagged_tokens.append(('<|endoftext|>', 'UNK'))
 
