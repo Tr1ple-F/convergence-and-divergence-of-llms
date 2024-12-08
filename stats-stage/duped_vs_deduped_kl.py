@@ -26,15 +26,15 @@ def process_file_pair(probs1, file2_path, device):
 # Check if GPU is available, fallback to CPU if not
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-with open(f'../working_dir/{sys.argv[1]}/deduped_config.json', 'r') as f:
+with open(f'../working_dir/{sys.argv[1]}/seeds_config.json', 'r') as f:
     config = json.load(f)
 
-model_names = config['model_names'][:3]
+model_names = config['model_names'][2:5]
 revisions = config['revisions']
 
 for model_name_1 in model_names:
     for revision_1 in revisions:
-        base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}/{revision_1}'
+        base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-deduped/{revision_1}'
         files_1 = [f for f in os.listdir(base_dir_1) if f.endswith('.npy')]
 
         all_divergences = []
@@ -55,7 +55,7 @@ for model_name_1 in model_names:
         )
 
         for i in [1,3,5,7,9]:
-                base_dir_2 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-").replace("-deduped", "")}-seed{i}/{revision_1}'
+                base_dir_2 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed{i}/{revision_1}'
                 files_2 = [f for f in os.listdir(base_dir_2) if f.endswith('.npy')]
 
                 all_divergences.append(
