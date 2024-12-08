@@ -55,7 +55,7 @@ for model_name_1 in model_names:
         )
 
         for i in [1,3,5,7,9]:
-                base_dir_2 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed{i}/{revision_1}'
+                base_dir_2 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-").replace("-deduped", "")}-seed{i}/{revision_1}'
                 files_2 = [f for f in os.listdir(base_dir_2) if f.endswith('.npy')]
 
                 all_divergences.append(
