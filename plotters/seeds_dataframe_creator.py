@@ -10,6 +10,9 @@ revisions = config['revisions']
 models = config['model_names']
 seeds = config['seeds']
 
+noun_tags = ['NN', 'NNS', 'NNP', 'NNPS']
+verb_tags = ['VB', 'VBG', 'VBN', 'VBD', 'VBZ']
+
 data = []
 for model1 in models:
     for revision1 in revisions:
@@ -28,6 +31,16 @@ for model1 in models:
                 surprisal_averages = np.mean(surprisal_data[pos_indices])
                 pos_surprisal.append(surprisal_averages)
 
+            # Noun average
+            noun_indices = [idx for idx, tag in enumerate(tagged_tokens()) if tag[1] in noun_tags]
+            noun_kl = np.mean(kl_data[:, noun_indices], axis=1)
+            noun_surprisal = np.mean(surprisal_data[noun_indices])
+
+            # Verb average
+            verb_indices = [idx for idx, tag in enumerate(tagged_tokens()) if tag[1] in verb_tags]
+            verb_kl = np.mean(kl_data[:, verb_indices], axis=1)
+            verb_surprisal = np.mean(surprisal_data[verb_indices])
+
             overall_average = np.mean(kl_data, axis=1)
 
             i = 0
@@ -41,6 +54,11 @@ for model1 in models:
                         for j, pos_tag in enumerate(pos_tags()):
                             row[f'KL Average - {pos_tag["tag"]}'] = pos_kl[j][i]
                             row[f'Surprisal Average - {pos_tag["tag"]}'] = pos_surprisal[j]
+
+                        row['KL Average - Nouns'] = noun_kl[i]
+                        row['Surprisal Average - Nouns'] = noun_surprisal
+                        row['KL Average - Verbs'] = verb_kl[i]
+                        row['Surprisal Average - Verbs'] = verb_surprisal
 
                         data.append(row)
                         i += 1
