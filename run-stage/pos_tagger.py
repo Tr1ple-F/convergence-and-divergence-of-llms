@@ -3,6 +3,8 @@ import json
 import sys
 import os
 
+import numpy as np
+
 # Code section 1
 code1 = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -81,29 +83,46 @@ nltk_tokens = nltk.word_tokenize(text)
 nltk_pos_tags = nltk.pos_tag(nltk_tokens)
 
 char_pos_mask = ['UNK'] * len(text)  # Initialize mask with 'UNK' for unknown
+begin_mask = [False] * len(text)
+end_mask = [False] * len(text)
 
 current_index = 0
 for token, pos_tag in nltk_pos_tags:
-    if pos_tag == '``' or pos_tag == "''":
+    if pos_tag == '``' or pos_tag == "''" or token == '<' or token == '>' or token == '|endoftext|':
         continue
     while current_index < len(text) and text[current_index:(current_index + len(token))] != token:
         current_index += 1
+    begin_mask[current_index] = True
+    end_mask[current_index + len(token) - 1] = True
     for char in token:
         char_pos_mask[current_index] = pos_tag
         current_index += 1
+
+print(nltk_pos_tags[-100:])
 
 # Erase code section:
 code1_index = text.index(code1)
 code2_index = text.index(code2)
 for i in range(code1_index, code1_index + len(code1)):
     char_pos_mask[i] = 'UNK'
+    begin_mask[i] = False
+    end_mask[i] = False
 for i in range(code2_index, code2_index + len(code2)):
     char_pos_mask[i] = 'UNK'
+    begin_mask[i] = False
+    end_mask[i] = False
+
+print(f"----------------------------------------------------------------------------")
 print(f"Erased code section 1 from index {code1_index} to {code1_index + len(code1)}")
 print(f"Erased code section 2 from index {code2_index} to {code2_index + len(code2)}")
+print(f"----------------------------------------------------------------------------")
 
 tagged_tokens = []
+begin_indices = []
+end_indices = []
+both_indices = []
 
+current_token = 0
 current_index = 0
 for token in hf_tokens:
     tags = char_pos_mask[current_index:(current_index + len(token))]
@@ -125,11 +144,40 @@ for token in hf_tokens:
     else:
         tagged_tokens.append((token, 'UNK'))
 
+    begin_added = False
+    for i in range(len(token)):
+        if begin_mask[current_index + i]:
+            begin_indices.append(current_token)
+            begin_added = True
+            break
+
+    for i in range(len(token)):
+        if end_mask[current_index + i]:
+            end_indices.append(current_token)
+            if begin_added:
+                both_indices.append(current_token)
+            break
+
     current_index += len(token)
+    current_token += 1
 
 tagged_tokens.insert(0, ('<|endoftext|>', 'UNK'))
 tagged_tokens.append(('<|endoftext|>', 'UNK'))
 
-# Step 4: Save the tagged tokens to a JSON file
 with open(output_path, 'w') as file:
     json.dump(tagged_tokens, file)
+
+# Determine % of begin tokens that are both begin and end tokens
+print(f"Begin tokens that are also end tokens: {len(both_indices)}")
+print(f"Total begin tokens: {len(begin_indices)}")
+print(f"Percentage: {len(both_indices)/len(begin_indices)}")
+print(f"----------------------------------------------------------------------------")
+
+# Determine % of end tokens that are both begin and end tokens
+print(f"End tokens that are also begin tokens: {len(both_indices)}")
+print(f"Total end tokens: {len(end_indices)}")
+print(f"Percentage: {len(both_indices)/len(end_indices)}")
+print(f"----------------------------------------------------------------------------")
+
+np.save(os.path.join(workspace, "begin_tokens.npy"), np.array(begin_indices))
+np.save(os.path.join(workspace, "end_tokens.npy"), np.array(end_indices))
