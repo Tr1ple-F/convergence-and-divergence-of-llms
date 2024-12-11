@@ -88,7 +88,7 @@ end_mask = [False] * len(text)
 
 current_index = 0
 for token, pos_tag in nltk_pos_tags:
-    if pos_tag == '``' or pos_tag == "''" or token == '<' or token == '>' or token == '|endoftext|':
+    if pos_tag == '``' or pos_tag == "''" or token == '<' or token == '>' or token.contains('|endoftext|'):
         continue
     while current_index < len(text) and text[current_index:(current_index + len(token))] != token:
         current_index += 1
@@ -97,8 +97,6 @@ for token, pos_tag in nltk_pos_tags:
     for char in token:
         char_pos_mask[current_index] = pos_tag
         current_index += 1
-
-print(nltk_pos_tags[-100:])
 
 # Erase code section:
 code1_index = text.index(code1)
