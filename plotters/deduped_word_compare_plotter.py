@@ -1,6 +1,8 @@
 import sys
 
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 from utils import deduped_config, strip
 
@@ -38,6 +40,9 @@ frame1 = frame1[frame1.apply(lambda row: row['Model 2'] == models[models.index(r
 frame1 = frame1[frame1['Revision 1'] == frame1['Revision 2']]
 # Revisions
 frame2 = df[df['Model 1'] == df['Model 2']]
+frame2 = frame2[frame2['Model 1'] != "12b"]
+frame2 = frame2[frame2['Model 1'] != "6.9b"]
+
 frame2 = frame2[frame2['Revision 1'] != 143000]
 frame2 = frame2[frame2.apply(lambda row: row['Revision 2'] == revs[revs.index(row['Revision 1']) + 1], axis=1)]
 
@@ -74,3 +79,36 @@ for i, row in frame1.iterrows():
 print("------------ Revisions ------------")
 for i, row in frame2.iterrows():
     analyze(row)
+
+def plot(tag_name):
+    # melted = frame2.melt(id_vars=['Model 1', 'Revision 1', 'Model 2', 'Revision 2'], var_name='Metric', value_vars=[f'KL Average', f'KL Average - {tag_name}'], value_name='KL')
+    # Add column ratio which divides KL Average - tag_name by KL Average
+    melted = frame2.copy()
+    melted[f'σ'] = melted[f'KL Average - {tag_name}'] / melted[f'KL Average']
+    plt.figure(figsize=(10, 6))
+    sns.lineplot(data=melted, x='Revision 1', y='σ', errorbar="sd")
+    # Add a horizontal line at 1
+    plt.axhline(y=1, color='r', linestyle='--')
+    plt.xscale('log')
+    plt.savefig(f'../working_dir/{sys.argv[1]}/output/word_compare_{tag_name}.png')
+    plt.close()
+
+plot("TO")
+plot("MD")
+plot("VBN")
+plot("VBZ")
+plot("JJ")
+plot("NNP")
+plot("PRP$")
+plot("NN")
+plot("NNS")
+plot("DT")
+plot("VB")
+plot("VBG")
+plot("VBG")
+plot("VBD")
+plot("CC")
+plot("CD")
+plot("PRP")
+plot("IN")
+plot("RB")

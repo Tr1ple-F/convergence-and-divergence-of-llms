@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/begin_end_dataframe.csv')
-df = df[df['Model 1']  == '2.8b']
+# df = df[df['Model 1']  == '2.8b']
 df = df[df['Revision 1'] == df['Revision 2']]
 
 plt.figure(figsize=(10, 6))

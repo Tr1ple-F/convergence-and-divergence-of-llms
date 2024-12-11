@@ -42,7 +42,9 @@ for model1 in models:
                             'Begin KL Average': begin_averages[i],
                             'Begin Surprisal Average': begin_surprisal,
                             'End KL Average': end_averages[i],
-                            'End Surprisal Average': end_surprisal
+                            'End Surprisal Average': end_surprisal,
+                            'Begin Ratio KL': begin_averages[i] / total_averages[i],
+                            'End Ratio KL': end_averages[i] / total_averages[i],
                         }
 
                         data.append(row)

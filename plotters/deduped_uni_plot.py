@@ -4,8 +4,9 @@ import sys
 import seaborn as sns
 
 df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/dist_average_dataframe.csv')
-df = df[df['Model 1'] != '12b']
-df = df[df['Model 1'] != '6.9b']
+# df = df[df['Model 1'].isin(['12b','6.9b', '2.8b'])]
+# df = df[df['Model 1'] != '12b']
+# df = df[df['Model 1'] != '6.9b']
 
 df_uniform = df[['Revision 1', 'Model 1', 'Uniform KL']].rename(columns={'Uniform KL': 'KL'})
 df_uniform['Dist'] = 'Uniform'

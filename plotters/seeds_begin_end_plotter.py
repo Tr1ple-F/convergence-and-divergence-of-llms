@@ -25,3 +25,15 @@ sns.lineplot(data=df, x='Revision 1', y='KL Average', hue='Model 1', errorbar='s
 plt.xscale('log')
 plt.savefig(f'../working_dir/{sys.argv[1]}/output/be_analysis_total.png')
 plt.close()
+
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=df, x='Revision 1', y='Begin Ratio KL', hue='Model 1', errorbar='sd')
+plt.xscale('log')
+plt.savefig(f'../working_dir/{sys.argv[1]}/output/be_analysis_begin_ratio.png')
+plt.close()
+
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=df, x='Revision 1', y='End Ratio KL', hue='Model 1', errorbar='sd')
+plt.xscale('log')
+plt.savefig(f'../working_dir/{sys.argv[1]}/output/be_analysis_end_ratio.png')
+plt.close()
