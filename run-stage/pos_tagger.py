@@ -88,7 +88,7 @@ end_mask = [False] * len(text)
 
 current_index = 0
 for token, pos_tag in nltk_pos_tags:
-    if pos_tag == '``' or pos_tag == "''" or token == '<' or token == '>' or token.contains('|endoftext|'):
+    if pos_tag == '``' or pos_tag == "''" or token == '<' or token == '>' or '|endoftext|' in token:
         continue
     while current_index < len(text) and text[current_index:(current_index + len(token))] != token:
         current_index += 1
@@ -133,11 +133,11 @@ for token in hf_tokens:
     max_tag = 'UNK'
     max_count = 0
     for tag, count in tag_counts.items():
-        if count > max_count:
+        if count > max_count and tag != 'UNK':
             max_tag = tag
             max_count = count
 
-    if max_count > len(tags) / 2:
+    if max_count >= len(tags) / 2:
         tagged_tokens.append((token, max_tag))
     else:
         tagged_tokens.append((token, 'UNK'))

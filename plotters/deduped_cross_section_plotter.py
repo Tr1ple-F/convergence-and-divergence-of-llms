@@ -15,19 +15,22 @@ models = config['model_names']
 
 for x in models:
     df_plot = df[df['Model 1'] == strip(x)]
+    df_plot = df_plot[df_plot['Model 2'] != "12b"]
+    df_plot = df_plot[df_plot['Model 2'] != "6.9b"]
+    df_plot = df_plot[df_plot['Model 2'] != df_plot['Model 1']]
     df_plot = df_plot[df_plot['Revision 1'] == df_plot['Revision 2']]
+    df_plot = df_plot[df_plot['Revision 1'] != 143000]
+    df_plot = df_plot[df_plot['Revision 1'] != 128000]
     plt.figure(figsize=(10, 6))
     sns.lineplot(data=df_plot, x='Revision 1', y='KL Average', hue='Model 2', markers=True)
     plt.xscale('log')
-    plt.savefig(f'../working_dir/{sys.argv[1]}/output/deduped_no_seeds_{strip(x)}.png')
+    plt.savefig(f'../working_dir/{sys.argv[1]}/output/deduped_model_{strip(x)}_to_others.png')
     plt.close()
 
-print(df)
+exit()
 
 for x in revisions:
-    print(strip(x))
     df_plot = df[df['Revision 1'] == int(strip(x))]
-    print(df_plot)
     df_plot = df_plot[df_plot['Model 1'] == df_plot['Model 2']]
     plt.figure(figsize=(10, 6))
     sns.lineplot(data=df_plot, x='Model 1', y='KL Average', hue='Revision 2', markers=True)

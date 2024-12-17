@@ -18,7 +18,7 @@ for model1 in models:
             kl_data = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revision1}-seed{seed1}-kl.npy')
             surprisal_data = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revision1}-seed{seed1}-surprisal.npy')
 
-            begin_averages = np.mean(kl_data[:, begin_indices], axis=1)
+            begin_averages = np.mean(kl_data[:, begin_indices[]], axis=1)
             end_averages = np.mean(kl_data[:, end_indices], axis=1)
             total_averages = np.mean(kl_data, axis = 1)
 
