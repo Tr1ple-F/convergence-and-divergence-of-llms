@@ -179,3 +179,6 @@ print(f"------------------------------------------------------------------------
 
 np.save(os.path.join(workspace, "begin_tokens.npy"), np.array(begin_indices))
 np.save(os.path.join(workspace, "end_tokens.npy"), np.array(end_indices))
+
+# Begin and end indices: index 0 = "Join"
+# Tagged tokens indices: index 0 = "<|endoftext|>"
