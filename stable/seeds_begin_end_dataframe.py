@@ -51,4 +51,4 @@ for model1 in models:
                         i += 1
 
 df = pd.DataFrame(data)
-df.to_csv(f'../working_dir/{sys.argv[1]}/output/seed_begin_end_dataframe.csv')
+df.to_csv(f'../working_dir/{sys.argv[1]}/output/seeds_begin_end_dataframe.csv')
