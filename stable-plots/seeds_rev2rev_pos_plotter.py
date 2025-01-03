@@ -19,7 +19,7 @@ def plot_internal(value_vars, appendix=""):
         df_plot = df_plot[df_plot['Revision 1'] == df_plot['Revision 2']]
         df_plot = df_plot[df_plot['Seed 1'] != df_plot['Seed 2']]
         plt.figure(figsize=(10, 6))
-        sns.lineplot(data=df_plot, x='Revision 1', y='Average KL', hue='PoS Tag', errorbar='sd', markers=True)
+        sns.lineplot(data=df_plot, x='Revision 1', y='Average KL', hue='PoS Tag', errorbar='ci', markers=True)
         plt.xscale('log')
         plt.savefig(f'../working_dir/{sys.argv[1]}/output/seeds_rev2rev_model_{x}{appendix}_{pos_index}.png')
         plt.close()
@@ -33,13 +33,13 @@ if sys.argv[2] == "nouns":
     plot_internal(noun_vars, "_nouns")
 
 if sys.argv[2] == "verbs":
-    plot_internal([f'KL Average - {x}' for x in ["VB", "VBG", "VBN", "VBD", "VBZ", "VBP"]], "_verbs")
+    plot_internal([f'KL Average - {x}' for x in ["VB", "VBG", "VBN", "VBD", "VBZ"]], "_verbs")
 
 if sys.argv[2] == "grouped":
-    plot_internal([f'KL Average - {x}' for x in ["JJ", "IN", "DT", "Nouns", "Verbs"]], "_grouped")
+    plot_internal([f'KL Average - {x}' for x in ["JJ", "IN", "DT", 'MD', 'PRP', "Nouns", "Verbs"]], "_grouped")
 
 if sys.argv[2] == "all":
     plot_internal([f'KL Average - {x}' for x in ["PRP$", "DT", "CC", "JJ", "IN", "TO", "RB", "MD","PRP"]], "_other")
     plot_internal(noun_vars, "_nouns")
-    plot_internal([f'KL Average - {x}' for x in ["VB", "VBG", "VBN", "VBD", "VBZ", "VBP"]], "_verbs")
-    plot_internal([f'KL Average - {x}' for x in ["JJ", "IN", "DT", "Nouns", "Verbs"]], "_grouped")
+    plot_internal([f'KL Average - {x}' for x in ["VB", "VBG", "VBN", "VBD", "VBZ"]], "_verbs")
+    plot_internal([f'KL Average - {x}' for x in ["JJ", "IN", "DT", 'MD', 'PRP', "Nouns", "Verbs"]], "_grouped")

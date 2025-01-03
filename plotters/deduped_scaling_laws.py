@@ -29,7 +29,7 @@ def plot_individual(frame):
     plt.close()
 
 def plot_ci(frame):
-    sns.lineplot(data=frame, x='Revision', y='Cross Entropy', hue="PoS Tag", errorbar='sd')
+    sns.lineplot(data=frame, x='Revision', y='Cross Entropy', hue="PoS Tag", errorbar='ci')
 
     plt.title('Cross Entropy by Revision')
     plt.yscale('log')

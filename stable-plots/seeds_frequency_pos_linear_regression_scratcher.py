@@ -28,11 +28,12 @@ df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/seeds_frequency_pos_linea
 
 def plot_lg_by(list, appendix):
     for x in list:
-        plt.plot(df.index, df[x], label=x)
+        plt.plot(df['Revision'], df[x], label=x)
 
-    plt.xlabel('Row Index')
+    plt.xlabel('Revision')
+    plt.xscale('log')
     plt.ylabel('Value')
-    plt.title(f'{appendix} Evolution Over Rows')
+    plt.title(f'Linear Regression Correlation with {appendix}')
     plt.legend()
     plt.savefig(f'../working_dir/{sys.argv[1]}/output/seeds_linear_regression_by_{appendix}.png')
     plt.close()

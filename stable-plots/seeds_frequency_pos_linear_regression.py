@@ -34,7 +34,7 @@ def one_revision_LG(df):
     # print("Feature Contributions to KL Divergence:")
     # print(coefficients.sort_values(ascending=False))
 
-    obj = {}
+    obj = {"Revision": revision}
     for index, row in coefficients.items():
         obj[index] = row
 

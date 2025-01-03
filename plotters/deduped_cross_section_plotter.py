@@ -5,7 +5,7 @@ import sys
 import json
 
 # Load the dataframe
-df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/average_dataframe.csv')
+df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/deduped_pos_current_dataframe.csv')
 
 from utils import deduped_config, strip
 
@@ -19,11 +19,10 @@ for x in models:
     df_plot = df_plot[df_plot['Model 2'] != "6.9b"]
     df_plot = df_plot[df_plot['Model 2'] != df_plot['Model 1']]
     df_plot = df_plot[df_plot['Revision 1'] == df_plot['Revision 2']]
-    df_plot = df_plot[df_plot['Revision 1'] != 143000]
-    df_plot = df_plot[df_plot['Revision 1'] != 128000]
     plt.figure(figsize=(10, 6))
     sns.lineplot(data=df_plot, x='Revision 1', y='KL Average', hue='Model 2', markers=True)
     plt.xscale('log')
+    plt.legend(prop={'size': 16})
     plt.savefig(f'../working_dir/{sys.argv[1]}/output/deduped_model_{strip(x)}_to_others.png')
     plt.close()
 
