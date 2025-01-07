@@ -1,6 +1,4 @@
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-import numpy as np
 import seaborn as sns
 import sys
 import matplotlib.pyplot as plt
@@ -26,19 +24,23 @@ def test1():
 
 df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/seeds_frequency_pos_linear_regression_transpose.csv')
 
-def plot_lg_by(list, appendix):
+def plot_lg_by(list, appendix, symbol = "α"):
     for x in list:
         plt.plot(df['Revision'], df[x], label=x)
 
     plt.xlabel('Revision')
     plt.xscale('log')
     plt.ylabel('Value')
-    plt.title(f'Linear Regression Correlation with {appendix}')
+    plt.title(f'Fitted {symbol} value from linear regression')
     plt.legend()
     plt.savefig(f'../working_dir/{sys.argv[1]}/output/seeds_linear_regression_by_{appendix}.png')
     plt.close()
 
 models = ['Model 1_14m', 'Model 1_160m', 'Model 1_31m', 'Model 1_410m', 'Model 1_70m']
+models_short = [x.replace('Model 1_', '') for x in models]
+rename_dict = {models[i]: models_short[i] for i in range(len(models))}
+df.rename(columns=rename_dict, inplace=True)
+
 frequency = ['Frequency']
 pos_context_nouns = [f'POS Context_{x}' for x in ['NN', 'NNS', 'NNP', 'NNPS']]
 pos_context_verbs = [f'POS Context_{x}' for x in ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']]
@@ -53,8 +55,9 @@ pos_adverbs = [f'POS_{x}' for x in ['RB', 'RBR', 'RBS']]
 pos_other = [f'POS_{x}' for x in ['CD','DT', 'EX', 'IN', 'MD', 'PRP', 'PRP$', 'TO']]
 pos_w = [f'POS_{x}' for x in ['WDT', 'WP', 'WRB']]
 
-plot_lg_by(models, 'Model')
-plot_lg_by(frequency, 'Frequency')
+# Symbol delta
+plot_lg_by(models_short, 'Model', 'δ')
+plot_lg_by(frequency, 'Frequency', 'α')
 plot_lg_by(pos_context_nouns, 'POS Context Nouns')
 plot_lg_by(pos_context_verbs, 'POS Context Verbs')
 plot_lg_by(pos_context_adjectives, 'POS Context Adjectives')

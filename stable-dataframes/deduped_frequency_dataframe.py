@@ -21,7 +21,7 @@ for model1 in models:
             for revision2 in revisions:
                 if model1 == model2 and revision1 != "step143000" and revisions[revisions.index(revision1) + 1] == revision2:
                     for x in range(0, len(correct_indices) - 1):
-                        row = {'Model 1': strip(model1), 'Revision 1': strip(revision1), "Model 2": strip(model2), "Revision 2": strip(revision2), 'KL': kl_data[i, x], 'Frequency': frequency_data[correct_indices[x + 1]], 'POS': pos_data[x+1][1], 'POS Context': pos_data[x][1]}
+                        row = {'Model': strip(model1), 'Training Step': strip(revision1), "Model 2": strip(model2), "Training Step 2": strip(revision2), 'KL': kl_data[i, x], 'Frequency': frequency_data[correct_indices[x + 1]], 'POS': pos_data[x+1][1], 'POS Context': pos_data[x][1]}
                         data.append(row)
 
                 i += 1

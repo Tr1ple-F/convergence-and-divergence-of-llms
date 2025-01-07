@@ -21,20 +21,20 @@ type = sys.argv[2]
 df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/deduped_pos_{type}_dataframe.csv')
 
 # Revisions
-dataframe = df[df['Model 1'] == df['Model 2']]
-dataframe = dataframe[dataframe['Model 1'] != "12b"]
-dataframe = dataframe[dataframe['Model 1'] != "6.9b"]
+dataframe = df[df['Model'] == df['Model 2']]
+dataframe = dataframe[dataframe['Model'] != "12b"]
+dataframe = dataframe[dataframe['Model'] != "6.9b"]
 
-dataframe = dataframe[dataframe['Revision 1'] != 143000]
-dataframe = dataframe[dataframe['Revision 1'] != 128000] # 160m, 70m exception
-dataframe = dataframe[dataframe['Revision 1'] != 64000]
-dataframe = dataframe[dataframe.apply(lambda row: row['Revision 2'] == revs[revs.index(row['Revision 1']) + 1], axis=1)]
+dataframe = dataframe[dataframe['Training Step'] != 143000]
+dataframe = dataframe[dataframe['Training Step'] != 128000] # 160m, 70m exception
+dataframe = dataframe[dataframe['Training Step'] != 64000]
+dataframe = dataframe[dataframe.apply(lambda row: row['Revision 2'] == revs[revs.index(row['Training Step']) + 1], axis=1)]
 
 def plot1(tag_name):
     cp = dataframe.copy()
     cp[f'σ'] = cp[f'KL Average - {tag_name}'] / cp[f'KL Average']
     plt.figure(figsize=(10, 6))
-    sns.lineplot(data=cp, x='Revision 1', y='σ', errorbar="ci")
+    sns.lineplot(data=cp, x='Training Step', y='σ', errorbar="ci")
     # Add a horizontal line at 1
     plt.axhline(y=1, color='r', linestyle='--')
     plt.axvline(x=8, color='g', linestyle='--')
@@ -57,8 +57,8 @@ def plot2(tag_name):
     str1 = f'Cross-Entropy Δ'
 
     melted = dataframe.copy()
-    melted[str0] = melted.apply(lambda row: row[f'Surprisal Average - {tag_name}'] / df[(df['Model 1'] == row['Model 1']) & (df['Revision 1'] == revs[revs.index(row['Revision 1']) + 1])][f'Surprisal Average - {tag_name}'].values[0], axis=1)
-    melted[str1] = melted.apply(lambda row: row[f'Surprisal Average - {tag_name}'] - df[(df['Model 1'] == row['Model 1']) & (df['Revision 1'] == revs[revs.index(row['Revision 1']) + 1])][f'Surprisal Average - {tag_name}'].values[0], axis=1)
+    melted[str0] = melted.apply(lambda row: row[f'Surprisal Average - {tag_name}'] / df[(df['Model'] == row['Model']) & (df['Training Step'] == revs[revs.index(row['Training Step']) + 1])][f'Surprisal Average - {tag_name}'].values[0], axis=1)
+    melted[str1] = melted.apply(lambda row: row[f'Surprisal Average - {tag_name}'] - df[(df['Model'] == row['Model']) & (df['Training Step'] == revs[revs.index(row['Training Step']) + 1])][f'Surprisal Average - {tag_name}'].values[0], axis=1)
 
     xdata0 = melted[str0]
     xdata1 = melted[str1]
@@ -75,8 +75,8 @@ def plot2(tag_name):
     diff_list.append({'alpha': alpha1, 'tag': tag_name})
 
     plt.figure(figsize=(10, 6))
-    df0 = melted.melt(id_vars=['Model 1', 'Revision 1', 'Model 2', 'Revision 2'], value_vars=[f'KL Average - {tag_name}', str0, f'Ratio Fitted KL Average - {tag_name}'], var_name='Metric', value_name='Value')
-    sns.lineplot(data=df0, x='Revision 1', y='Value', hue='Metric', errorbar="ci", legend=None).set(ylabel='Value')
+    df0 = melted.melt(id_vars=['Model', 'Training Step', 'Model 2', 'Revision 2'], value_vars=[f'KL Average - {tag_name}', str0, f'Ratio Fitted KL Average - {tag_name}'], var_name='Metric', value_name='Value')
+    sns.lineplot(data=df0, x='Training Step', y='Value', hue='Metric', errorbar="ci", legend=None).set(ylabel='Value')
     plt.xscale('log')
     plt.axvline(x=8, color='r', linestyle='--')
     plt.axvline(x=64, color='r', linestyle='--')
@@ -84,8 +84,8 @@ def plot2(tag_name):
     plt.savefig(f'../working_dir/{sys.argv[1]}/output/curve_fitted_{tag_name}_ratio_{type}.png')
     plt.close()
     plt.figure(figsize=(10, 6))
-    df1 = melted.melt(id_vars=['Model 1', 'Revision 1', 'Model 2', 'Revision 2'], value_vars=[f'KL Average - {tag_name}', str1, f'Diff Fitted KL Average - {tag_name}'], var_name='Metric', value_name='Value')
-    sns.lineplot(data=df1, x='Revision 1', y='Value', hue='Metric', errorbar="ci", legend=None).set(ylabel='Value')
+    df1 = melted.melt(id_vars=['Model', 'Training Step', 'Model 2', 'Revision 2'], value_vars=[f'KL Average - {tag_name}', str1, f'Diff Fitted KL Average - {tag_name}'], var_name='Metric', value_name='Value')
+    sns.lineplot(data=df1, x='Training Step', y='Value', hue='Metric', errorbar="ci", legend=None).set(ylabel='Value')
     plt.xscale('log')
     plt.axvline(x=8, color='r', linestyle='--')
     plt.axvline(x=64, color='r', linestyle='--')
@@ -101,8 +101,8 @@ def general():
     str0 = f'Cross-Entropy Ratio'
     str1 = f'Cross-Entropy Δ'
     melted = dataframe.copy()
-    melted[str0] = melted.apply(lambda row: row[f'Surprisal Average'] / df[(df['Model 1'] == row['Model 1']) & (df['Revision 1'] == revs[revs.index(row['Revision 1']) + 1])][f'Surprisal Average'].values[0], axis=1)
-    melted[str1] = melted.apply(lambda row: row[f'Surprisal Average'] - df[(df['Model 1'] == row['Model 1']) & (df['Revision 1'] == revs[revs.index(row['Revision 1']) + 1])][f'Surprisal Average'].values[0], axis=1)
+    melted[str0] = melted.apply(lambda row: row[f'Surprisal Average'] / df[(df['Model'] == row['Model']) & (df['Training Step'] == revs[revs.index(row['Training Step']) + 1])][f'Surprisal Average'].values[0], axis=1)
+    melted[str1] = melted.apply(lambda row: row[f'Surprisal Average'] - df[(df['Model'] == row['Model']) & (df['Training Step'] == revs[revs.index(row['Training Step']) + 1])][f'Surprisal Average'].values[0], axis=1)
     xdata0 = melted[str0]
     xdata1 = melted[str1]
     ydata = melted[f'KL Average']

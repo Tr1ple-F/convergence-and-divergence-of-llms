@@ -18,7 +18,7 @@ for model1 in models:
             uniform_kl = kl_data[0]
             unigram_kl = kl_data[1]
 
-            row = {'Model': strip(model1), 'Revision': strip(revision1), 'Seed': seed1, 'Uniform KL': np.mean(uniform_kl), 'Unigram KL': np.mean(unigram_kl)}
+            row = {'Model': strip(model1), 'Training Step': strip(revision1), 'Seed': seed1, 'Uniform KL': np.mean(uniform_kl), 'Unigram KL': np.mean(unigram_kl)}
             data.append(row)
 
 df = pd.DataFrame(data)

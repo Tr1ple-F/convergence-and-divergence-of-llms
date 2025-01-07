@@ -49,8 +49,8 @@ for model1 in models:
                     for seed2 in seeds:
                         if model1 == model2 and revision1 == revision2:
                             surprisal_data2 = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model2.replace("/", "-")}-{revision2}-seed{seed2}-surprisal.npy')
-                            row = {'Model 1': strip(model1), 'Revision 1': strip(revision1), "Seed 1": seed1,
-                                   "Model 2": strip(model2), "Revision 2": strip(revision2), "Seed 2": seed2,
+                            row = {'Model': strip(model1), 'Training Step': strip(revision1), "Seed 1": seed1,
+                                   "Model 2": strip(model2), "Training Step 2": strip(revision2), "Seed 2": seed2,
                                    'KL Average': overall_average[i], 'Surprisal Average': np.mean(surprisal_data), 'Surprisal Average 2': np.mean(surprisal_data2)}
 
                             for j, pos_tag in enumerate(pos_tags()):

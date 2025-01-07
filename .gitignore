@@ -1,9 +1,2 @@
-.env/
-.idea/
-EleutherAI*/
-*.tar.gz
-results/
-ipython/.ipynb_checkpoints/
-graphics/
-deliveries/
-output/
+# Created by venv; see https://docs.python.org/3/library/venv.html
+*
