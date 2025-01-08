@@ -18,7 +18,7 @@ for x in models:
     df_plot = df_plot[df_plot['Model 2'] != "12b"]
     df_plot = df_plot[df_plot['Model 2'] != "6.9b"]
     df_plot = df_plot[df_plot['Model 2'] != df_plot['Model']]
-    df_plot = df_plot[df_plot['Training Step'] == df_plot['Revision 2']]
+    df_plot = df_plot[df_plot['Training Step'] == df_plot['Training Step 2']]
     plt.figure(figsize=(10, 6))
     sns.lineplot(data=df_plot, x='Training Step', y='KL Average', hue='Model 2', markers=True)
     plt.xscale('log')

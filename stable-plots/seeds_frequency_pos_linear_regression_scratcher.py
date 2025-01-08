@@ -6,19 +6,19 @@ import matplotlib.pyplot as plt
 def test1():
     df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/seeds_frequency_dataframe.csv')
     df = df[df['Seed 1'] != df['Seed 2']]
-    df = df[df['Model 1'] == df['Model 2']]
-    df = df[df['Revision 1'] == df['Revision 2']]
+    df = df[df['Model'] == df['Model 2']]
+    df = df[df['Training Step'] == df['Training Step 2']]
     # Average by model revision
     # Plot the evolution of the model over the rows
-    df_grouped = df.groupby(['Model 1', 'Revision 1']).agg({'KL': 'mean'}).reset_index()
+    df_grouped = df.groupby(['Model', 'Training Step']).agg({'KL': 'mean'}).reset_index()
     plt.figure(figsize=(10, 6))
-    sns.lineplot(data=df_grouped, x='Revision 1', y='KL', hue='Model 1', marker='o')
+    sns.lineplot(data=df_grouped, x='Training Step', y='KL', hue='Model', marker='o')
 
-    plt.xlabel('Revision 1')
+    plt.xlabel('Training Step')
     plt.ylabel('Average KL')
     plt.title('Average KL by Revision and Model')
     plt.xscale('log')
-    plt.legend(title='Model 1')
+    plt.legend(title='Model')
     plt.savefig(f'../working_dir/{sys.argv[1]}/output/seeds_average_kl_by_revision_and_model.png')
     plt.close()
 
@@ -28,7 +28,7 @@ def plot_lg_by(list, appendix, symbol = "α"):
     for x in list:
         plt.plot(df['Revision'], df[x], label=x)
 
-    plt.xlabel('Revision')
+    plt.xlabel('Training Step')
     plt.xscale('log')
     plt.ylabel('Value')
     plt.title(f'Fitted {symbol} value from linear regression')

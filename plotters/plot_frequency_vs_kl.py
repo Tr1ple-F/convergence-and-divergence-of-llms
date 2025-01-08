@@ -48,29 +48,34 @@ def bin_freq_10_steps(x):
 
 # Load the dataframe
 df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/seeds_frequency_dataframe.csv')
+df = df.drop(columns=["POS","POS Context"])
 print("Loaded dataframe")
 df['Binned Freq'] = df['Frequency'].apply(bin_freq_10)
 print("Binned")
-df_average = df.groupby(['Model 1', 'Revision 1', 'Seed 1', 'Model 2', 'Revision 2', 'Seed 2', 'Binned Freq']).mean().reset_index()
+df_average = df.groupby(['Model', 'Training Step', 'Seed 1', 'Model 2', 'Training Step 2', 'Seed 2', 'Binned Freq']).mean().reset_index()
 print("Grouped")
 
-for x in ['14m', '31m', '70m', '160m', '410m']:
-    df_plot = df_average[df_average['Model 1'] == x]
-    df_plot = df_plot[df_plot['Model 2'] == x]
-    df_plot = df_plot[df_plot['Revision 1'] == df_plot['Revision 2']]
-    df_plot = df_plot[df_plot['Seed 1'] != df_plot['Seed 2']]
-    plt.figure(figsize=(10, 6))
-    sns.lineplot(data=df_plot, x='Revision 1', y='KL', hue='Binned Freq', markers=True)
-    plt.xscale('log')
-    plt.savefig(f'../working_dir/{sys.argv[1]}/output/frequency_test_{x}.png')
-    plt.close()
 
-df_plot = df_average[df_average['Model 1'].isin(["14m", "410m"])]
-df_plot = df_plot[df_plot['Model 2'] == df_plot['Model 1']]
-df_plot = df_plot[df_plot['Revision 1'] == df_plot['Revision 2']]
+
+df_plot = df_average[df_average['Model'].isin(["14m", "410m"])]
+df_plot = df_plot[df_plot['Model 2'] == df_plot['Model']]
+df_plot = df_plot[df_plot['Training Step'] == df_plot['Training Step 2']]
 df_plot = df_plot[df_plot['Seed 1'] != df_plot['Seed 2']]
 plt.figure(figsize=(10, 6))
-sns.lineplot(data=df_plot, x='Revision 1', y='KL', hue='Binned Freq', style="Model 1")
+sns.lineplot(data=df_plot, x='Training Step', y='KL', hue='Binned Freq', style="Model")
 plt.xscale('log')
 plt.savefig(f'../working_dir/{sys.argv[1]}/output/frequency_result.png')
 plt.close()
+
+exit()
+
+for x in ['14m', '31m', '70m', '160m', '410m']:
+    df_plot = df_average[df_average['Model'] == x]
+    df_plot = df_plot[df_plot['Model 2'] == x]
+    df_plot = df_plot[df_plot['Training Step'] == df_plot['Training Step 2']]
+    df_plot = df_plot[df_plot['Seed 1'] != df_plot['Seed 2']]
+    plt.figure(figsize=(10, 6))
+    sns.lineplot(data=df_plot, x='Training Step', y='KL', hue='Binned Freq', markers=True)
+    plt.xscale('log')
+    plt.savefig(f'../working_dir/{sys.argv[1]}/output/frequency_test_{x}.png')
+    plt.close()

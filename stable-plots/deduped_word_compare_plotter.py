@@ -28,7 +28,7 @@ dataframe = dataframe[dataframe['Model'] != "6.9b"]
 dataframe = dataframe[dataframe['Training Step'] != 143000]
 dataframe = dataframe[dataframe['Training Step'] != 128000] # 160m, 70m exception
 dataframe = dataframe[dataframe['Training Step'] != 64000]
-dataframe = dataframe[dataframe.apply(lambda row: row['Revision 2'] == revs[revs.index(row['Training Step']) + 1], axis=1)]
+dataframe = dataframe[dataframe.apply(lambda row: row['Training Step 2'] == revs[revs.index(row['Training Step']) + 1], axis=1)]
 
 def plot1(tag_name):
     cp = dataframe.copy()
@@ -75,7 +75,7 @@ def plot2(tag_name):
     diff_list.append({'alpha': alpha1, 'tag': tag_name})
 
     plt.figure(figsize=(10, 6))
-    df0 = melted.melt(id_vars=['Model', 'Training Step', 'Model 2', 'Revision 2'], value_vars=[f'KL Average - {tag_name}', str0, f'Ratio Fitted KL Average - {tag_name}'], var_name='Metric', value_name='Value')
+    df0 = melted.melt(id_vars=['Model', 'Training Step', 'Model 2', 'Training Step 2'], value_vars=[f'KL Average - {tag_name}', str0, f'Ratio Fitted KL Average - {tag_name}'], var_name='Metric', value_name='Value')
     sns.lineplot(data=df0, x='Training Step', y='Value', hue='Metric', errorbar="ci", legend=None).set(ylabel='Value')
     plt.xscale('log')
     plt.axvline(x=8, color='r', linestyle='--')
@@ -84,7 +84,7 @@ def plot2(tag_name):
     plt.savefig(f'../working_dir/{sys.argv[1]}/output/curve_fitted_{tag_name}_ratio_{type}.png')
     plt.close()
     plt.figure(figsize=(10, 6))
-    df1 = melted.melt(id_vars=['Model', 'Training Step', 'Model 2', 'Revision 2'], value_vars=[f'KL Average - {tag_name}', str1, f'Diff Fitted KL Average - {tag_name}'], var_name='Metric', value_name='Value')
+    df1 = melted.melt(id_vars=['Model', 'Training Step', 'Model 2', 'Training Step 2'], value_vars=[f'KL Average - {tag_name}', str1, f'Diff Fitted KL Average - {tag_name}'], var_name='Metric', value_name='Value')
     sns.lineplot(data=df1, x='Training Step', y='Value', hue='Metric', errorbar="ci", legend=None).set(ylabel='Value')
     plt.xscale('log')
     plt.axvline(x=8, color='r', linestyle='--')
