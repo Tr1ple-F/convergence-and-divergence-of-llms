@@ -15,14 +15,14 @@ models = config['model_names']
 
 for x in models:
     df_plot = df[df['Model'] == strip(x)]
-    df_plot = df_plot[df_plot['Model 2'] != "12b"]
-    df_plot = df_plot[df_plot['Model 2'] != "6.9b"]
+    # df_plot = df_plot[df_plot['Model 2'] != "12b"]
+    # df_plot = df_plot[df_plot['Model 2'] != "6.9b"]
     df_plot = df_plot[df_plot['Model 2'] != df_plot['Model']]
     df_plot = df_plot[df_plot['Training Step'] == df_plot['Training Step 2']]
     plt.figure(figsize=(10, 6))
     sns.lineplot(data=df_plot, x='Training Step', y='KL Average', hue='Model 2', markers=True)
     plt.xscale('log')
-    plt.legend(prop={'size': 16})
+    plt.legend(title="Model 2", prop={'size': 16})
     plt.savefig(f'../working_dir/{sys.argv[1]}/output/deduped_model_{strip(x)}_to_others.png')
     plt.close()
 

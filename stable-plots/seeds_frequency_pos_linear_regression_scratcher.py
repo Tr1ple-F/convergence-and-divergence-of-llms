@@ -8,38 +8,69 @@ def test1():
     df = df[df['Seed 1'] != df['Seed 2']]
     df = df[df['Model'] == df['Model 2']]
     df = df[df['Training Step'] == df['Training Step 2']]
-    # Average by model revision
-    # Plot the evolution of the model over the rows
-    df_grouped = df.groupby(['Model', 'Training Step']).agg({'KL': 'mean'}).reset_index()
-    plt.figure(figsize=(10, 6))
-    sns.lineplot(data=df_grouped, x='Training Step', y='KL', hue='Model', marker='o')
 
-    plt.xlabel('Training Step')
-    plt.ylabel('Average KL')
-    plt.title('Average KL by Revision and Model')
+    # Average by model revision
+    df_grouped = df.groupby(['Model', 'Training Step']).agg({'KL': 'mean'}).reset_index()
+
+    plt.figure(figsize=(10, 6))
+    sns.set_context("notebook", font_scale=1.5)
+    sns.set_style("whitegrid")
+    palette = sns.color_palette("Set2")
+
+    sns.lineplot(
+        data=df_grouped,
+        x='Training Step',
+        y='KL',
+        hue='Model',
+        style='Model',
+        markers=True,
+        palette=palette
+    )
+
     plt.xscale('log')
-    plt.legend(title='Model')
-    plt.savefig(f'../working_dir/{sys.argv[1]}/output/seeds_average_kl_by_revision_and_model.png')
+    plt.xlabel('Training Step')
+    plt.ylabel(r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)')
+
+    for xpos in [16, 256, 2000]:
+        plt.axvline(x=xpos, color='gray', linestyle='--', linewidth=1.5)
+
+    plt.legend(title='Model', loc='upper left', bbox_to_anchor=(0, 1))
+    plt.tight_layout()
+    plt.savefig(f'../working_dir/{sys.argv[1]}/output/seeds_average_kl_by_revision_and_model.png', bbox_inches='tight')
     plt.close()
 
+# Load second DataFrame for the second plot
 df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/seeds_frequency_pos_linear_regression_transpose.csv')
 
-def plot_lg_by(list, appendix, symbol = "α"):
-    for x in list:
-        plt.plot(df['Revision'], df[x], label=x)
-
-    plt.xlabel('Training Step')
-    plt.xscale('log')
-    plt.ylabel('Value')
-    plt.title(f'Fitted {symbol} value from linear regression')
-    plt.legend()
-    plt.savefig(f'../working_dir/{sys.argv[1]}/output/seeds_linear_regression_by_{appendix}.png')
-    plt.close()
-
-models = ['Model 1_14m', 'Model 1_160m', 'Model 1_31m', 'Model 1_410m', 'Model 1_70m']
+# Rename model columns
+models = ['Model 1_14m', 'Model 1_31m', 'Model 1_70m', 'Model 1_160m', 'Model 1_410m']
 models_short = [x.replace('Model 1_', '') for x in models]
 rename_dict = {models[i]: models_short[i] for i in range(len(models))}
 df.rename(columns=rename_dict, inplace=True)
+
+def plot_lg_by(columns, appendix, symbol="α"):
+    plt.figure(figsize=(10, 6))
+    sns.set_context("notebook", font_scale=1.5)
+    sns.set_style("whitegrid")
+    palette = sns.color_palette("Set2")
+
+    for idx, col in enumerate(columns):
+        plt.plot(df['Revision'], df[col], label=f'{col}', color=palette[idx % len(palette)], linestyle='-', marker='o')
+
+    plt.xscale('log')
+    plt.xlabel('Training Step')
+    plt.ylabel(fr'Fitted {symbol} Value')
+
+    for xpos in [16, 256, 2000]:
+        plt.axvline(x=xpos, color='gray', linestyle='--', linewidth=1.5)
+
+    plt.legend(title=appendix, loc='upper left', bbox_to_anchor=(0, 1))
+    plt.tight_layout()
+    plt.savefig(f'../working_dir/{sys.argv[1]}/output/seeds_linear_regression_by_{appendix}.png', bbox_inches='tight')
+    plt.close()
+
+# Example usage would be like:
+# plot_lg_by(['14m', '31m', '70m', '160m', '410m'], 'Model Size')
 
 frequency = ['Frequency']
 pos_context_nouns = [f'POS Context_{x}' for x in ['NN', 'NNS', 'NNP', 'NNPS']]

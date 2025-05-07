@@ -11,6 +11,7 @@ seeds = config['seeds']
 data = []
 for model1 in models:
     for revision1 in revisions:
+        print(revision1)
         for i in seeds:
             surprisal_data = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revision1}-seed{i}-surprisal.npy')
 

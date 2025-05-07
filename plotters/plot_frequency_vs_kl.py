@@ -55,16 +55,40 @@ print("Binned")
 df_average = df.groupby(['Model', 'Training Step', 'Seed 1', 'Model 2', 'Training Step 2', 'Seed 2', 'Binned Freq']).mean().reset_index()
 print("Grouped")
 
-
-
+# Filter data
 df_plot = df_average[df_average['Model'].isin(["14m", "410m"])]
 df_plot = df_plot[df_plot['Model 2'] == df_plot['Model']]
 df_plot = df_plot[df_plot['Training Step'] == df_plot['Training Step 2']]
 df_plot = df_plot[df_plot['Seed 1'] != df_plot['Seed 2']]
+
+# Plotting
 plt.figure(figsize=(10, 6))
-sns.lineplot(data=df_plot, x='Training Step', y='KL', hue='Binned Freq', style="Model")
+sns.set_context("notebook", font_scale=1.5)  # Increase font size
+sns.set_style("whitegrid")  # Better background
+palette = sns.color_palette("Set2")  # Set nicer color palette
+
+sns.lineplot(
+    data=df_plot,
+    x='Training Step',
+    y='KL',
+    hue='Binned Freq',
+    style='Model',  # Different line styles for models
+    palette=palette,
+    errorbar='sd'
+)
+
+plt.legend(loc='upper left', bbox_to_anchor=(0, 1))
 plt.xscale('log')
-plt.savefig(f'../working_dir/{sys.argv[1]}/output/frequency_result.png')
+plt.xlabel('Training Step')
+plt.ylabel(r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)')  # Updated y-axis label with LaTeX
+
+for xpos in [16, 256, 2000]:
+    plt.axvline(x=xpos, color='gray', linestyle='--', linewidth=1.5)
+
+plt.tight_layout()  # Reduce extra whitespace
+
+# Save figure
+plt.savefig(f'../working_dir/{sys.argv[1]}/output/frequency_result.png', bbox_inches='tight')
 plt.close()
 
 exit()

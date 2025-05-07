@@ -1,5 +1,4 @@
 import sys
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,28 +10,61 @@ df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/seeds_surprisal_dataframe
 def plot_individual(frame):
     frame = frame[frame['Model'] == sys.argv[2]]
 
-    # value_vars = [f'KL Average - {x}' for x in ["VB", "CC", "CD", "JJ", "PRP", "RP", "RB", "WP", "DT", "IN", "MD", "NN"]]
-    list = ["CD", "CC", "RP", "RB", "TO", "DT", "WDT", "WP", "MD", "PRP"]
-    list2 = ["PRP$", "VB", "JJ", "IN", "NN", "NNS", "NNP", "NNPS", "VBG", "VBN", "VBD", "VBZ"]
+    plt.figure(figsize=(10, 6))
+    sns.set_context("notebook", font_scale=1.5)
+    sns.set_style("whitegrid")
+    palette = sns.color_palette("Set2")
 
-    # sns.lineplot(data=df_melted2, x='Revision', y='Surprisal', hue='Metric')
-    sns.lineplot(data=frame, x='Revision', y='Surprisal')
+    sns.lineplot(
+        data=frame,
+        x='Revision',
+        y='Surprisal',
+        color=palette[0]  # Single color since no hue
+    )
 
-    plt.title('Cross Entropy by Revision and Metric')
-    # plt.yscale('log')
     plt.xscale('log')
+    plt.xlabel('Revision')
+    plt.ylabel(r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)')
+
+    # Add vertical lines
+    for xpos in [16, 256, 2000]:
+        plt.axvline(x=xpos, color='gray', linestyle='--', linewidth=1.5)
+
     plt.tight_layout()
-    plt.savefig(f'../working_dir/{sys.argv[1]}/output/cross_entropy_{sys.argv[2]}.png')
+    plt.savefig(f'../working_dir/{sys.argv[1]}/output/cross_entropy_{sys.argv[2]}.png', bbox_inches='tight')
     plt.close()
 
 def plot_ci(frame):
-    sns.lineplot(data=frame, x='Revision', y='Surprisal', hue="Model", errorbar='sd')
+    plt.figure(figsize=(10, 6))
+    sns.set_context("notebook", font_scale=1.5)
+    sns.set_style("whitegrid")
+    palette = sns.color_palette("Set2")
 
-    plt.title('Cross Entropy by Revision')
-    plt.yscale('log')
+    sns.lineplot(
+        data=frame,
+        x='Revision',
+        y='Surprisal',
+        hue='Model',
+        style='Model',
+        markers=True,
+        errorbar='sd',
+        palette=palette
+    )
+
     plt.xscale('log')
+    plt.yscale('log')
+    plt.xlabel('Revision')
+    plt.ylabel(r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)')
+
+    # Add vertical lines
+    for xpos in [16, 256, 2000]:
+        plt.axvline(x=xpos, color='gray', linestyle='--', linewidth=1.5)
+
+    plt.legend(loc='upper left', bbox_to_anchor=(0, 1))
     plt.tight_layout()
-    plt.savefig(f'../working_dir/{sys.argv[1]}/output/cross_entropy_std_seeds.png') # Unexplained error for
+    plt.savefig(f'../working_dir/{sys.argv[1]}/output/cross_entropy_std_seeds.png', bbox_inches='tight')
     plt.close()
 
+# Call the plotting functions
 plot_ci(df)
+plot_individual(df)
