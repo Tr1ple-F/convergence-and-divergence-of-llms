@@ -70,8 +70,6 @@ def styled_plot(df_plot, x_name, y_name, hue, style, x_label, y_label, save_loc)
     # Filter and order handles/labels based on sorted order
     ordered_handles = [label_to_handle[label] for label in order]
     ordered_clean_labels = [label_map[label] for label in order]
-    print(ordered_handles)
-    print(ordered_clean_labels)
 
     plt.legend(handles=ordered_handles, labels=ordered_clean_labels, loc='upper left', bbox_to_anchor=(0, 1))
     plt.tight_layout()
