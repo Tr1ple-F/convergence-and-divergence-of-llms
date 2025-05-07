@@ -8,6 +8,7 @@ results/
 graphics/
 deliveries/
 output/
+*.pkl
 
 # Python
 .env/
