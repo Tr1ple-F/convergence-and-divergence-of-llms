@@ -1,2 +1,18 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
-*
+# IDE
+.idea/
+
+# Big files
+EleutherAI*/
+*.tar.gz
+results/
+graphics/
+deliveries/
+output/
+
+# Python
+.env/
+__pycache__/
+Lib/
+Scripts/
+pyvenv.cfg
+ipython/.ipynb_checkpoints/
