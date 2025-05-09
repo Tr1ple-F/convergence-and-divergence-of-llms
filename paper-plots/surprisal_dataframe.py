@@ -12,10 +12,10 @@ correct_indices = np.load(f'../working_dir/{sys.argv[1]}/input_text_encoded.npy'
 data = []
 
 for model1 in models:
+    surprisal_data = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revisions[-1]}-seed1-surprisal.npy')
     for revision1 in revisions:
         for seed1 in seeds:
             kl_data = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revision1}-seed{seed1}-kl.npy')
-            surprisal_data = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revision1}-seed{seed1}-surprisal.npy')
 
             i = 0
             for model2 in models:
