@@ -27,7 +27,7 @@ def plot_internal(value_vars, appendix=""):
             ]
 
         y_label = r'Cross Entropy ($H$)'
-        save_loc = f'../working_dir/{sys.argv[1]}/output/seeds_rev2rev_model_{model_size}{appendix}_{pos_index}.png'
+        save_loc = f'../working_dir/{sys.argv[1]}/output/seeds_ce_{model_size}{appendix}_{pos_index}.png'
 
         styled_plot(df_plot, 'Training Step', 'Average KL', 'PoS Tag', 'PoS Tag', 'Training Step', y_label, save_loc, y_log=True)
 

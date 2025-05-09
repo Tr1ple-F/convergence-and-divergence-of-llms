@@ -1,7 +1,6 @@
 import json
 import sys
 
-import ipdb
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -87,7 +86,6 @@ def styled_plot(
         label_map = dict(zip(labels, new_labels))
 
         # Filter and order handles/labels based on sorted order
-        ipdb.set_trace()
         ordered_handles = [label_to_handle[label] for label in order]
         ordered_clean_labels = [label_map[label] for label in order]
     else:
