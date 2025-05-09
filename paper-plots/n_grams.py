@@ -1,9 +1,16 @@
+import ipdb
 from datasets import load_dataset, VerificationMode
 import random
 import os
+import sys
 import numpy as np
 from collections import defaultdict, Counter
 import pickle
+import torch
+import torch.nn.functional as F
+
+input_text = np.load(f'../working_dir/{sys.argv[1]}/input_text_encoded.npy')
+train = False
 
 # Class to represent n-grams
 class NGramModel:
@@ -45,6 +52,29 @@ class NGramModel:
         distribution = {word: count / total for word, count in counter.items()}
         return distribution
 
+    def mass_inference(self, input_tokens, vocab_size):
+        logits_list = []
+        tokens = input_tokens.tolist()
+
+        for i in range(1, len(tokens)-1):
+            ipdb.set_trace()
+            if i % 10 == 0:
+                print(f"{n}, {num_batches}, {i}")
+            context = tokens[max(0, i - self.n + 1):i]
+            context = tuple(context)
+            counter = self.ngrams.get(context, Counter())
+
+            logits = torch.ones(vocab_size)  # Add-one smoothing
+            for token_id, count in counter.items():
+                logits[token_id] += count
+
+            ipdb.set_trace()
+            log_probs = F.log_softmax(logits, dim=0)
+            logits_list.append(log_probs)
+
+        ipdb.set_trace()
+        return torch.stack(logits_list, dim=0)
+
     def cache(self):
         if self.unchanged:
             return
@@ -85,11 +115,22 @@ def get_batches(ds, n, seed=42):
 # Load pile dataset
 ds = load_dataset("pietrolesci/pile-validation", "default", split="validation", verification_mode=VerificationMode.NO_CHECKS)
 
-for num_batches in [1, 2, 4, 8]:
-    tokens = get_batches(ds, num_batches)
-    print(f"Loaded first {num_batches} batches")
+array = []
+
+for num_batches in [1, 2, 4]: # Add 8 later
+    print(train)
+    if train:
+        tokens = get_batches(ds, num_batches)
+        print(f"Loaded first {num_batches} batches")
     for n in [1, 2, 3]:
         model = NGramModel(n, num_batches)
-        model.update(tokens)
-        model.cache()
+        if train:
+            model.update(tokens)
+            model.cache()
+        out = model.mass_inference(input_text, 50277)
+        array.append({
+            "n": n,
+            "b": num_batches,
+            "probs": out
+        })
         print(f"Trained {n}-gram model on {num_batches} batches")
