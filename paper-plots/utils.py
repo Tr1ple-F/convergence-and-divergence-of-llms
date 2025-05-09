@@ -28,9 +28,13 @@ def strip(name):
         return name.replace("EleutherAI/pythia-", "").replace("-deduped", "")
     if "step" in name:
         return name.replace("step", "")
+    if "KL Average - " in name:
+        return name.replace('KL Average - ', '')
+    if "Surprisal Average - " in name:
+        return name.replace('Surprisal Average - ', '')
     return name
 
-def styled_plot(df_plot, x_name, y_name, hue, style, x_label, y_label, save_loc):
+def styled_plot(df_plot, x_name, y_name, hue, style, x_label, y_label, save_loc, y_log = False):
     plt.figure(figsize=(10, 6))
     palette = sns.color_palette("Set2")
     sns.set_theme("notebook", "whitegrid", palette=palette, font="serif", font_scale=1.75)
@@ -49,6 +53,8 @@ def styled_plot(df_plot, x_name, y_name, hue, style, x_label, y_label, save_loc)
     )
 
     plt.xscale('log')
+    if y_log:
+        plt.yscale('log')
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
@@ -64,7 +70,7 @@ def styled_plot(df_plot, x_name, y_name, hue, style, x_label, y_label, save_loc)
     handles, labels = plt.gca().get_legend_handles_labels()
     label_to_handle = dict(zip(labels, handles))
 
-    new_labels = [f"{label.replace('KL Average - ', '')}" for label in labels if label != '']
+    new_labels = [f"{strip(label)}" for label in labels if label != '']
     label_map = dict(zip(labels, new_labels))
 
     # Filter and order handles/labels based on sorted order

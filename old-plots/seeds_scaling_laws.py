@@ -1,9 +1,7 @@
 import sys
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from utils import deduped_config, pos_tags, tagged_tokens, strip
 
 df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/seeds_surprisal_dataframe.csv')
 
