@@ -1,6 +1,7 @@
 import json
 import sys
 
+import ipdb
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -34,7 +35,18 @@ def strip(name):
         return name.replace('Surprisal Average - ', '')
     return name
 
-def styled_plot(df_plot, x_name, y_name, hue, style, x_label, y_label, save_loc, y_log = False):
+def styled_plot(
+        df_plot,
+        x_name,
+        y_name,
+        hue,
+        style,
+        x_label,
+        y_label,
+        save_loc,
+        y_log = False,
+        order_legend = True
+):
     plt.figure(figsize=(10, 6))
     palette = sns.color_palette("Set2")
     sns.set_theme("notebook", "whitegrid", palette=palette, font="serif", font_scale=1.75)
@@ -62,22 +74,28 @@ def styled_plot(df_plot, x_name, y_name, hue, style, x_label, y_label, save_loc,
     for xpos in [16, 256, 2000]:
         plt.axvline(x=xpos, color='gray', linestyle='--', linewidth=2)
 
-    max_x = df_plot[x_name].max()
-    df_last = df_plot[df_plot[x_name] == max_x].copy()
-    df_last = df_last.groupby(hue)[y_name].mean().sort_values(ascending=False)
-    order = df_last.index.tolist()
+    if order_legend:
+        max_x = df_plot[x_name].max()
+        df_last = df_plot[df_plot[x_name] == max_x].copy()
+        df_last = df_last.groupby(hue)[y_name].mean().sort_values(ascending=False)
+        order = df_last.index.tolist()
 
-    handles, labels = plt.gca().get_legend_handles_labels()
-    label_to_handle = dict(zip(labels, handles))
+        handles, labels = plt.gca().get_legend_handles_labels()
+        label_to_handle = dict(zip(labels, handles))
 
-    new_labels = [f"{strip(label)}" for label in labels if label != '']
-    label_map = dict(zip(labels, new_labels))
+        new_labels = [f"{strip(label)}" for label in labels if label != '']
+        label_map = dict(zip(labels, new_labels))
 
-    # Filter and order handles/labels based on sorted order
-    ordered_handles = [label_to_handle[label] for label in order]
-    ordered_clean_labels = [label_map[label] for label in order]
+        # Filter and order handles/labels based on sorted order
+        ipdb.set_trace()
+        ordered_handles = [label_to_handle[label] for label in order]
+        ordered_clean_labels = [label_map[label] for label in order]
+    else:
+        ordered_handles, labels = plt.gca().get_legend_handles_labels()
+        ordered_clean_labels = [f"{strip(label)}" for label in labels if label != '']
 
     plt.legend(handles=ordered_handles, labels=ordered_clean_labels, loc='upper left', bbox_to_anchor=(0, 1))
+
     plt.tight_layout()
     plt.savefig(save_loc, bbox_inches='tight')
     plt.close()
