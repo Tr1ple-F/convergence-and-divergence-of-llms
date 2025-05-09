@@ -68,4 +68,4 @@ save_loc2 = f'../working_dir/{sys.argv[1]}/output/surprisal_result.png'
 path1 = f'../working_dir/{sys.argv[1]}/output/seeds_frequency_dataframe.csv'
 path2 = f'../working_dir/{sys.argv[1]}/output/seeds_surprisal_by_token.csv'
 styled_plot(get_df(path1, bin_freq_10, 'Frequency', 'Binned Freq'), T_S, 'KL', 'Binned Freq', 'Model', T_S, y_label, save_loc1)
-styled_plot(get_df(path2, bin_surprisal, 'Surprisal', 'Binned Cross Entropy'), T_S, 'KL', 'Binned Freq', 'Model', T_S, y_label, save_loc2)
+styled_plot(get_df(path2, bin_surprisal, 'Surprisal', 'Binned Cross Entropy'), T_S, 'KL', 'Binned Cross Entropy', 'Model', T_S, y_label, save_loc2)
