@@ -37,7 +37,7 @@ def plot_no_filters():
     y_label = r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)'
     save_loc = f'../working_dir/{sys.argv[1]}/output/seeds_no_filters.png'
 
-    styled_plot(df_plot, 'Training Step', 'KL Average', 'Model', 'Model', 'Training Step', y_label, save_loc)
+    styled_plot(df_plot, 'Training Step', 'KL Average', 'Model', 'Model', 'Training Step', y_label, save_loc, order_legend=False)
 
 # ====== Run the functions based on sys.argv[2] ======
 

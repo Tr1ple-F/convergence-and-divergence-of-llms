@@ -23,24 +23,12 @@ def bin_surprisal(x):
         return '0-1'
     elif x < 2:
         return '1-2'
-    elif x < 3:
-        return '2-3'
     elif x < 4:
-        return '3-4'
-    elif x < 5:
-        return '4-5'
-    elif x < 6:
-        return '5-6'
-    elif x < 7:
-        return '6-7'
+        return '2-4'
     elif x < 8:
-        return '7-8'
-    elif x < 9:
-        return '8-9'
-    elif x < 10:
-        return '9-10'
+        return '4-8'
     else:
-        return '10+'
+        return '8+'
 
 
 # Load the dataframe
@@ -63,9 +51,14 @@ def get_df(path, binner, column, title):
 
 # Plotting
 y_label = r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)'
+h_label = r'Binned $H$'
 save_loc1 = f'../working_dir/{sys.argv[1]}/output/frequency_result.png'
 save_loc2 = f'../working_dir/{sys.argv[1]}/output/surprisal_result.png'
 path1 = f'../working_dir/{sys.argv[1]}/output/seeds_frequency_dataframe.csv'
 path2 = f'../working_dir/{sys.argv[1]}/output/seeds_surprisal_by_token.csv'
-styled_plot(get_df(path1, bin_freq_10, 'Frequency', 'Binned Freq'), T_S, 'KL', 'Binned Freq', 'Model', T_S, y_label, save_loc1)
-styled_plot(get_df(path2, bin_surprisal, 'Surprisal', 'Binned Cross Entropy'), T_S, 'KL', 'Binned Cross Entropy', 'Model', T_S, y_label, save_loc2)
+
+freq_df = get_df(path1, bin_freq_10, 'Frequency', 'Binned Freq')
+cross_entropy_df = get_df(path2, bin_surprisal, 'Surprisal', h_label)
+
+styled_plot(freq_df, T_S, 'KL', 'Binned Freq', 'Model', T_S, y_label, save_loc1, order_legend=False)
+styled_plot(cross_entropy_df, T_S, 'KL', h_label, 'Model', T_S, y_label, save_loc2, order_legend=False)
