@@ -9,6 +9,7 @@ graphics/
 deliveries/
 output/
 *.pkl
+n_test_2/
 
 # Python
 .env/
