@@ -19,8 +19,9 @@ sorted_kl = avg_kl_by_token.sort_values('KL').reset_index(drop=True)
 
 # Get the lowest, highest, and most middle tokens
 lowest = sorted_kl.iloc[0:10]
-highest = sorted_kl.iloc[-10:-1]
-mid = len(sorted_kl) // 2
+df_len = len(sorted_kl)
+highest = sorted_kl.iloc[df_len - 10 : df_len]
+mid = df_len // 2
 middle = sorted_kl.iloc[mid - 5 : mid + 5]
 
 with open("../common/vocab.json", "r") as f:
