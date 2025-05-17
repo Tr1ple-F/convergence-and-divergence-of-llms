@@ -12,5 +12,5 @@ df_unigram['Distribution'] = 'Unigram'
 df_out = pd.concat([df_uniform, df_unigram])
 
 path = f'../working_dir/{sys.argv[1]}/output/seeds_against_dist.png'
-y_label = r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)'
-styled_plot(df_out, S1, 'KL', 'Model', 'Distribution', S1, y_label, path)
+y_label = r'Expected KL'
+styled_plot(df_out, S1, 'KL', 'Model', 'Distribution', S1, y_label, path, order_legend=False, y_scale=4, legend_include=(6,9))

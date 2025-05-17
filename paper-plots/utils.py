@@ -1,6 +1,7 @@
 import json
 import sys
 
+import ipdb
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -44,9 +45,11 @@ def styled_plot(
         y_label,
         save_loc,
         y_log = False,
-        order_legend = True
+        order_legend = True,
+        y_scale = 6,
+        legend_include = None
 ):
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, y_scale))
     palette = sns.color_palette("Set2")
     sns.set_theme("notebook", "whitegrid", palette=palette, font="serif", font_scale=1.75)
 
@@ -91,6 +94,12 @@ def styled_plot(
     else:
         ordered_handles, labels = plt.gca().get_legend_handles_labels()
         ordered_clean_labels = [f"{strip(label)}" for label in labels if label != '']
+
+    if legend_include:
+        from_a, to_b = legend_include
+        ipdb.set_trace()
+        ordered_handles = ordered_handles[from_a:to_b]
+        ordered_clean_labels = ordered_clean_labels[from_a:to_b]
 
     plt.legend(handles=ordered_handles, labels=ordered_clean_labels, loc='upper left', bbox_to_anchor=(0, 1))
 
