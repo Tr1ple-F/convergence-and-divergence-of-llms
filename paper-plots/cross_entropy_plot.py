@@ -17,7 +17,7 @@ def plot_internal(value_vars, appendix=""):
             id_vars=['Model', 'Model 2', 'Training Step', 'Training Step 2', 'Seed 1', 'Seed 2'],
             value_vars=value_vars,
             var_name='PoS Tag',
-            value_name='Average KL'
+            value_name='Average Surprisal'
         )
         df_plot = df_plot[
             (df_plot['Model'] == model_size) &
@@ -29,7 +29,7 @@ def plot_internal(value_vars, appendix=""):
         y_label = r'Cross Entropy ($H$)'
         save_loc = f'../working_dir/{sys.argv[1]}/output/seeds_ce_{model_size}{appendix}_{pos_index}.png'
 
-        styled_plot(df_plot, 'Training Step', 'Average KL', 'PoS Tag', 'PoS Tag', 'Training Step', y_label, save_loc, y_log=True)
+        styled_plot(df_plot, 'Training Step', 'Average Surprisal', 'PoS Tag', 'PoS Tag', 'Training Step', y_label, save_loc, y_log=True)
 
 # ====== Run the functions based on sys.argv[2] ======
 

@@ -49,6 +49,9 @@ def styled_plot(
         y_scale = 6,
         legend_include = None
 ):
+    if "KL" in y_name or 'convergence' in y_label or 'Value' in y_name: # 'Value' for the linear regression case
+        df_plot[y_name] *= -1
+
     plt.figure(figsize=(10, y_scale))
     palette = sns.color_palette("Set2")
     sns.set_theme("notebook", "whitegrid", palette=palette, font="serif", font_scale=1.75)
@@ -97,7 +100,6 @@ def styled_plot(
 
     if legend_include:
         from_a, to_b = legend_include
-        ipdb.set_trace()
         ordered_handles = ordered_handles[from_a:to_b]
         ordered_clean_labels = ordered_clean_labels[from_a:to_b]
 
