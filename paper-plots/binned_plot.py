@@ -1,3 +1,4 @@
+import ipdb
 import pandas as pd
 import sys
 from utils import styled_plot
@@ -32,10 +33,22 @@ def bin_surprisal(x):
 
 
 # Load the dataframe
-def get_df(path, binner, column, title):
+def get_df(path, binner, column, title, is_kl = True):
     df = pd.read_csv(path)
-    if column == "Frequency":
-        df = df.drop(columns=["POS","POS Context"])
+    ipdb.set_trace()
+
+    df = df.drop(columns=["POS","POS Context", "ID"])
+
+    if is_kl:
+        df = df.drop(columns=['Surprisal'])
+    else:
+        df = df.drop(columns = ['KL'])
+
+    if column == 'Final Surprisal':
+        df = df.drop(columns=['Frequency'])
+    else:
+        df = df.drop(columns=['Final Surprisal'])
+
     print("Loaded dataframe")
     df[title] = df[column].apply(binner)
     print("Binned")
@@ -50,15 +63,23 @@ def get_df(path, binner, column, title):
     return df_plot
 
 # Plotting
-y_label = r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)'
+y_label1 = r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)'
+y_label2 = r'Cross Entropy $H$'
 h_label = r'Binned $H$'
 save_loc1 = f'../working_dir/{sys.argv[1]}/output/frequency_result.png'
 save_loc2 = f'../working_dir/{sys.argv[1]}/output/surprisal_result.png'
+save_loc3 = f'../working_dir/{sys.argv[1]}/output/frequency_result_ce.png'
+save_loc4 = f'../working_dir/{sys.argv[1]}/output/surprisal_result_ce.png'
 path1 = f'../working_dir/{sys.argv[1]}/output/seeds_frequency_dataframe.csv'
-path2 = f'../working_dir/{sys.argv[1]}/output/seeds_surprisal_by_token.csv'
 
-freq_df = get_df(path1, bin_freq_10, 'Frequency', 'Binned Freq')
-cross_entropy_df = get_df(path2, bin_surprisal, 'Surprisal', h_label)
+freq_df_ce = get_df(path1, bin_freq_10, 'Frequency', 'Binned Freq', is_kl=False)
+styled_plot(freq_df_ce, T_S, 'Surprisal', 'Binned Freq', 'Model', T_S, y_label2, save_loc3, order_legend=False)
 
-styled_plot(freq_df, T_S, 'KL', 'Binned Freq', 'Model', T_S, y_label, save_loc1, order_legend=False)
-styled_plot(cross_entropy_df, T_S, 'KL', h_label, 'Model', T_S, y_label, save_loc2, order_legend=False)
+cross_entropy_df_ce = get_df(path1, bin_surprisal, 'Final Surprisal', h_label, is_kl=False)
+styled_plot(cross_entropy_df_ce, T_S, 'Surprisal', h_label, 'Model', T_S, y_label2, save_loc4, order_legend=False)
+
+freq_df_kl = get_df(path1, bin_freq_10, 'Frequency', 'Binned Freq', is_kl=True)
+styled_plot(freq_df_kl, T_S, 'KL', 'Binned Freq', 'Model', T_S, y_label1, save_loc1, order_legend=False)
+
+cross_entropy_df_kl = get_df(path1, bin_surprisal, 'Final Surprisal', h_label, is_kl=True)
+styled_plot(cross_entropy_df_kl, T_S, 'KL', h_label, 'Model', T_S, y_label1, save_loc2, order_legend=False)

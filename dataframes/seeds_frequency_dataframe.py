@@ -14,8 +14,10 @@ pos_data = tagged_tokens()
 data = []
 
 for model1 in models:
+    final_surprise = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revisions[-1]}-seed1-surprisal.npy')
     for revision1 in revisions:
         for seed1 in seeds:
+            surprise = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revision1}-seed{seed1}-surprisal.npy')
             kl_data = np.load(f'../working_dir/{sys.argv[1]}/results/seeds/{model1.replace("/", "-")}-{revision1}-seed{seed1}-kl.npy')
 
             i = 0
@@ -24,7 +26,21 @@ for model1 in models:
                     for seed2 in seeds:
                         if model1 == model2 and revision1 == revision2:
                             for x in range(0, len(correct_indices) - 1):
-                                row = {'Model': strip(model1), 'Training Step': strip(revision1), "Model 2": strip(model2), "Training Step 2": strip(revision2), 'Seed 1': seed1, 'Seed 2': seed2, 'KL': kl_data[i, x], 'ID': x, 'Frequency': frequency_data[correct_indices[x + 1]], 'POS': pos_data[x+1][1], 'POS Context': pos_data[x][1]}
+                                row = {
+                                    'Model': strip(model1),
+                                    'Training Step': strip(revision1),
+                                    "Model 2": strip(model2),
+                                    "Training Step 2": strip(revision2),
+                                    'Seed 1': seed1,
+                                    'Seed 2': seed2,
+                                    'KL': kl_data[i, x],
+                                    'ID': x,
+                                    'Frequency': frequency_data[correct_indices[x + 1]],
+                                    'POS': pos_data[x+1][1],
+                                    'POS Context': pos_data[x][1],
+                                    'Surprisal': surprise[x],
+                                    'Final Surprisal': final_surprise[x]
+                                }
                                 data.append(row)
 
                         i += 1
