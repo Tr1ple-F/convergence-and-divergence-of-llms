@@ -15,7 +15,7 @@ tokenizer = AutoTokenizer.from_pretrained(
     add_eos_token=True
 )
 
-token_counter = np.ndarray(len(tokenizer))
+token_counter = np.zeros(len(tokenizer))
 
 i = 0
 for x in range(len(ds)):
