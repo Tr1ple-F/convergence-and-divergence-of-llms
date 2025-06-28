@@ -33,9 +33,9 @@ model_names = config['model_names']
 revisions = config['revisions']
 seeds = config['seeds']
 
-for model_name_1 in [model_names[sys.argv[2]]]:
+for model_name_1 in model_names:
     for revision_1 in revisions:
-        for i in seeds:
+        for i in [int(sys.argv[2])]:
             base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed_{i}/{revision_1}'
             files_1 = [f for f in os.listdir(base_dir_1) if f.endswith('.npy')]
 

@@ -31,7 +31,7 @@ seeds = config['seeds']
 uniform_base = torch.tensor(np.load('../uniform_dist_bert.npy'), dtype=torch.float16, device=device)
 unigram_base = torch.tensor(np.load('../unigram_dist_bert.npy'), dtype=torch.float16, device=device)
 
-for model_name_1 in model_names[int(sys.argv[2]):int(sys.argv[3])]:
+for model_name_1 in model_names:
     for revision_1 in revisions:
         for seed_1 in seeds:
             base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed_{seed_1}/{revision_1}'
