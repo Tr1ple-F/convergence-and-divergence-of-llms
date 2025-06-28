@@ -16,7 +16,7 @@ def calculate_kl_divergence(log_p, log_q):
     return torch.sum(torch.exp(log_p) * (log_p - log_q), dim=-1)
 
 def process_file_pair(probs1, file2_path, device):
-    probs2 = torch.tensor(np.load(file2_path)[:, :50277], dtype=torch.float16, device=device)
+    probs2 = torch.tensor(np.load(file2_path)[:, :30522], dtype=torch.float16, device=device)
     assert probs1.shape == probs2.shape, (
         f"Shape mismatch between {file2_path}"
     )
@@ -36,7 +36,7 @@ seeds = config['seeds']
 for model_name_1 in [model_names[sys.argv[2]]]:
     for revision_1 in revisions:
         for i in seeds:
-            base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed{i}/{revision_1}'
+            base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed_{i}/{revision_1}'
             files_1 = [f for f in os.listdir(base_dir_1) if f.endswith('.npy')]
 
             all_divergences = []
@@ -47,7 +47,7 @@ for model_name_1 in [model_names[sys.argv[2]]]:
                 continue
 
             probs1 = torch.tensor(
-                np.load(os.path.join(base_dir_1, files_1[0]))[:, :50277],
+                np.load(os.path.join(base_dir_1, files_1[0]))[:, :30522],
                 dtype=torch.float16,
                 device=device
             )
@@ -59,7 +59,7 @@ for model_name_1 in [model_names[sys.argv[2]]]:
             for model_name_2 in model_names:
                 for revision_2 in revisions:
                     for j in seeds:
-                        base_dir_2 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_2.replace("/", "-")}-seed{j}/{revision_2}'
+                        base_dir_2 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_2.replace("/", "-")}-seed_{j}/{revision_2}'
                         files_2 = [f for f in os.listdir(base_dir_2) if f.endswith('.npy')]
 
                         assert len(files_1) == len(files_2), (

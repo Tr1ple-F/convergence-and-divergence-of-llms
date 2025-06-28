@@ -28,13 +28,13 @@ model_names = config['model_names']
 revisions = config['revisions']
 seeds = config['seeds']
 
-uniform_base = torch.tensor(np.load('../uniform_dist.npy'), dtype=torch.float16, device=device)
-unigram_base = torch.tensor(np.load('../unigram_dist.npy'), dtype=torch.float16, device=device)
+uniform_base = torch.tensor(np.load('../uniform_dist_bert.npy'), dtype=torch.float16, device=device)
+unigram_base = torch.tensor(np.load('../unigram_dist_bert.npy'), dtype=torch.float16, device=device)
 
 for model_name_1 in model_names[int(sys.argv[2]):int(sys.argv[3])]:
     for revision_1 in revisions:
         for seed_1 in seeds:
-            base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed{seed_1}/{revision_1}'
+            base_dir_1 = f'../working_dir/{sys.argv[1]}/probabilities/{model_name_1.replace("/", "-")}-seed_{seed_1}/{revision_1}'
             files_1 = [f for f in os.listdir(base_dir_1) if f.endswith('.npy')]
 
             all_divergences = []
@@ -45,7 +45,7 @@ for model_name_1 in model_names[int(sys.argv[2]):int(sys.argv[3])]:
                 continue
 
             probs1 = torch.tensor(
-                np.load(os.path.join(base_dir_1, files_1[0]))[:, :50277],
+                np.load(os.path.join(base_dir_1, files_1[0]))[:, :30522],
                 dtype=torch.float16,
                 device=device
             )
