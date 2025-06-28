@@ -3,7 +3,7 @@ from transformers import AutoTokenizer
 import numpy as np
 
 print("Loading dataset...")
-ds = load_dataset("pietrolesci/pile-validation", "default", cache_dir='./pile_set', split="validation", verification_mode=VerificationMode.NO_CHECKS)
+ds = load_dataset("pietrolesci/pile-validation", "default", split="validation", verification_mode=VerificationMode.NO_CHECKS)
 print("Dataset loaded.")
 
 model_name = "google/multiberts-seed_0"
@@ -18,10 +18,10 @@ tokenizer = AutoTokenizer.from_pretrained(
 token_counter = np.ndarray(len(tokenizer))
 
 i = 0
-for x in range(len(ds['validation'])):
+for x in range(len(ds)):
     if i % 1000 == 0:
         print(f'{i} / 214670 done')
-    sample_text = ds['validation'][x]['text']
+    sample_text = ds[x]['text']
     out = tokenizer.encode(sample_text)
     for y in out:
         token_counter[y] += 1

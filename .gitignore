@@ -3,6 +3,7 @@
 
 # Big files
 EleutherAI*/
+google-multiberts*/
 *.tar.gz
 results/
 graphics/
