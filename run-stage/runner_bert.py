@@ -35,7 +35,7 @@ def get_probabilities(model_name, revision, input_text):
         model = model.cuda()
 
     inputs = tokenizer(input_text, return_tensors="pt")
-    ipdb.set_trace()
+    # ipdb.set_trace()
 
     if torch.cuda.is_available():
         inputs = {k: v.cuda() for k, v in inputs.items()}
