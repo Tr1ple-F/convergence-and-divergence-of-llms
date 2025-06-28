@@ -27,4 +27,4 @@ for x in range(len(ds['validation'])):
         token_counter[y] += 1
     i += 1
 
-np.save("./frequency_count.npy", token_counter)
+np.save("./frequency_count_bert.npy", token_counter)
