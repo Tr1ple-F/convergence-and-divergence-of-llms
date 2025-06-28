@@ -1,9 +1,9 @@
-from datasets import load_dataset
+from datasets import load_dataset, VerificationMode
 from transformers import AutoTokenizer
 import numpy as np
 
 print("Loading dataset...")
-ds = load_dataset("pietrolesci/pile-validation")
+ds = load_dataset("pietrolesci/pile-validation", "default", split="validation", verification_mode=VerificationMode.NO_CHECKS)
 print("Dataset loaded.")
 
 model_name = "google/multiberts-seed_0"
