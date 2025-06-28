@@ -1,3 +1,4 @@
+import ipdb
 import numpy as np
 from transformers import AutoTokenizer, AutoModelForPreTraining
 import torch
@@ -23,7 +24,9 @@ def get_probabilities(model_name, revision, input_text):
 
     tokenizer = AutoTokenizer.from_pretrained(
         f"{model_name}-{revision}",
-        cache_dir = cache_dir
+        cache_dir = cache_dir,
+        add_bos_token=True,
+        add_eos_token=True
     )
 
     model.eval()
@@ -31,9 +34,8 @@ def get_probabilities(model_name, revision, input_text):
     if torch.cuda.is_available():
         model = model.cuda()
 
-    # Add start / end
-    input_text = '[CLS]' + input_text + '[SEP]'
     inputs = tokenizer(input_text, return_tensors="pt")
+    ipdb.set_trace()
 
     if torch.cuda.is_available():
         inputs = {k: v.cuda() for k, v in inputs.items()}
