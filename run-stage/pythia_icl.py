@@ -16,11 +16,14 @@ def run_icl_for_model(model_n, revision, seed, input_text):
 
     cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
 
-    model = GPTNeoXForCausalLM.from_pretrained(
-        model_name,
-        revision=revision,
-        cache_dir=cache_dir,
-    )
+    try:
+        model = GPTNeoXForCausalLM.from_pretrained(
+            model_name,
+            revision=revision,
+            cache_dir=cache_dir,
+        )
+    except:
+        return []
 
     tokenizer = AutoTokenizer.from_pretrained(
         "EleutherAI/pythia-14m-seed1",
