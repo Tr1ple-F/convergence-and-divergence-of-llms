@@ -2,7 +2,6 @@ import os
 import sys
 import json
 
-import ipdb
 import torch
 import pandas as pd
 import torch.nn.functional as F
@@ -11,8 +10,8 @@ from transformers import GPTNeoXForCausalLM, AutoTokenizer
 def calculate_surprisal(probabilities, correct_indices):
     return -probabilities[torch.arange(probabilities.shape[0]), correct_indices]
 
-def run_icl_for_model(model, revision, seed, input_text):
-    model_name = f"{model}-seed{seed}"
+def run_icl_for_model(model_n, revision, seed, input_text):
+    model_name = f"{model_n}-seed{seed}"
     print(f"Running ICL for {model_name}, revision {revision}")
 
     cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
@@ -59,7 +58,7 @@ def run_icl_for_model(model, revision, seed, input_text):
             surprisal = calculate_surprisal(probabilities[:-1], correct_indices)[0]
             icl_score = surprisal[500] - surprisal[50]
             row = {
-                'Model': model,
+                'Model': model_n,
                 'Training Step': revision,
                 'Seed': seed,
                 'ICL': icl_score.item()
