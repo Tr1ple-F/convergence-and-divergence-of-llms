@@ -18,8 +18,12 @@ def pos_tags():
         return json.load(f)
 
 def strip(name):
+    if "google" in name:
+        return name.replace("google/multiberts", "multiberts")
     if "EleutherAI" in name:
         return name.replace("EleutherAI/pythia-", "").replace("-deduped", "")
+    if "step_" in name:
+        return name.replace("step_", "").replace("k", "000")
     if "step" in name:
         return name.replace("step", "")
     return name
