@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+from time import sleep
 
 import torch
 import pandas as pd
@@ -41,7 +42,7 @@ def run_icl_for_model(model_n, revision, seed, input_text):
         model = model.cuda()
 
     inputs = []
-    for snippet in input_text.split("<|endoftext|>")[-1]: # Skip last
+    for snippet in input_text.split("<|endoftext|>")[:-1]: # Skip last
         tokenized = tokenizer(snippet, return_tensors="pt")
         tokenized['input_ids'] = tokenized['input_ids'][:, :550]
         inputs.append(tokenized)
@@ -90,6 +91,9 @@ def main():
         for revision in revisions:
             for i in seeds:
                 icl_scores = run_icl_for_model(model_name, revision, i, input_text)
+                while not icl_scores:
+                    sleep(5)
+                    icl_scores = run_icl_for_model(model_name, revision, i, input_text)
                 data = data + icl_scores
 
     df = pd.DataFrame(data)
