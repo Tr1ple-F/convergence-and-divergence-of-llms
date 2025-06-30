@@ -1,5 +1,5 @@
-import ipdb
 import numpy as np
+from requests.models import ChunkedEncodingError
 from transformers import AutoTokenizer, AutoModelForPreTraining
 import torch
 import torch.nn.functional as F
@@ -34,36 +34,32 @@ def get_probabilities(model_name, revision, input_text):
     if torch.cuda.is_available():
         model = model.cuda()
 
-    inputs = tokenizer(input_text, return_tensors="pt")
-    # ipdb.set_trace()
+    inputs = []
+    for snippet in input_text.split("[SEP][CLS]"):
+        inputs.append(tokenizer(snippet, return_tensors="pt"))
 
+    inputs_loaded = []
     if torch.cuda.is_available():
-        inputs = {k: v.cuda() for k, v in inputs.items()}
-
-    # Context window settings
-    window_size = 512
-    overlap = 256
-    stride = window_size - overlap
+        for snippet in inputs:
+            inputs_loaded.append({k: v.cuda() for k, v in snippet.items()})
 
     all_probabilities = []
-
     with torch.no_grad():
-        for start_idx in range(0, inputs["input_ids"].size(1) - overlap, stride):
-            end_idx = start_idx + window_size
-            window_inputs = {key: value[:, start_idx:end_idx] for key, value in inputs.items()}
-
-            logits = model(**window_inputs).prediction_logits # ?
-            probabilities = F.log_softmax(logits, dim=-1).cpu().numpy().reshape(-1, logits.shape[-1])
-            if start_idx == 0:
-                # Append the whole window for the first case
-                all_probabilities.append(probabilities)
-            else:
-                # Append only the new part past the overlap
-                all_probabilities.append(probabilities[overlap:])
+        for snippet in inputs_loaded:
+            failed = True
+            while failed:
+                try:
+                    window_inputs = snippet
+                    logits = model(**window_inputs).prediction_logits # ?
+                    probabilities = F.log_softmax(logits, dim=-1).cpu().numpy().reshape(-1, logits.shape[-1])
+                    all_probabilities.append(probabilities)
+                    failed = False
+                except ChunkedEncodingError:
+                    continue
 
     # Flatten the list of arrays into a single array
     all_probabilities_matrix = np.concatenate(all_probabilities, axis=0)
-    all_probabilities_matrix = all_probabilities_matrix[:-1]
+    all_probabilities_matrix = all_probabilities_matrix[:-1] # Because of last [SEP]
 
     np.save(output_file_path, all_probabilities_matrix.astype(np.float16))
 

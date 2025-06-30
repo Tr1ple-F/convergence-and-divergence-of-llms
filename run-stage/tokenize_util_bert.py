@@ -24,8 +24,11 @@ print(len(encoding))
 
 # Save decoded text (text split into token parts)
 decoded_arr = []
-for token in encoding:
-  decoded_arr.append(tokenizer.decode(token))
+for encoded in encoding:
+    decoded = tokenizer.decode(encoded)
+    if (decoded == "[CLS]"):
+        print(f"CLS at {len(decoded_arr)}")
+    decoded_arr.append(decoded)
 
 with open(f'../working_dir/{sys.argv[1]}/input_text_tokenized.json', 'w') as out_file:
   json.dump(decoded_arr, out_file)

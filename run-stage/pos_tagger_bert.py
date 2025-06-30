@@ -4,66 +4,7 @@ import json
 import sys
 import os
 
-import numpy as np
 from unidecode import unidecode
-
-# Code section 1
-code1 = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<title>jQuery Image Cube</title>
-<style type="text/css">
-#basicCube { width: 150px; height: 150px;}
-#basicCube img{border:3px solid #ccc}
-</style>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<script type="text/javascript" src="jquery.imagecube.js"></script>
-<script type="text/javascript">
-$(function () {
-    $('#basicCube').imagecube();
-});
-</script>
-</head>
-<body>
-<div id="basicCube">
-    <img src="1.jpg" alt="Gorge" title="Gorge">
-    <img src="2.jpg" alt="Gorge" title="Gorge">
-    <img src="3.jpg" alt="Gorge" title="Gorge">
-    <img src="4.jpg" alt="Gorge" title="Gorge">
-    <img src="5.jpg" alt="Gorge" title="Gorge">
-    <img src="6.jpg" alt="Gorge" title="Gorge">
-</div>
-</body>
-</html>'''
-
-# Code section 2
-code2 = '''CSS
-.basicCube { width: 150px; height: 150px;}
-.basicCube img{border:3px solid #ccc}
-
-HTML
-<div class="basicCube">
-    <img src="1.jpg" alt="Gorge" title="Gorge">
-    <img src="2.jpg" alt="Gorge" title="Gorge">
-    <img src="3.jpg" alt="Gorge" title="Gorge">
-    <img src="4.jpg" alt="Gorge" title="Gorge">
-    <img src="5.jpg" alt="Gorge" title="Gorge">
-    <img src="6.jpg" alt="Gorge" title="Gorge">
-</div>
-<div class="basicCube">
-    <img src="1.jpg" alt="Gorge" title="Gorge">
-    <img src="2.jpg" alt="Gorge" title="Gorge">
-    <img src="3.jpg" alt="Gorge" title="Gorge">
-    <img src="4.jpg" alt="Gorge" title="Gorge">
-    <img src="5.jpg" alt="Gorge" title="Gorge">
-    <img src="6.jpg" alt="Gorge" title="Gorge">
-</div>
-
-JavaScript
-$(function () {
-    $('.basicCube').imagecube();
-});'''
 
 nltk.download('punkt')
 nltk.download('punkt_tab')
@@ -113,31 +54,10 @@ for token in hf_tokens:
         if token_real not in exclusion_list:
             next_text = unidecode(next_text)
     for char in token_real:
-        if (current_index >= len(bert_char_mask)):
-            ipdb.set_trace()
-            print(token_real)
-            print(token)
         bert_char_mask[current_index] = char
         current_index += 1
 
-ipdb.set_trace()
-
-# Erase code section:
-code1_index = text.index(code1)
-code2_index = text.index(code2)
-for i in range(code1_index, code1_index + len(code1)):
-    nltk_char_mask[i] = 'UNK'
-for i in range(code2_index, code2_index + len(code2)):
-    nltk_char_mask[i] = 'UNK'
-
-print(f"----------------------------------------------------------------------------")
-print(f"Erased code section 1 from index {code1_index} to {code1_index + len(code1)}")
-print(f"Erased code section 2 from index {code2_index} to {code2_index + len(code2)}")
-print(f"----------------------------------------------------------------------------")
-
 tagged_tokens = []
-
-ipdb.set_trace()
 
 current_token = 0
 current_index = 0
@@ -145,17 +65,11 @@ for token in hf_tokens:
     token_real = token
     if token_real.startswith('##'):
         token_real = token_real.replace('##', '')
-        # ipdb.set_trace()
     text = bert_char_mask[current_index:(current_index + len(token_real))]
-    # if token_real == '(':
-        # ipdb.set_trace()
     while ''.join(text) != token_real:
         # Move forward
         current_index += 1
         text = bert_char_mask[current_index:(current_index + len(token_real))]
-        if current_index % 100 == 0:
-            # ipdb.set_trace()
-            print("hundred")
 
     # Now they are the same
     tags = nltk_char_mask[current_index:(current_index + len(token_real))]
@@ -179,8 +93,6 @@ for token in hf_tokens:
 
     current_index += len(token_real)
     current_token += 1
-    if current_token % 100 == 0:
-        print("hundred t")
 
 tagged_tokens.insert(0, ('[CLS]', 'UNK'))
 tagged_tokens.append(('[SEP]', 'UNK'))
