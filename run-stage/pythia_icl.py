@@ -37,7 +37,7 @@ def run_icl_for_model(model_n, revision, seed, input_text):
         model = model.cuda()
 
     inputs = []
-    for snippet in input_text.split("<|endoftext|>"):
+    for snippet in input_text.split("<|endoftext|>")[-1]: # Skip last
         tokenized = tokenizer(snippet, return_tensors="pt")
         tokenized['input_ids'] = tokenized['input_ids'][:, :550]
         inputs.append(tokenized)
