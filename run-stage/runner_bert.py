@@ -69,7 +69,7 @@ def main():
 
     model_names = config['model_names']
     revisions = config['revisions']
-    seeds = [config['seeds'][int(sys.argv[2])]]
+    seeds = sys.argv[2].split(',')
 
     with open(f'../working_dir/{sys.argv[1]}/input_text.txt', 'r', encoding="utf8") as file:
         input_text = file.read()
