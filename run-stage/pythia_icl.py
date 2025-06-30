@@ -23,6 +23,7 @@ def run_icl_for_model(model_n, revision, seed, input_text):
             cache_dir=cache_dir,
         )
     except:
+        print(f"Could not load model {model_name}")
         return []
 
     tokenizer = AutoTokenizer.from_pretrained(
