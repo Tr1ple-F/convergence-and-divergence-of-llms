@@ -1,0 +1,5 @@
+{
+  "model_names": ["google/multiberts"],
+  "revisions": ["step_0k", "step_20k", "step_40k", "step_60k", "step_80k", "step_100k", "step_120k", "step_140k", "step_160k", "step_180k", "step_200k", "step_300k", "step_400k", "step_500k", "step_600k", "step_700k", "step_800k", "step_900k", "step_1000k", "step_1100k", "step_1200k", "step_1300k", "step_1400k", "step_1500k", "step_1600k", "step_1700k", "step_1800k", "step_1900k", "step_2000k"],
+  "seeds": [0,1,2,3,4]
+}

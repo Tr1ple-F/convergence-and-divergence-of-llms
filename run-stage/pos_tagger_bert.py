@@ -38,7 +38,7 @@ for token, pos_tag in nltk_pos_tags:
         nltk_char_mask[current_index] = pos_tag
         current_index += 1
 
-exclusion_list = ['“', '–', '—', '”', '’', '‘']
+exclusion_list = ['“', '–', '—', '”', '’', '‘', 'φ', '…', 'þ', 'ð']
 
 current_index = 0
 for token in hf_tokens:
@@ -54,6 +54,8 @@ for token in hf_tokens:
         if token_real not in exclusion_list:
             next_text = unidecode(next_text)
     for char in token_real:
+        if (current_index >= len(bert_char_mask)):
+            ipdb.set_trace()
         bert_char_mask[current_index] = char
         current_index += 1
 
