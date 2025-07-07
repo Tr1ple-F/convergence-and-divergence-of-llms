@@ -17,13 +17,13 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 ipdb.set_trace()
 samples = []
-for i in range(100):
+for i in range(2000):
     samples.append(ds[random.randint(0, len(ds))])
 ipdb.set_trace()
 
 token_counter = 0
 
-with open("working_dir/input_text.txt", "w", encoding="utf-8") as file:
+with open("working_dir/icl_score/input_text.txt", "w", encoding="utf-8") as file:
     for sample in samples:
         text = sample["text"]
         tokenized = tokenizer.encode(text)
