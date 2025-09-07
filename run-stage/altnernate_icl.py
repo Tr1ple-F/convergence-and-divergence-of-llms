@@ -15,11 +15,7 @@ def run_icl_for_model(model_n, revision, seed, input_text):
     cache_dir = f"./{model_name.replace('/', '-')}/{revision}"
 
     try:
-        model = GPTNeoXForCausalLM.from_pretrained(
-            model_name,
-            revision=revision,
-            cache_dir=cache_dir,
-        )
+        model = GPTNeoXForCausalLM.from_pretrained(f"./EleutherAI-pythia-raw/models/{model_name.replace('/', '-')}/{revision}/")
     except:
         print(f"Could not load model {model_name}")
         return []
@@ -53,10 +49,15 @@ def run_icl_for_model(model_n, revision, seed, input_text):
 
     with torch.no_grad():
         for sample in inputs_loaded:
-            input_ids_ = sample['input_ids']
-            logits = model(input_ids_).logits
-            loss = F.cross_entropy(logits[0, :-1, :], input_ids_[0, 1:], reduction = 'none')
-            icl_score = loss[500] - loss[50]
+            input_ids_ = sample['input_ids'][0] # Shape [550]
+            # Predict 500th token, once with 50 tokens context, once with 400 tokens context
+            logitsLong = model(input_ids_[100:501]).logits # Shape [400, 50304]
+            logitsShort = model(input_ids_[450:501]).logits # Shape [50, 50304]
+            lsmLong = F.log_softmax(logitsLong, dim = -1) # Shape [400, 50304]
+            lsmShort = F.log_softmax(logitsShort, dim = -1) # Shape [50, 50304]
+            lossLong = -lsmLong[-1, input_ids_[501]]
+            lossShort = -lsmShort[-1, input_ids_[501]]
+            icl_score = lossLong - lossShort
             row = {
                 'Model': model_n,
                 'Training Step': revision,
@@ -94,7 +95,7 @@ def main():
     df = pd.DataFrame(data)
     output_dir = f'../working_dir/{experiment_id}/output'
     os.makedirs(output_dir, exist_ok=True)
-    df.to_csv(os.path.join(output_dir, 'seeds_icl.csv'), index=False)
+    df.to_csv(os.path.join(output_dir, 'alternate_icl.csv'), index=False)
     print("ICL scores saved.")
 
 if __name__ == "__main__":
