@@ -55,8 +55,8 @@ def run_icl_for_model(model_n, revision, seed, input_text):
             logitsShort = model(input_ids_[:, 450:501]).logits # Shape [1, 50, 50304]
             lsmLong = F.log_softmax(logitsLong, dim = -1) # Shape [1, 400, 50304]
             lsmShort = F.log_softmax(logitsShort, dim = -1) # Shape [1, 50, 50304]
-            lossLong = -lsmLong[0, -1, input_ids_[501]]
-            lossShort = -lsmShort[0, -1, input_ids_[501]]
+            lossLong = -lsmLong[0, -1, input_ids_[:, 501]]
+            lossShort = -lsmShort[0, -1, input_ids_[:, 501]]
             icl_score = lossLong - lossShort
             row = {
                 'Model': model_n,
