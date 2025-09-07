@@ -1,15 +1,7 @@
-import os
 import sys
-import json
 from time import sleep
-import glob
 import itertools
-
-import torch
 import pandas as pd
-import torch.nn.functional as F
-from transformers import GPTNeoXForCausalLM, AutoTokenizer
-
 import torch
 import torch.nn.functional as F
 import glob, os, json
@@ -32,7 +24,7 @@ def sentence_log_prob(model, tokenizer, sentence, device):
     return token_log_probs.sum()  # scalar tensor on device
 
 
-def run_blimp_for_model(model_n, revision, seed, blimp_dir):
+def run_blimp_for_model(model_n, revision, seed, blimp_dir, max_samples=100):
     model_name = f"{model_n}-seed{seed}"
     print(f"Running BLiMP eval for {model_name}, revision {revision}")
 
@@ -67,6 +59,9 @@ def run_blimp_for_model(model_n, revision, seed, blimp_dir):
         with open(task_file, "r") as f:
             blimp_data = [json.loads(line) for line in f]
 
+        # Only keep the first max_samples sentences
+        blimp_data = blimp_data[:max_samples]
+
         # Preallocate tensor for probabilities
         probs_tensor = torch.zeros(len(blimp_data), 2, device=device)
 
@@ -96,6 +91,7 @@ def run_blimp_for_model(model_n, revision, seed, blimp_dir):
         )
 
     return results
+
 
 def compute_seed_kl(df):
     """Compute pairwise KL between seeds per model/revision/task."""
