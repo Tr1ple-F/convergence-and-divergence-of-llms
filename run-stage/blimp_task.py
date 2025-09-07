@@ -10,20 +10,26 @@ import pandas as pd
 import torch.nn.functional as F
 from transformers import GPTNeoXForCausalLM, AutoTokenizer
 
+import torch
+import torch.nn.functional as F
+import glob, os, json
+from transformers import GPTNeoXForCausalLM, AutoTokenizer
 
 def sentence_log_prob(model, tokenizer, sentence, device):
-    """Compute log probability of an entire sentence under the model."""
+    """Compute log probability of a single sentence under the model on the given device."""
     enc = tokenizer(sentence, return_tensors="pt")
-    input_ids = enc["input_ids"].to(device)
+    input_ids = enc["input_ids"].to(device)  # keep on device
+
     with torch.no_grad():
-        outputs = model(input_ids)
-        logits = outputs.logits  # [1, seq_len, vocab]
+        logits = model(input_ids).logits  # [1, seq_len, vocab]
         log_probs = F.log_softmax(logits, dim=-1)
+
     # Shift: predict token t given <0..t-1>
     token_log_probs = log_probs[:, :-1, :].gather(
         2, input_ids[:, 1:].unsqueeze(-1)
     ).squeeze(-1)
-    return token_log_probs.sum().item()
+
+    return token_log_probs.sum()  # scalar tensor on device
 
 
 def run_blimp_for_model(model_n, revision, seed, blimp_dir):
@@ -48,9 +54,9 @@ def run_blimp_for_model(model_n, revision, seed, blimp_dir):
         add_eos_token=True,
     )
 
-    model.eval()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model.to(device)
+    model.eval()
 
     results = []
 
@@ -61,24 +67,22 @@ def run_blimp_for_model(model_n, revision, seed, blimp_dir):
         with open(task_file, "r") as f:
             blimp_data = [json.loads(line) for line in f]
 
-        dist_list = []
+        # Preallocate tensor for probabilities
+        probs_tensor = torch.zeros(len(blimp_data), 2, device=device)
 
-        for sample in blimp_data:
+        for idx, sample in enumerate(blimp_data):
             good_sent = sample["sentence_good"]
             bad_sent = sample["sentence_bad"]
 
             good_score = sentence_log_prob(model, tokenizer, good_sent, device)
             bad_score = sentence_log_prob(model, tokenizer, bad_sent, device)
 
-            # Normalize in log-space
-            scores = torch.tensor([good_score, bad_score])
-            log_probs = F.log_softmax(scores, dim=0)
-            probs = log_probs.exp().cpu().numpy()
+            # Convert log-likelihoods to probability distribution
+            scores = torch.stack([good_score, bad_score])  # tensor on device
+            probs_tensor[idx] = F.softmax(scores, dim=0)
 
-            dist_list.append(probs)
-
-        # average distribution over all samples in this task
-        avg_dist = torch.tensor(dist_list).mean(dim=0)
+        # Average over all samples in the task
+        avg_dist = probs_tensor.mean(dim=0)
 
         results.append(
             {
@@ -92,7 +96,6 @@ def run_blimp_for_model(model_n, revision, seed, blimp_dir):
         )
 
     return results
-
 
 def compute_seed_kl(df):
     """Compute pairwise KL between seeds per model/revision/task."""
@@ -141,13 +144,12 @@ def main():
                     results = run_blimp_for_model(model_name, revision, i, blimp_dir)
                 data.extend(results)
 
-    df = pd.DataFrame(data)
-    kl_df = compute_seed_kl(df)
-
     output_dir = f"../working_dir/{experiment_id}/output"
     os.makedirs(output_dir, exist_ok=True)
 
+    df = pd.DataFrame(data)
     df.to_csv(os.path.join(output_dir, "blimp_distributions.csv"), index=False)
+    kl_df = compute_seed_kl(df)
     kl_df.to_csv(os.path.join(output_dir, "blimp_seed_kl.csv"), index=False)
 
     print("BLiMP distributions and seed KL scores saved.")
