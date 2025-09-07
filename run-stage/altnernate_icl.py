@@ -49,14 +49,14 @@ def run_icl_for_model(model_n, revision, seed, input_text):
 
     with torch.no_grad():
         for sample in inputs_loaded:
-            input_ids_ = sample['input_ids'][0] # Shape [550]
+            input_ids_ = sample['input_ids'] # Shape [1, 550]
             # Predict 500th token, once with 50 tokens context, once with 400 tokens context
-            logitsLong = model(input_ids_[100:501]).logits # Shape [400, 50304]
-            logitsShort = model(input_ids_[450:501]).logits # Shape [50, 50304]
-            lsmLong = F.log_softmax(logitsLong, dim = -1) # Shape [400, 50304]
-            lsmShort = F.log_softmax(logitsShort, dim = -1) # Shape [50, 50304]
-            lossLong = -lsmLong[-1, input_ids_[501]]
-            lossShort = -lsmShort[-1, input_ids_[501]]
+            logitsLong = model(input_ids_[:, 100:501]).logits # Shape [1, 400, 50304]
+            logitsShort = model(input_ids_[:, 450:501]).logits # Shape [1, 50, 50304]
+            lsmLong = F.log_softmax(logitsLong, dim = -1) # Shape [1, 400, 50304]
+            lsmShort = F.log_softmax(logitsShort, dim = -1) # Shape [1, 50, 50304]
+            lossLong = -lsmLong[0, -1, input_ids_[501]]
+            lossShort = -lsmShort[0, -1, input_ids_[501]]
             icl_score = lossLong - lossShort
             row = {
                 'Model': model_n,
