@@ -47,14 +47,20 @@ def styled_plot(
         y_log = False,
         order_legend = True,
         y_scale = 6,
-        legend_include = None
+        legend_include = None,
+        vertical_lines = [16, 256, 2000]
 ):
-    if "KL" in y_name or 'convergence' in y_label or 'Value' in y_name: # 'Value' for the linear regression case
+    if "KL" in y_name or 'convergence' in y_label or 'Value' in y_name or 'ICL' in y_name: # 'Value' for the linear regression case
         df_plot[y_name] *= -1
 
     plt.figure(figsize=(10, y_scale))
     palette = sns.color_palette("Set2")
     sns.set_theme("notebook", "whitegrid", palette=palette, font="serif", font_scale=1.75)
+
+    error_text = "sd"
+
+    if "ICL" in y_name or y_label:
+        error_text = "se"
 
     sns.lineplot(
         data=df_plot,
@@ -65,7 +71,7 @@ def styled_plot(
         markers=True,
         markersize=10,  # Increased marker size
         linewidth=2,
-        errorbar='sd',
+        errorbar=error_text,
         palette=palette
     )
 
@@ -76,7 +82,7 @@ def styled_plot(
     plt.ylabel(y_label)
 
     # Add vertical lines
-    for xpos in [16, 256, 2000]:
+    for xpos in vertical_lines:
         plt.axvline(x=xpos, color='gray', linestyle='--', linewidth=2)
 
     if order_legend:
