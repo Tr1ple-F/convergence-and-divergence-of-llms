@@ -27,6 +27,6 @@ styled_plot(
     y_label,
     save_loc,
     order_legend=False,
-    y_scale=5,
+    y_scale=5.5,
     y_label_loc="top"
 )

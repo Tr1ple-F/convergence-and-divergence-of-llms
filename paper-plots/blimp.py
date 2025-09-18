@@ -25,5 +25,7 @@ styled_plot(
     r'Downstream convergence',
     f'{path}/blimp.png',
     y_log = False,
-    order_legend = False
+    order_legend = False,
+    y_scale=5,
+    y_label_loc="top"
 )

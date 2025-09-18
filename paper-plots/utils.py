@@ -60,7 +60,7 @@ def styled_plot(
 
     error_text = "sd"
 
-    if "ICL" in y_name or "ICL" in y_label:
+    if "ICL" in y_name or "ICL" in y_label or "blimp" in save_loc:
         error_text = "se"
 
     sns.lineplot(
