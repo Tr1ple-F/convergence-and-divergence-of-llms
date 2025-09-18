@@ -15,6 +15,18 @@ model_order = ['14m', '31m', '70m', '160m', '410m']
 df_plot['Model'] = pd.Categorical(df_plot['Model'], categories=model_order, ordered=True)
 df_plot = df_plot.sort_values(by=['Model', 'Training Step'], ascending=[True, True])
 
-y_label = r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)'
+y_label = r'Expected Convergence ($\mathbb{E}[\mathrm{conv}]$)'
 save_loc = f'../working_dir/{sys.argv[1]}/output/seeds_context_variance.png'
-styled_plot(df_plot, 'Training Step', 'KL', 'Model', 'Model', 'Training Step', y_label, save_loc, order_legend=False)
+styled_plot(
+    df_plot,
+    'Training Step',
+    'KL',
+    'Model',
+    'Model',
+    'Training Step',
+    y_label,
+    save_loc,
+    order_legend=False,
+    y_scale=5,
+    y_label_loc="top"
+)

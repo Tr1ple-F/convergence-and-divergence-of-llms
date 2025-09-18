@@ -14,8 +14,10 @@ styled_plot(
     'Model',
     'Model',
     'Training Step',
-    'ICL',
+    'ICL Score',
     f'{path}/alternate_icl.png',
+    y_scale = 2.75,
     y_log = False,
-    order_legend = False
+    order_legend = False,
+    legend_include=False
 )

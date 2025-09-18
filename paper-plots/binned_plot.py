@@ -62,7 +62,7 @@ def get_df(path, binner, column, title, is_kl = True):
     return df_plot
 
 # Plotting
-y_label1 = r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)'
+y_label1 = r'Expected Convergence ($\mathbb{E}[\mathrm{conv}]$)'
 y_label2 = r'Cross Entropy ($H$)'
 h_label = r'Binned $H$'
 save_loc1 = f'../working_dir/{sys.argv[1]}/output/frequency_result.png'

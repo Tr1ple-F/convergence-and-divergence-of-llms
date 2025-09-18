@@ -48,7 +48,8 @@ def styled_plot(
         order_legend = True,
         y_scale = 6,
         legend_include = None,
-        vertical_lines = [16, 256, 2000]
+        vertical_lines = [16, 256, 2000],
+        y_label_loc = None
 ):
     if "KL" in y_name or 'convergence' in y_label or 'Value' in y_name or 'ICL' in y_name: # 'Value' for the linear regression case
         df_plot[y_name] *= -1
@@ -59,7 +60,7 @@ def styled_plot(
 
     error_text = "sd"
 
-    if "ICL" in y_name or y_label:
+    if "ICL" in y_name or "ICL" in y_label:
         error_text = "se"
 
     sns.lineplot(
@@ -79,7 +80,7 @@ def styled_plot(
     if y_log:
         plt.yscale('log')
     plt.xlabel(x_label)
-    plt.ylabel(y_label)
+    plt.ylabel(y_label, loc=y_label_loc)
 
     # Add vertical lines
     for xpos in vertical_lines:
@@ -104,12 +105,15 @@ def styled_plot(
         ordered_handles, labels = plt.gca().get_legend_handles_labels()
         ordered_clean_labels = [f"{strip(label)}" for label in labels if label != '']
 
-    if legend_include:
+    if legend_include and legend_include != False:
         from_a, to_b = legend_include
         ordered_handles = ordered_handles[from_a:to_b]
         ordered_clean_labels = ordered_clean_labels[from_a:to_b]
 
-    plt.legend(handles=ordered_handles, labels=ordered_clean_labels, loc='upper left', bbox_to_anchor=(0, 1))
+    if legend_include is None or legend_include != False:
+        plt.legend(handles=ordered_handles, labels=ordered_clean_labels, loc='upper left', bbox_to_anchor=(0, 1))
+    else:
+        plt.legend().remove()
 
     plt.tight_layout()
     plt.savefig(save_loc, bbox_inches='tight')

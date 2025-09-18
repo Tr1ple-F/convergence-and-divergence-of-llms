@@ -8,8 +8,12 @@ df = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/seeds_surprisal_dataframe
 df2 = pd.read_csv(f'../working_dir/{sys.argv[1]}/output/seeds_pos_{pos_index}_dataframe.csv')
 
 path = f'../working_dir/{sys.argv[1]}/output/cross_entropy_std_seeds.png'
-y_label = r'Cross Entropy ($H$)'
-styled_plot(df, 'Revision', 'Surprisal', 'Model', 'Model', 'Training Step', y_label, path, order_legend=False, y_scale=4)
+y_label = r'Cross Entropy'
+styled_plot(df, 'Revision', 'Surprisal', 'Model', 'Model', 'Training Step',
+            y_label, path, order_legend=False, y_scale=3.25, legend_include=False)
+
+if sys.argv[2] == "none":
+    exit()
 
 def plot_internal(value_vars, appendix=""):
     for model_size in ['410m']: # ['14m', '31m', '70m', '160m', '410m']:

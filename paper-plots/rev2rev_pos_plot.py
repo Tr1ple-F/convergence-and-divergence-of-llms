@@ -21,7 +21,7 @@ def plot_internal(value_vars, appendix=""):
             (df_plot['Seed 1'] != df_plot['Seed 2'])
             ]
 
-        y_label = r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)'
+        y_label = r'Expected Convergence ($\mathbb{E}[\mathrm{conv}]$)'
         save_loc = f'../working_dir/{sys.argv[1]}/output/seeds_rev2rev_model_{model_size}{appendix}_{pos_index}.png'
 
         styled_plot(df_plot, 'Training Step', 'Average KL', 'PoS Tag', 'PoS Tag', 'Training Step', y_label, save_loc)
@@ -34,12 +34,12 @@ def plot_no_filters():
         (df_plot['Seed 1'] != df_plot['Seed 2'])
         ]
 
-    y_label = r'Expected convergence ($\mathbb{E}[\mathrm{conv}]$)'
+    y_label = r'Expected Convergence ($\mathbb{E}[\mathrm{conv}]$)'
     save_loc = f'../working_dir/{sys.argv[1]}/output/seeds_no_filters.png'
 
     styled_plot(
         df_plot, 'Training Step', 'KL Average', 'Model', 'Model', 'Training Step',
-        y_label, save_loc, order_legend=False, vertical_lines=[]
+        y_label, save_loc, order_legend=False
     )
 
 # ====== Run the functions based on sys.argv[2] ======
