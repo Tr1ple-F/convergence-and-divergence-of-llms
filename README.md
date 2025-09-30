@@ -27,7 +27,7 @@ From these counts you can build reference distributions used later:
 - `unigram_bert.py`: builds `unigram_dist_bert.npy` and `uniform_dist_bert.npy` from `frequency_count_bert.npy`.
 
 References:
-- The Pile: An 800GB Dataset of Diverse Text for Language Modeling ([paper](https://arxiv.org/abs/2101.00027))
+- The Pile: An 800GB Dataset of Diverse Text for Language Modeling ([paper](https://arxiv.org/abs/2101.00027), [HF hub](https://huggingface.co/datasets/pietrolesci/pile-validation))
 - EleutherAI Pythia models ([HF hub](https://huggingface.co/EleutherAI))
 - Google MultiBERTs ([HF hub](https://huggingface.co/google/multiberts-seed_0))
 - BLiMP benchmark ([repo](https://github.com/alexwarstadt/blimp))
@@ -173,7 +173,7 @@ Example invocations:
 python dataframes/seeds_frequency_dataframe.py sample4
 python paper-plots/binned_plot.py sample4
 python paper-plots/variance_plot.py sample4
-python run-stage/pythia_icl.py sample4 && python paper-plots/new_icl_plotter.py sample4
+python run-stage/alternate_icl.py sample4 && python paper-plots/new_icl_plotter.py sample4
 python run-stage/blimp_task.py sample4 && python paper-plots/blimp.py sample4
 ```
 
@@ -188,38 +188,3 @@ python run-stage/blimp_task.py sample4 && python paper-plots/blimp.py sample4
 - Ensure your `seeds_config.json` and/or `deduped_config.json` list the exact HF model ids and revision names (e.g., `"EleutherAI/pythia-14m-seed1"` with revisions like `"step128"`).
 - For BERT runs, text snippets are split on `[SEP][CLS]` inside `runner_bert.py` before scoring; ensure your `input_text.txt` uses that separator or adapt as needed.
 - `deduped_*` scripts are included for reproducibility but were not used in the paper’s final results.
-
-### End-to-end examples
-
-Pythia seeds (minimal):
-
-```bash
-python run-stage/tokenize_util.py sample4
-python run-stage/pos_tagger.py sample4
-python run-stage/runner_seeds.py sample4
-python stats-stage/seeds_kl_torch.py sample4
-python stats-stage/seeds_kl_uni.py sample4 0 9999  # optional, slices model list
-python stats-stage/seeds_stats.py sample4
-python dataframes/seeds_frequency_dataframe.py sample4
-python paper-plots/binned_plot.py sample4
-```
-
-MultiBERTs seeds:
-
-```bash
-python run-stage/tokenize_util_bert.py sample_bert
-python run-stage/pos_tagger_bert.py sample_bert
-python run-stage/runner_bert.py sample_bert
-python stats-stage/bert_kl_torch.py sample_bert 0
-python stats-stage/bert_kl_uni.py sample_bert
-python stats-stage/bert_stats.py sample_bert
-```
-
-ICL and BLiMP (optional):
-
-```bash
-python run-stage/pythia_icl.py sample4 && python paper-plots/new_icl_plotter.py sample4
-python run-stage/blimp_task.py sample4 && python paper-plots/blimp.py sample4
-```
-
-If anything is unclear, browse the scripts referenced above—they are short and designed to be read.
