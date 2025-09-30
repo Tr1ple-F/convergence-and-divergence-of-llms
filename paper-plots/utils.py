@@ -49,7 +49,8 @@ def styled_plot(
         y_scale = 6,
         legend_include = None,
         vertical_lines = [16, 256, 2000],
-        y_label_loc = None
+        y_label_loc = None,
+        force_pdf = True
 ):
     if "KL" in y_name or 'convergence' in y_label or 'Value' in y_name or 'ICL' in y_name: # 'Value' for the linear regression case
         df_plot[y_name] *= -1
@@ -116,5 +117,7 @@ def styled_plot(
         plt.legend().remove()
 
     plt.tight_layout()
+    if force_pdf:
+        save_loc = save_loc.replace(".png", ".pdf")
     plt.savefig(save_loc, bbox_inches='tight')
     plt.close()

@@ -145,7 +145,7 @@ def plot_no_filters():
         ]
 
     y_label = r'Expected Convergence ($\mathbb{E}[\mathrm{conv}]$)'
-    save_loc = f'../working_dir/{sys.argv[1]}/output/multiberts.png'
+    save_loc = f'../working_dir/{sys.argv[1]}/output/multiberts.pdf'
 
     styled_plot(
         df_plot, 'Training Step', 'KL Average', 'Model', 'Model', 'Training Step',
