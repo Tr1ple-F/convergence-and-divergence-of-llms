@@ -92,8 +92,6 @@ python run-stage/pos_tagger_bert.py sample_bert
 python run-stage/runner_bert.py sample_bert
 ```
 
-One-shot helpers (Linux): `execute.sh` (deduped) and `execute_seeds.sh` (seeds) chain the core steps. Inspect them for the exact sequence.
-
 Notes:
 - Models and revisions are pulled from the Hugging Face Hub and cached locally. GPU is used if available.
 - Logits are windowed with overlap to handle long sequences; outputs are concatenated and truncated so array length matches the number of next-token targets.
@@ -103,6 +101,7 @@ Notes:
 Directory: `stats-stage/`
 
 Given the per-token log-probabilities, these scripts write reduced arrays to `results/`:
+Some of the scripts have extra command-line arguments to split the work across multiple runs.
 
 - Pairwise model-to-model KL (per-token arrays):
   - Pythia seeds: `seeds_kl_torch.py <experiment_id>`
@@ -120,11 +119,11 @@ Given the per-token log-probabilities, these scripts write reduced arrays to `re
   - MultiBERTs: `bert_stats.py <experiment_id>`
 
 - Cross comparisons:
-  - `duped_vs_deduped_kl.py <experiment_id>`: compares deduped vs non-deduped models (where available)
+  - `duped_vs_deduped_kl.py <experiment_id>`: compares deduped vs non-deduped models (not in paper)
 
 Outputs are primarily arrays saved under `results/seeds` or `results/deduped` with names like:
 
-- `...-seed{S}-kl.npy`: KL values for a fixed reference `(model, revision, seed)` vs all other `(model, revision, seed)` combinations; dims are `[num_comparisons, num_tokens]`.
+- `...-seed{S}-kl.npy`: KL values for a fixed reference `(model, revision, seed)` vs all other `(model, revision, seed)` combinations
 - `...-seed{S}-uni.npy`: two rows for `[KL(uniform), KL(unigram)]`, each over tokens.
 - `...-seed{S}-surprisal.npy`: per-token surprisal for a given `(model, revision, seed)`.
 
@@ -153,8 +152,8 @@ Utility:
 
 Directory: `paper-plots/`
 
-Each script reads CSVs from `working_dir/<experiment_id>/output`, renders a styled plot (see `paper-plots/utils.py`), and saves a `.png` beside the data.
-
+Each script reads CSVs from `working_dir/<experiment_id>/output`, renders a styled plot (see `paper-plots/utils.py`), and saves a `.pdf` or `.png` beside the data.
+ 
 - `binned_plot.py`: KL or cross-entropy binned by token frequency and by final-step surprisal.
 - `cross_entropy_plot.py`: cross-entropy by POS categories; also supports grouped categories.
 - `learning_rates.py`: nominal learning rate schedules by model size (reference figure).
